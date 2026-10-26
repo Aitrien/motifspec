@@ -2,7 +2,10 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
-## [1.10.3] - 2026-10-26
+## [1.10.4] - 2026-10-26
+
+The changes below were meant for 1.10.3, but the `v1.10.3` tag was created a minute before they were merged, so it points at the same commit as 1.10.2. Versions are immutable once Go has fetched them, so they ship as 1.10.4 instead and 1.10.3 is the same as 1.10.2.
+
 
 ### Fixed
 - Figures and code blocks in `cx-prose` now get the `space.stack.lg` gap above and below them that the prose rhythm sets. `.cx-figure` and `.cx-code` reset their margins to 0 with a class selector that came later in the stylesheet, which overrode the prose rule, so a figure or code block sat directly under the paragraph before it. The reset now has no specificity (`:where()`), so it only removes the browser's default `<figure>` margins.
@@ -12,6 +15,10 @@ Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entri
 ### Changed
 - `color.surface.highlight` in dark mode is now `sap.800` instead of `sap.900`. On `color.surface.base` (`ash.900`) the old value was almost invisible (1.03:1); the new one is the brightest sap step that keeps `color.text.primary` on it above its 7:1 target (9.91:1; `sap.700` would be 5.99:1). It affects the current page in the site nav, text selection and `<mark>`.
 - Site nav: the current page's pill now has a `color.accent.border` hairline inside its edge, in both themes, as well as the highlight fill. The fill alone is close to the header's surface (1.06:1 light, 1.28:1 dark); the outline stands out from it at 4.46:1 light and 6.57:1 dark. It's an inset box-shadow, so the pill doesn't change size.
+
+## [1.10.3] - 2026-10-26
+
+Tagged on the same commit as 1.10.2 by mistake; no changes. Use 1.10.4.
 
 ## [1.10.2] - 2026-10-23
 
