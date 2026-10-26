@@ -6,6 +6,7 @@ Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entri
 
 ### Fixed
 - Figures and code blocks in `cx-prose` now get the `space.stack.lg` gap above and below them that the prose rhythm sets. `.cx-figure` and `.cx-code` reset their margins to 0 with a class selector that came later in the stylesheet, which overrode the prose rule, so a figure or code block sat directly under the paragraph before it. The reset now has no specificity (`:where()`), so it only removes the browser's default `<figure>` margins.
+- Code block header bar on narrow screens: when the language, file name and copy button wrap onto more than one row, the bar now has `space.inset.sm` padding above and below, so the rows no longer touch the bar's edges. A single-row bar is essentially unchanged: it grows by 1px, its bottom border, which the padding now pushes past `size.target.control`.
 
 ## [1.10.2] - 2026-10-23
 

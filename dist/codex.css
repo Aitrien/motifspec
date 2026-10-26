@@ -854,7 +854,7 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 .cx-code { min-width: 0; border: var(--cx-border-width-hairline) solid var(--cx-color-border-default); background: var(--cx-color-surface-sunken); }
 .cx-code__bar {
   display: flex; flex-wrap: wrap; align-items: center; gap: var(--cx-space-inline-md); min-height: var(--cx-size-target-control);
-  padding-inline: var(--cx-space-inset-md) var(--cx-space-inset-sm); border-bottom: var(--cx-border-width-hairline) solid var(--cx-color-border-subtle);
+  padding-block: var(--cx-space-inset-sm); padding-inline: var(--cx-space-inset-md) var(--cx-space-inset-sm); border-bottom: var(--cx-border-width-hairline) solid var(--cx-color-border-subtle);
   color: var(--cx-color-text-muted);
 }
 .cx-code__file { color: var(--cx-color-text-secondary); text-transform: none; letter-spacing: var(--cx-font-tracking-ui); }
