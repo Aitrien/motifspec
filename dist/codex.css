@@ -2,7 +2,7 @@
 @font-face { font-family: "JetBrains Mono"; src: url("../fonts/jetbrains-mono-latin-wght.woff2") format("woff2"); font-weight: 100 800; font-style: normal; font-display: swap; }
 @font-face { font-family: "Yarndings 12"; src: url("../fonts/yarndings-12-latin.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
 
-/* MotifSpec 1.10.2 — generated from tokens/*.json. Do not edit.
+/* MotifSpec 1.10.3 — generated from tokens/*.json. Do not edit.
    Themes: semantic colours use light-dark(); color-scheme follows the system unless
    <html data-theme="light|dark"> pins it. --cx-primitive-* are for this file only. */
 :root {
@@ -777,6 +777,8 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 .cx-prose > :where(.cx-figure--breakout, .cx-code--breakout, .cx-table--breakout) { max-width: var(--cx-size-container-breakout); }
 .cx-prose > :where(.cx-code, .cx-figure, .cx-table, .cx-callout, hr) { margin-block-start: var(--cx-space-stack-lg); }
 .cx-prose > :where(.cx-code, .cx-figure, .cx-table, .cx-callout) + * { margin-block-start: var(--cx-space-stack-lg); }
+/* Code blocks and figures are <figure> elements: drop the browser's margins with no specificity, so the prose rhythm above still applies. */
+:where(.cx-code, .cx-figure) { margin: 0; }
 .cx-prose h2 {
   margin-block-start: var(--cx-space-stack-xl); padding-block-start: var(--cx-space-stack-md);
   border-top: var(--cx-border-width-hairline) solid var(--cx-color-border-subtle);
@@ -849,7 +851,7 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 .cx-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cx-space-stack-xs) var(--cx-space-inline-md); margin: 0; font-family: var(--cx-font-family-mono); font-size: var(--cx-font-size-label); letter-spacing: var(--cx-font-tracking-ui); color: var(--cx-color-text-muted); font-variant-numeric: tabular-nums; }
 
 /* ------------------------------------------------------------ code block */
-.cx-code { margin: 0; min-width: 0; border: var(--cx-border-width-hairline) solid var(--cx-color-border-default); background: var(--cx-color-surface-sunken); }
+.cx-code { min-width: 0; border: var(--cx-border-width-hairline) solid var(--cx-color-border-default); background: var(--cx-color-surface-sunken); }
 .cx-code__bar {
   display: flex; flex-wrap: wrap; align-items: center; gap: var(--cx-space-inline-md); min-height: var(--cx-size-target-control);
   padding-inline: var(--cx-space-inset-md) var(--cx-space-inset-sm); border-bottom: var(--cx-border-width-hairline) solid var(--cx-color-border-subtle);
@@ -875,7 +877,7 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 .cx-code .hl { display: block; margin-inline: calc(var(--cx-space-inset-lg) * -1); padding-inline: var(--cx-space-inset-lg); box-shadow: inset var(--cx-border-width-emphasis) 0 0 var(--cx-color-accent-border); }
 
 /* ------------------------------------------------------------ figure and caption */
-.cx-figure { margin: 0; display: flex; flex-direction: column; gap: var(--cx-space-stack-sm); min-width: 0; }
+.cx-figure { display: flex; flex-direction: column; gap: var(--cx-space-stack-sm); min-width: 0; }
 .cx-figure__frame { overflow: auto; border: var(--cx-border-width-hairline) solid var(--cx-color-border-default); background: var(--cx-color-surface-raised); }
 .cx-figure__frame > :where(img, svg) { display: block; width: 100%; height: auto; }
 /* Diagrams keep a legible text size and scroll inside the frame on narrow screens. */
