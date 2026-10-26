@@ -2,6 +2,17 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.10.3] - 2026-10-26
+
+### Fixed
+- Figures and code blocks in `cx-prose` now get the `space.stack.lg` gap above and below them that the prose rhythm sets. `.cx-figure` and `.cx-code` reset their margins to 0 with a class selector that came later in the stylesheet, which overrode the prose rule, so a figure or code block sat directly under the paragraph before it. The reset now has no specificity (`:where()`), so it only removes the browser's default `<figure>` margins.
+- Code block header bar on narrow screens: when the language, file name and copy button wrap onto more than one row, the bar now has `space.inset.sm` padding above and below, so the rows no longer touch the bar's edges. A single-row bar is essentially unchanged: it grows by 1px, its bottom border, which the padding now pushes past `size.target.control`.
+- Site header on a phone: when the nav wraps onto its own row, the row has `space.inset.xs` below it, so the current page's highlight no longer sits on the header's bottom border.
+
+### Changed
+- `color.surface.highlight` in dark mode is now `sap.800` instead of `sap.900`. On `color.surface.base` (`ash.900`) the old value was almost invisible (1.03:1); the new one is the brightest sap step that keeps `color.text.primary` on it above its 7:1 target (9.91:1; `sap.700` would be 5.99:1). It affects the current page in the site nav, text selection and `<mark>`.
+- Site nav: the current page's pill now has a `color.accent.border` hairline inside its edge, in both themes, as well as the highlight fill. The fill alone is close to the header's surface (1.06:1 light, 1.28:1 dark); the outline stands out from it at 4.46:1 light and 6.57:1 dark. It's an inset box-shadow, so the pill doesn't change size.
+
 ## [1.10.2] - 2026-10-23
 
 ### Fixed

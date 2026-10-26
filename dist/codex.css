@@ -2,7 +2,7 @@
 @font-face { font-family: "JetBrains Mono"; src: url("../fonts/jetbrains-mono-latin-wght.woff2") format("woff2"); font-weight: 100 800; font-style: normal; font-display: swap; }
 @font-face { font-family: "Yarndings 12"; src: url("../fonts/yarndings-12-latin.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
 
-/* MotifSpec 1.10.2 — generated from tokens/*.json. Do not edit.
+/* MotifSpec 1.10.3 — generated from tokens/*.json. Do not edit.
    Themes: semantic colours use light-dark(); color-scheme follows the system unless
    <html data-theme="light|dark"> pins it. --cx-primitive-* are for this file only. */
 :root {
@@ -101,7 +101,7 @@
   --cx-color-surface-sunken: light-dark(var(--cx-primitive-color-ash-100), var(--cx-primitive-color-ash-950));
   --cx-color-surface-hover: light-dark(var(--cx-primitive-color-ash-100), var(--cx-primitive-color-ash-800));
   --cx-color-surface-inverse: light-dark(var(--cx-primitive-color-ash-900), var(--cx-primitive-color-ash-100));
-  --cx-color-surface-highlight: light-dark(var(--cx-primitive-color-sap-100), var(--cx-primitive-color-sap-900));
+  --cx-color-surface-highlight: light-dark(var(--cx-primitive-color-sap-100), var(--cx-primitive-color-sap-800));
 
   /* color.text */
   --cx-color-text-primary: light-dark(var(--cx-primitive-color-ash-950), var(--cx-primitive-color-ash-100));
@@ -567,8 +567,9 @@ p, li, dd, figcaption { text-wrap: pretty; }
 .cx-header__end { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; justify-content: flex-end; gap: var(--cx-space-inline-sm); }
 .cx-nav { min-width: 0; }
 /* Wrapped onto its own row (dist/codex.js sets data-wrapped), the nav starts at the left and is pulled out by its
-   pills' padding, so the link text lines up with the wordmark and the page text; the controls stay at the right. */
-.cx-header[data-wrapped] .cx-header__end { justify-content: space-between; }
+   pills' padding, so the link text lines up with the wordmark and the page text; the controls stay at the right. The
+   row keeps inset-xs below it, so the current page's pill doesn't sit on the header's bottom border. */
+.cx-header[data-wrapped] .cx-header__end { justify-content: space-between; padding-block-end: var(--cx-space-inset-xs); }
 /* A relative offset, not a margin: it moves the links without changing the row's width, so it can't change whether
    the header wraps. */
 .cx-header[data-wrapped] .cx-nav { position: relative; inset-inline-start: calc(var(--_nav-pad) * -1); }
@@ -583,8 +584,12 @@ p, li, dd, figcaption { text-wrap: pretty; }
 }
 /* Hover only where there is a pointer that hovers: on touch screens :hover sticks after a tap. */
 @media (hover: hover) { .cx-nav a:hover { color: var(--cx-color-text-primary); background: var(--_wash); } }
-/* The current section is highlighted, not underlined. */
-.cx-nav a[aria-current="page"] { color: var(--cx-color-text-primary); background: var(--cx-color-surface-highlight); }
+/* The current section is highlighted, not underlined: a highlight fill with an accent outline, which is what stands out
+   from the surface (3:1), as the fill alone is close to it in both themes. Inset, so the pill keeps its size. */
+.cx-nav a[aria-current="page"] {
+  color: var(--cx-color-text-primary); background: var(--cx-color-surface-highlight);
+  box-shadow: inset 0 0 0 var(--cx-border-width-hairline) var(--cx-color-accent-border);
+}
 /* Theme toggle: an icon-only pill (a circle) that shows the action, with a tooltip. */
 .cx-theme-toggle {
   position: relative; flex: none; display: inline-grid; place-items: center;
@@ -777,6 +782,8 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 .cx-prose > :where(.cx-figure--breakout, .cx-code--breakout, .cx-table--breakout) { max-width: var(--cx-size-container-breakout); }
 .cx-prose > :where(.cx-code, .cx-figure, .cx-table, .cx-callout, hr) { margin-block-start: var(--cx-space-stack-lg); }
 .cx-prose > :where(.cx-code, .cx-figure, .cx-table, .cx-callout) + * { margin-block-start: var(--cx-space-stack-lg); }
+/* Code blocks and figures are <figure> elements: drop the browser's margins with no specificity, so the prose rhythm above still applies. */
+:where(.cx-code, .cx-figure) { margin: 0; }
 .cx-prose h2 {
   margin-block-start: var(--cx-space-stack-xl); padding-block-start: var(--cx-space-stack-md);
   border-top: var(--cx-border-width-hairline) solid var(--cx-color-border-subtle);
@@ -849,10 +856,10 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 .cx-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cx-space-stack-xs) var(--cx-space-inline-md); margin: 0; font-family: var(--cx-font-family-mono); font-size: var(--cx-font-size-label); letter-spacing: var(--cx-font-tracking-ui); color: var(--cx-color-text-muted); font-variant-numeric: tabular-nums; }
 
 /* ------------------------------------------------------------ code block */
-.cx-code { margin: 0; min-width: 0; border: var(--cx-border-width-hairline) solid var(--cx-color-border-default); background: var(--cx-color-surface-sunken); }
+.cx-code { min-width: 0; border: var(--cx-border-width-hairline) solid var(--cx-color-border-default); background: var(--cx-color-surface-sunken); }
 .cx-code__bar {
   display: flex; flex-wrap: wrap; align-items: center; gap: var(--cx-space-inline-md); min-height: var(--cx-size-target-control);
-  padding-inline: var(--cx-space-inset-md) var(--cx-space-inset-sm); border-bottom: var(--cx-border-width-hairline) solid var(--cx-color-border-subtle);
+  padding-block: var(--cx-space-inset-sm); padding-inline: var(--cx-space-inset-md) var(--cx-space-inset-sm); border-bottom: var(--cx-border-width-hairline) solid var(--cx-color-border-subtle);
   color: var(--cx-color-text-muted);
 }
 .cx-code__file { color: var(--cx-color-text-secondary); text-transform: none; letter-spacing: var(--cx-font-tracking-ui); }
@@ -875,7 +882,7 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 .cx-code .hl { display: block; margin-inline: calc(var(--cx-space-inset-lg) * -1); padding-inline: var(--cx-space-inset-lg); box-shadow: inset var(--cx-border-width-emphasis) 0 0 var(--cx-color-accent-border); }
 
 /* ------------------------------------------------------------ figure and caption */
-.cx-figure { margin: 0; display: flex; flex-direction: column; gap: var(--cx-space-stack-sm); min-width: 0; }
+.cx-figure { display: flex; flex-direction: column; gap: var(--cx-space-stack-sm); min-width: 0; }
 .cx-figure__frame { overflow: auto; border: var(--cx-border-width-hairline) solid var(--cx-color-border-default); background: var(--cx-color-surface-raised); }
 .cx-figure__frame > :where(img, svg) { display: block; width: 100%; height: auto; }
 /* Diagrams keep a legible text size and scroll inside the frame on narrow screens. */

@@ -8,7 +8,7 @@
 | `color.text.primary` | `color.surface.raised` | 7 | 17.27 | 11.25 | pass |
 | `color.text.primary` | `color.surface.sunken` | 7 | 15.28 | 15.28 | pass |
 | `color.text.primary` | `color.surface.hover` | 7 | 15.28 | 10.21 | pass |
-| `color.text.primary` | `color.surface.highlight` | 7 | 15.47 | 12.34 | pass |
+| `color.text.primary` | `color.surface.highlight` | 7 | 15.47 | 9.91 | pass |
 | `color.text.primary` | `color.status.success.surface` | 7 | 16.48 | 15.12 | pass |
 | `color.text.primary` | `color.status.warning.surface` | 7 | 16.29 | 15.28 | pass |
 | `color.text.primary` | `color.status.danger.surface` | 7 | 16.23 | 15.57 | pass |
