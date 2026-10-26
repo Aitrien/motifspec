@@ -563,9 +563,9 @@ export const tokens = [
     "tier": "semantic",
     "type": "color",
     "references": "primitive.color.sap.100",
-    "referencesDark": "primitive.color.sap.900",
+    "referencesDark": "primitive.color.sap.800",
     "value": "#d8f9df",
-    "valueDark": "#003315",
+    "valueDark": "#01441f",
     "description": "Text selection, <mark>, and the current item in site navigation. Never for large areas or decoration."
   },
   {

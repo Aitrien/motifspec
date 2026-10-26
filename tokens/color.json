@@ -920,7 +920,7 @@
         "$description": "Text selection, <mark>, and the current item in site navigation. Never for large areas or decoration.",
         "$extensions": {
           "codex.modes": {
-            "dark": "{primitive.color.sap.900}"
+            "dark": "{primitive.color.sap.800}"
           }
         }
       }
