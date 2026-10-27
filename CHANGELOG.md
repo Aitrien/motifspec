@@ -2,6 +2,20 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.12.0] - 2026-10-27
+
+### Added
+- `scripts/check.mjs`, the one rule checker for projects that use MotifSpec (`npm run check -- <dir>`). Sites run it from their pinned module, so they are checked against the release they use; the MCP server's `check_styles` will call the same code. It checks `layouts/` and `content/` and fails on:
+  - a stylesheet in the project, or a `style` attribute
+  - a raw colour, or a number with a length or time unit (zero is allowed)
+  - a primitive, unknown or deprecated `--cx-` token
+  - a `cx-` class that `dist/codex.css` and the shipped scripts don't define, or a `cx-icon-` that isn't in `icons/manifest.json`. Classes and icons built from Hugo template actions are skipped.
+  - "·" used as a separator
+
+  In GitHub Actions, each problem is also an annotation on the pull request; `--json` prints them as JSON. It exports `checkText` and `checkProject` for other tools.
+- `npm run audit` now runs the checker on `layouts/` and on the HTML examples in `docs/components/`, so the markup sites copy passes the rules they're held to.
+- `docs/hugo.md`: how a site runs the checker.
+
 ## [1.11.0] - 2026-10-26
 
 ### Added

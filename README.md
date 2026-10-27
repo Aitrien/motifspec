@@ -19,6 +19,7 @@ Liam Marshall's design system: the single source of truth for aitrien.com and ev
 - Put text on a surface only if the text token lists that surface in `codex.pairsWith`. If the pair isn't declared, pick a token that declares it.
 - Build UI from `docs/components/*.md`. Copy the markup and class names; don't invent new `cx-` classes.
 - In a Hugo site, call the `motifspec/` partials (`docs/hugo.md`) instead of writing component markup, and let the render hooks turn Markdown into figures, tables, code blocks and callouts. A component that needs changing is changed here, not overridden in the site.
+- Before finishing, run the checker on the project: `node <module>/scripts/check.mjs .` (a Hugo site finds `<module>` with `hugo config mounts`; see `docs/hugo.md`). Fix what it reports; don't work around it.
 - Ornaments come only from the 80 approved glyphs in `font.family.ornament` → `codex.glyphs.glyphs` (never `codex.glyphs.forbidden`), always `aria-hidden="true"`, at most one ornament group per viewport.
 - Icons come only from `icons/manifest.json`, each for its listed role, as `<svg class="cx-icon"><use href="#cx-icon-{key}"></use></svg>` beside text that says the same thing. Never the icon font, never a CDN.
 - Separate inline metadata with `<span class="cx-sep" aria-hidden="true">|</span>`. Never use "·" as a separator.
@@ -43,7 +44,7 @@ docs/hugo.md        The Hugo partials and render hooks, their contexts and the f
 layouts/            Hugo partials (_partials/motifspec/) and Markdown render hooks (_markup/), mounted by the module
 docs/syntax-highlighting.md
 fonts/              Self-hosted WOFF2 (Latin subsets) and their OFL licences
-scripts/            validate, build, audit and release
+scripts/            validate, build, audit, check (the rule checker sites run) and release
 js/codex.js         Theme toggle, copy buttons, tooltip dismissal, TOC docking and active section (shared by sites and the showcase)
 js/theme-init.js    One-line <head> snippet that applies a stored theme before first paint
 js/plate.js         Contour survey generator for the backdrop and the specimen plate: draws the static contours at build time and animates them in the browser
@@ -60,7 +61,16 @@ npm run validate  # naming rules, tiers, aliases, DTCG value shapes, every contr
 npm run build     # validate, then write dist/ and refresh generated doc tables
 npm run audit     # prove dist/showcase.html and the shipped scripts have no raw colour, size or duration outside :root
 npm run release:check  # what merging this would release, and whether that release is valid
+npm run check -- <dir>  # check a project that uses MotifSpec (see below)
 ```
+
+`scripts/check.mjs` is the one rule checker: this repo's audit runs it on `layouts/` and the component docs' markup, sites run it from their pinned module, and the MCP server's `check_styles` will call it. It checks a project's `layouts/` and `content/` against the release it comes from, and fails on:
+
+- a stylesheet anywhere in the project, or a `style` attribute
+- a raw colour, or a number with a length or time unit (zero is allowed)
+- a primitive, unknown or deprecated `--cx-` token
+- a `cx-` class that the stylesheet and scripts don't define, or a `cx-icon-` that isn't in `icons/manifest.json`
+- "·" used as a separator
 
 Releases are automatic. Bump `version` in `package.json` and add its `CHANGELOG.md` entry in the PR; once it is merged and CI passes on main, `.github/workflows/release.yml` tags that commit and publishes a GitHub release with the entry as its notes. A merge that doesn't change the version releases nothing.
 
