@@ -40,7 +40,7 @@ docs/components/    One rule file per component (front-matter token lists genera
 docs/templates.md   Content hierarchy for the six page templates
 docs/syntax-highlighting.md
 fonts/              Self-hosted WOFF2 (Latin subsets) and their OFL licences
-scripts/            validate, build and audit
+scripts/            validate, build, audit and release
 js/codex.js         Theme toggle, copy buttons, tooltip dismissal, TOC docking and active section (shared by sites and the showcase)
 js/theme-init.js    One-line <head> snippet that applies a stored theme before first paint
 js/plate.js         Contour survey generator for the backdrop and the specimen plate: draws the static contours at build time and animates them in the browser
@@ -56,7 +56,10 @@ dist/               Generated: tokens.css, components in codex.css, chroma.css, 
 npm run validate  # naming rules, tiers, aliases, DTCG value shapes, every contrast pair in both themes
 npm run build     # validate, then write dist/ and refresh generated doc tables
 npm run audit     # prove dist/showcase.html and the shipped scripts have no raw colour, size or duration outside :root
+npm run release:check  # what merging this would release, and whether that release is valid
 ```
+
+Releases are automatic. Bump `version` in `package.json` and add its `CHANGELOG.md` entry in the PR; once it is merged and CI passes on main, `.github/workflows/release.yml` tags that commit and publishes a GitHub release with the entry as its notes. A merge that doesn't change the version releases nothing.
 
 Node 20 or later, no dependencies.
 

@@ -1,0 +1,35 @@
+name: Release
+
+# Runs after CI passes on a push to main. If package.json has a version that isn't tagged yet, it tags the exact
+# commit CI checked and publishes a GitHub release with that version's CHANGELOG entry. Otherwise it does nothing.
+# So releasing is: bump the version and add the CHANGELOG entry in a PR, then merge it.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Tag and release the version in package.json
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: node scripts/release.mjs --publish
