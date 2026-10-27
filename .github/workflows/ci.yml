@@ -25,3 +25,5 @@ jobs:
         run: npm run audit
       - name: Release check
         run: npm run release:check
+      - name: npm package check
+        run: npm run pack:check

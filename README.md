@@ -61,6 +61,7 @@ npm run validate  # naming rules, tiers, aliases, DTCG value shapes, every contr
 npm run build     # validate, then write dist/ and refresh generated doc tables
 npm run audit     # prove dist/showcase.html and the shipped scripts have no raw colour, size or duration outside :root
 npm run release:check  # what merging this would release, and whether that release is valid
+npm run pack:check     # the npm package has every file the README and package.json promise
 npm run check -- <dir>  # check a project that uses MotifSpec (see below)
 ```
 
@@ -72,7 +73,7 @@ npm run check -- <dir>  # check a project that uses MotifSpec (see below)
 - a `cx-` class that the stylesheet and scripts don't define, or a `cx-icon-` that isn't in `icons/manifest.json`
 - "·" used as a separator
 
-Releases are automatic. Bump `version` in `package.json` and add its `CHANGELOG.md` entry in the PR; once it is merged and CI passes on main, `.github/workflows/release.yml` tags that commit and publishes a GitHub release with the entry as its notes. A merge that doesn't change the version releases nothing.
+Releases are automatic. Bump `version` in `package.json` and add its `CHANGELOG.md` entry in the PR; once it is merged and CI passes on main, `.github/workflows/release.yml` tags that commit, publishes a GitHub release with the entry as its notes, and publishes that commit to npm with provenance (npm trusted publishing: no token is stored). A merge that doesn't change the version releases nothing.
 
 Node 20 or later, no dependencies.
 
@@ -102,7 +103,33 @@ A page template then needs only the shell partials around its own content:
 
 `docs/hugo.md` lists every partial with its context, the front matter they read, the render hooks and the Markdown they expect, and the Goldmark settings they need. Keep the stylesheet's published path one level below the site root (Hugo publishes it at `/motifspec/`): its font URLs are `../fonts/…`, which resolve to the mounted `/fonts/`.
 
-Outside Hugo, copy the markup from `docs/components/*.md` and load `dist/codex.css`, `dist/codex.js` and `dist/theme-init.js` yourself.
+## Using it from npm
+
+```sh
+npm install @aitrien/motifspec@1.13.0
+```
+
+Pin an exact version, as a Hugo site pins a tag: the version you install is the version the checker and (later) the MCP server hold you to. The package has the CSS, scripts, tokens, fonts, icons, component docs, Hugo templates and the checker; it leaves out the showcase.
+
+| Import | What it is |
+|---|---|
+| `@aitrien/motifspec/codex.css` | Tokens, fonts and every component. Its font URLs are `../fonts/…`, so a bundler that copies assets (Vite, webpack, Parcel) resolves them from the package. Without a bundler, serve `dist/` and `fonts/` side by side. |
+| `@aitrien/motifspec/tokens.css`, `fonts.css`, `chroma.css` | The parts on their own: tokens only, `@font-face` only, syntax highlighting only. |
+| `@aitrien/motifspec/codex.js` | Behaviour: theme toggle, copy buttons, TOC, tooltips. Load with `defer`. |
+| `@aitrien/motifspec/theme-init.js` | Inline it in `<head>` before the stylesheet so a stored theme applies before first paint. |
+| `@aitrien/motifspec/plate.js`, `backdrop.html` | The contour backdrop and its animation (`backdrop.md`). |
+| `@aitrien/motifspec/icons.svg` | The icon sprite. Inline it once in `<body>`. |
+| `@aitrien/motifspec/tokens.js`, `tokens.json` | Every token with its value, tier and CSS name, for build tools. |
+| `@aitrien/motifspec/check` | `checkText` and `checkProject` from the rule checker. |
+| `@aitrien/motifspec/fonts/*` | The WOFF2 files, for preloading. |
+
+Copy component markup from `docs/components/*.md` (in the package under `node_modules/@aitrien/motifspec/docs/`). Then check the project, pointing `--dirs` at the folders with your markup:
+
+```sh
+npx motifspec-check . --dirs src
+```
+
+It reads `.html`, `.jsx`, `.tsx`, `.vue`, `.svelte`, `.astro`, `.md` and `.mdx` (both `class` and `className`), and skips `node_modules`, `dist` and `build`. Its stylesheet rule applies here too: a project using MotifSpec has no CSS of its own.
 
 ## The identity in brief
 
