@@ -21,7 +21,7 @@ One sentence: what it is for.
 ## Markup
 
 ```html preview
-<!-- Minimal markup. The dashboard renders this block as a live preview, and the MCP server returns it as the pattern to copy. -->
+<!-- Minimal markup: the pattern to copy. -->
 ```
 
 ## Do

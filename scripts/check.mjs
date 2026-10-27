@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // The MotifSpec rule checker: one implementation for this repo's templates (npm run audit), for sites that use
-// MotifSpec (their CI runs this file from the pinned module) and for the MCP server's check_styles tool.
+// MotifSpec (their CI runs this file from the pinned module) and for any tool that imports checkText.
 //
 //   node scripts/check.mjs [project-root]                 check a consuming project's layouts/ and content/
 //   node scripts/check.mjs [project-root] --dirs src,app  check other folders instead (a non-Hugo project)
