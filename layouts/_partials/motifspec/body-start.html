@@ -1,0 +1,5 @@
+{{- /* docs/hugo.md. Call first inside <body class="cx-backdrop-page">: the contour backdrop (backdrop.md), the icon
+       sprite (icon.md), once, before anything that uses it, and the skip link to <main id="main">. */ -}}
+{{ with resources.Get "motifspec/backdrop.html" }}{{ .Content | safeHTML }}{{ else }}{{ errorf "motifspec/backdrop.html is missing: is the MotifSpec module imported?" }}{{ end }}
+<div hidden>{{ with resources.Get "motifspec/icons.svg" }}{{ .Content | safeHTML }}{{ end }}</div>
+<a class="cx-skip-link" href="#main">Skip to content</a>

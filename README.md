@@ -18,6 +18,7 @@ Liam Marshall's design system: the single source of truth for aitrien.com and ev
 - Read a token's `$description` before using it. It is the usage rule, including when *not* to use it.
 - Put text on a surface only if the text token lists that surface in `codex.pairsWith`. If the pair isn't declared, pick a token that declares it.
 - Build UI from `docs/components/*.md`. Copy the markup and class names; don't invent new `cx-` classes.
+- In a Hugo site, call the `motifspec/` partials (`docs/hugo.md`) instead of writing component markup, and let the render hooks turn Markdown into figures, tables, code blocks and callouts. A component that needs changing is changed here, not overridden in the site.
 - Ornaments come only from the 80 approved glyphs in `font.family.ornament` → `codex.glyphs.glyphs` (never `codex.glyphs.forbidden`), always `aria-hidden="true"`, at most one ornament group per viewport.
 - Icons come only from `icons/manifest.json`, each for its listed role, as `<svg class="cx-icon"><use href="#cx-icon-{key}"></use></svg>` beside text that says the same thing. Never the icon font, never a CDN.
 - Separate inline metadata with `<span class="cx-sep" aria-hidden="true">|</span>`. Never use "·" as a separator.
@@ -38,6 +39,8 @@ syntax/chroma.json  Hugo Chroma class → token mapping
 icons/              Approved Material Symbols (manifest.json, source SVGs, Apache-2.0 LICENSE)
 docs/components/    One rule file per component (front-matter token lists generated from the CSS)
 docs/templates.md   Content hierarchy for the six page templates
+docs/hugo.md        The Hugo partials and render hooks, their contexts and the front matter they read
+layouts/            Hugo partials (_partials/motifspec/) and Markdown render hooks (_markup/), mounted by the module
 docs/syntax-highlighting.md
 fonts/              Self-hosted WOFF2 (Latin subsets) and their OFL licences
 scripts/            validate, build, audit and release
@@ -65,46 +68,31 @@ Node 20 or later, no dependencies.
 
 ## Using it in Hugo
 
-Import the module. Its own `hugo.toml` mounts `dist/` at `assets/motifspec` and `fonts/` at `static/fonts`, so the site needs only the import:
+Import the module and pin a release with `hugo mod get github.com/aitrien/motifspec@vX.Y.Z`. It mounts `dist/` at `assets/motifspec`, `fonts/` at `static/fonts`, and `layouts/` at `layouts`, so a site gets the component partials and the Markdown render hooks as well as the CSS and scripts:
 
 ```toml
 [module]
   [[module.imports]]
     path = "github.com/aitrien/motifspec"
-
-[markup.highlight]
-  noClasses = false
 ```
 
-Pin a release with `hugo mod get github.com/aitrien/motifspec@v1.10.2`. Then, in `<head>`, apply any stored theme before first paint, load one stylesheet and the behaviour script:
+A page template then needs only the shell partials around its own content:
 
-```html
-{{ with resources.Get "motifspec/theme-init.js" }}<script>{{ .Content | safeJS }}</script>{{ end }}
-<link rel="preload" href="/fonts/national-park-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/yarndings-12-latin.woff2" as="font" type="font/woff2" crossorigin>
-{{ with resources.Get "motifspec/codex.css" | minify | fingerprint }}<link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}">{{ end }}
-{{ with resources.Get "motifspec/codex.js" | minify | fingerprint }}<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>{{ end }}
-```
-
-Keep the stylesheet's published path one level below the site root (Hugo publishes it at `/motifspec/`): its font URLs are `../fonts/…`, which resolve to the mounted `/fonts/`.
-
-Inline the icon sprite once, first thing in `<body>`, so `<use href="#cx-icon-…">` resolves without a request:
-
-```html
-<div hidden>{{ with resources.Get "motifspec/icons.svg" }}{{ .Content | safeHTML }}{{ end }}</div>
-```
-
-Every page sits on the backdrop (`docs/components/backdrop.md`): give `<body>` the `cx-backdrop-page` class, put the backdrop first inside it, add the backdrop pause control to the header (`site-header.md`) and load the contour script on every page:
-
-```html
+```go-html-template
+<head>
+  {{ partial "motifspec/head.html" . }}
+</head>
 <body class="cx-backdrop-page">
-  {{ (resources.Get "motifspec/backdrop.html").Content | safeHTML }}
-  …
-  {{ with resources.Get "motifspec/plate.js" | minify | fingerprint }}<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>{{ end }}
+  {{ partial "motifspec/body-start.html" . }}
+  {{ partial "motifspec/site-header.html" . }}
+  <main id="main" tabindex="-1">…</main>
+  {{ partial "motifspec/body-end.html" . }}
 </body>
 ```
 
-Themes follow the system. To pin one, set `data-theme="light"` or `"dark"` on `<html>`; the toggle in `site-header.md` does this and stores the choice.
+`docs/hugo.md` lists every partial with its context, the front matter they read, the render hooks and the Markdown they expect, and the Goldmark settings they need. Keep the stylesheet's published path one level below the site root (Hugo publishes it at `/motifspec/`): its font URLs are `../fonts/…`, which resolve to the mounted `/fonts/`.
+
+Outside Hugo, copy the markup from `docs/components/*.md` and load `dist/codex.css`, `dist/codex.js` and `dist/theme-init.js` yourself.
 
 ## The identity in brief
 

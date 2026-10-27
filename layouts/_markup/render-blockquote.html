@@ -1,0 +1,30 @@
+{{- /* Blockquotes.
+       Alerts become callout.md: > [!NOTE], [!TIP], [!WARNING], [!CAUTION] (danger). The title names the kind,
+       the icon repeats it. At most two per article, no code blocks inside.
+       Quotations follow prose.md: end with a line "— Name | Source title" and it becomes the attributed footer. */ -}}
+{{- $file := printf "content/%s" .Page.File.Path -}}
+{{- if eq .Type "alert" -}}
+  {{- $kinds := dict
+      "note" (dict "class" "cx-callout" "icon" "note" "title" "Note")
+      "tip" (dict "class" "cx-callout cx-callout--tip" "icon" "tip" "title" "Tip")
+      "warning" (dict "class" "cx-callout cx-callout--warning" "icon" "warning" "title" "Warning")
+      "caution" (dict "class" "cx-callout cx-callout--danger" "icon" "danger" "title" "Danger") -}}
+  {{- $k := index $kinds .AlertType -}}
+  {{- if not $k }}{{ errorf "%s: [!%s] is not a MotifSpec callout. Use NOTE, TIP, WARNING or CAUTION (shown as Danger)." $file (upper .AlertType) }}{{ end -}}
+  {{- if strings.Contains (string .Text) "cx-code" }}{{ errorf "%s: callouts can't contain code blocks (callout.md)." $file }}{{ end }}
+<div class="{{ $k.class }}" role="note">
+  <p class="cx-callout__title"><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-{{ $k.icon }}"></use></svg>{{ $k.title }}</p>
+  {{ .Text }}
+</div>
+{{- else -}}
+  {{- $html := string .Text | strings.TrimSpace -}}
+  {{- $m := findRESubmatch `(?s)^(.*)<p>—\s*(.+?)\s*\|\s*(.+?)</p>$` $html 1 -}}
+  {{- if not $m }}{{ errorf "%s: quotation without attribution. End it with a line \"— Name | Source title\" (prose.md)." $file }}{{ end -}}
+  {{- $quote := index (index $m 0) 1 -}}
+  {{- $who := index (index $m 0) 2 -}}
+  {{- $source := index (index $m 0) 3 }}
+<blockquote>
+  {{ $quote | safeHTML }}
+  <footer>{{ $who | safeHTML }} <span class="cx-sep" aria-hidden="true">|</span> <cite>{{ $source | safeHTML }}</cite></footer>
+</blockquote>
+{{- end -}}

@@ -1,0 +1,15 @@
+{{- /* docs/hugo.md. Call inside <head>: the theme snippet, font preloads, the stylesheet and the behaviour script.
+       Order matters: the theme snippet runs before the stylesheet is parsed, so a stored theme is on <html> before
+       first paint. Everything is self-hosted from this module. */ -}}
+{{- with resources.Get "motifspec/theme-init.js" }}
+<script>{{ .Content | safeJS }}</script>
+{{- else }}{{ errorf "motifspec/theme-init.js is missing: is the MotifSpec module imported?" }}{{ end }}
+<link rel="preload" href="/fonts/national-park-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/yarndings-12-latin.woff2" as="font" type="font/woff2" crossorigin>
+{{- /* Published at /motifspec/…: one level below the root, so the stylesheet's ../fonts/ URLs reach /fonts/. */}}
+{{- with resources.Get "motifspec/codex.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
+{{- end }}
+{{- with resources.Get "motifspec/codex.js" | minify | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous" defer></script>
+{{- end }}

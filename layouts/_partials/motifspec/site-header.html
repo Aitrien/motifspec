@@ -1,0 +1,27 @@
+{{- /* site-header.md. A child page marks its section (a post marks Writing). The backdrop pause control ships hidden;
+       dist/plate.js reveals it when the backdrop starts to drift. */ -}}
+<header class="cx-header" id="top">
+  <div class="cx-container cx-header__inner">
+    <a class="cx-wordmark" href="{{ site.Home.RelPermalink }}">{{ site.Title }} <span class="cx-wordmark__role">{{ site.Params.role }}</span></a>
+    <div class="cx-header__end">
+      <nav class="cx-nav" aria-label="Main">
+        <ul>
+          {{- range site.Menus.main }}
+          <li><a href="{{ .URL }}"{{ if eq $.Section .Identifier }} aria-current="page"{{ end }}>{{ .Name }}</a></li>
+          {{- end }}
+        </ul>
+      </nav>
+      <label class="cx-backdrop__pause" hidden>
+        <input class="cx-visually-hidden" type="checkbox" aria-label="Pause background animation">
+        <svg class="cx-icon" data-when="running" aria-hidden="true" focusable="false"><use href="#cx-icon-pause"></use></svg>
+        <svg class="cx-icon" data-when="paused" aria-hidden="true" focusable="false"><use href="#cx-icon-play"></use></svg>
+        <span class="cx-tooltip" aria-hidden="true"><span data-when="running">Pause background</span><span data-when="paused">Play background</span></span>
+      </label>
+      <button class="cx-theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch to dark theme">
+        <svg class="cx-icon" data-icon="to-dark" aria-hidden="true" focusable="false"><use href="#cx-icon-theme-dark"></use></svg>
+        <svg class="cx-icon" data-icon="to-light" aria-hidden="true" focusable="false"><use href="#cx-icon-theme-light"></use></svg>
+        <span class="cx-tooltip" aria-hidden="true">Switch to dark theme</span>
+      </button>
+    </div>
+  </div>
+</header>

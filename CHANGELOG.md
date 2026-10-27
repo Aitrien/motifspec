@@ -2,6 +2,19 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.11.0] - 2026-10-26
+
+### Added
+- Hugo templates. The module now mounts `layouts/`, so a site gets the components as partials under `motifspec/` and the Markdown render hooks, instead of keeping its own copies that can drift from `docs/components/`. Moved from aitrien.com without changing their output:
+  - Page shell: `head.html`, `body-start.html` (backdrop, icon sprite, skip link), `site-header.html` and `body-end.html`.
+  - Components: `article.html`, `project-card.html`, `post-list-item.html`, `accession/label.html`, `accession/id.html`, `accession/status.html`, `figure.html`, `table-of-contents.html`, `tags.html`, `tag-filter.html`, `filed-under.html`, `pagination-entries.html`, `pagination-pages.html`, `back-link.html`, `section-heading.html`, plus `tokens.html` and `h2s.html` helpers.
+  - Render hooks for headings, images, tables, code blocks, blockquotes and links.
+- `docs/hugo.md`: every partial with its context and component doc, the front matter they read, the render hooks and the Markdown they expect, and the Goldmark settings they need.
+- `npm run audit` also checks `layouts/`: no style attributes, raw colours, sizes or durations.
+
+### Changed
+- A figure in Markdown is numbered from Plate 2 when the page has a `hero` in front matter (the hero is Plate 1), and from Plate 1 otherwise. On aitrien.com this was keyed to the Work section, which is where every hero is, so its plates don't change.
+
 ## [1.10.4] - 2026-10-26
 
 The changes below were meant for 1.10.3, but the `v1.10.3` tag was created a minute before they were merged, so it points at the same commit as 1.10.2. Versions are immutable once Go has fetched them, so they ship as 1.10.4 instead and 1.10.3 is the same as 1.10.2.

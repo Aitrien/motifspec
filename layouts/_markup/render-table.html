@@ -1,0 +1,31 @@
+{{- /* data-table.md: a focusable region named by its caption ({caption="…"} after the table; " | " becomes a
+       separator), the first cell of each row as a row header, numeric or right-aligned columns marked is-num,
+       and breakout above four columns. */ -}}
+{{- $file := printf "content/%s" .Page.File.Path -}}
+{{- $caption := .Attributes.caption -}}
+{{- if not $caption }}{{ errorf "%s: table %d has no caption. Add {caption=\"…\"} on the line after it (data-table.md)." $file (add .Ordinal 1) }}{{ end -}}
+{{- $id := printf "tbl-%s-%d" (.Page.File.ContentBaseName | urlize) .Ordinal -}}
+{{- $cols := 0 }}{{ range first 1 .THead }}{{ $cols = len . }}{{ end -}}
+{{- $num := slice -}}
+{{- range $c := seq 0 (sub $cols 1) -}}
+  {{- $isNum := true -}}
+  {{- range $.TBody }}{{ $cell := index . $c }}{{ if not (findRE `^[-+−]?[0-9][0-9.,]*(\s?[%×x])?$` (string $cell.Text | plainify | strings.TrimSpace)) }}{{ $isNum = false }}{{ end }}{{ end -}}
+  {{- range first 1 $.THead }}{{ if eq (index . $c).Alignment "right" }}{{ $isNum = true }}{{ end }}{{ end -}}
+  {{- $num = $num | append (and $isNum (gt $c 0)) -}}
+{{- end }}
+<div class="cx-table{{ if gt $cols 4 }} cx-table--breakout{{ end }}" role="region" aria-labelledby="{{ $id }}" tabindex="0">
+  <table>
+    <caption id="{{ $id }}">{{ replace (string $caption) " | " ` <span class="cx-sep" aria-hidden="true">|</span> ` | safeHTML }}</caption>
+    <thead>
+      {{- range .THead }}
+      <tr>{{ range $i, $c := . }}<th scope="col"{{ if index $num $i }} class="is-num"{{ end }}>{{ $c.Text }}</th>{{ end }}</tr>
+      {{- end }}
+    </thead>
+    <tbody>
+      {{- range .TBody }}
+      <tr>{{ range $i, $c := . }}{{ if eq $i 0 }}<th scope="row">{{ $c.Text }}</th>{{ else }}<td{{ if index $num $i }} class="is-num"{{ end }}>{{ $c.Text }}</td>{{ end }}{{ end }}</tr>
+      {{- end }}
+    </tbody>
+  </table>
+</div>
+{{- /* chomp */ -}}

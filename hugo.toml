@@ -14,3 +14,9 @@
   [[module.mounts]]
     source = "fonts"
     target = "static/fonts"
+
+  # Component partials (layouts/_partials/motifspec/) and Markdown render hooks (layouts/_markup/). A site's own
+  # file at the same path wins, so a site can override any of them. docs/hugo.md lists them.
+  [[module.mounts]]
+    source = "layouts"
+    target = "layouts"

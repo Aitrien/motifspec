@@ -1,0 +1,8 @@
+{{- /* tag.md on cards, rows and post footers. Context: dict "page" "max". */ -}}
+{{- with .page.GetTerms "tags" }}
+<ul class="cx-tags">
+  {{- range first ($.max | default 5) . }}
+  <li><a class="cx-tag" href="{{ .RelPermalink }}">{{ .Data.Term }}</a></li>
+  {{- end }}
+</ul>
+{{- end -}}

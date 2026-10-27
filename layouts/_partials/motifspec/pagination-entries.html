@@ -1,0 +1,34 @@
+{{- /* pagination.md between entries of one collection, oldest = 1. Previous is the older entry, Next the newer.
+       A missing direction stays as a disabled cell. Context: dict "page" "label" ("Post navigation") "noun" ("Post"). */ -}}
+{{- $p := .page -}}
+{{- $all := (where site.RegularPages "Section" $p.Section).ByDate -}}
+{{- $at := 0 }}{{ range $i, $e := $all }}{{ if eq $e.RelPermalink $p.RelPermalink }}{{ $at = $i }}{{ end }}{{ end -}}
+{{- $prev := cond (gt $at 0) (index $all (sub $at 1)) nil -}}
+{{- $next := cond (lt (add $at 1) (len $all)) (index $all (add $at 1)) nil -}}
+{{- if gt (len $all) 1 }}
+<nav class="cx-pagination" aria-label="{{ .label }}">
+  {{- with $prev }}
+  <a class="cx-pagination__link" href="{{ .RelPermalink }}" rel="prev">
+    <span class="cx-pagination__dir"><svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-back"></use></svg>Previous</span>
+    <span class="cx-pagination__title">{{ .Title }}</span>
+  </a>
+  {{- else }}
+  <span class="cx-pagination__link" rel="prev" aria-disabled="true">
+    <span class="cx-pagination__dir"><svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-back"></use></svg>Previous</span>
+    <span class="cx-pagination__title">First entry</span>
+  </span>
+  {{- end }}
+  <p class="cx-pagination__status">{{ .noun }}<strong>{{ add $at 1 }} / {{ len $all }}</strong></p>
+  {{- with $next }}
+  <a class="cx-pagination__link" href="{{ .RelPermalink }}" rel="next">
+    <span class="cx-pagination__dir">Next<svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg></span>
+    <span class="cx-pagination__title">{{ .Title }}</span>
+  </a>
+  {{- else }}
+  <span class="cx-pagination__link" rel="next" aria-disabled="true">
+    <span class="cx-pagination__dir">Next<svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg></span>
+    <span class="cx-pagination__title">Latest entry</span>
+  </span>
+  {{- end }}
+</nav>
+{{- end -}}

@@ -1,0 +1,9 @@
+{{- /* The pinned MotifSpec tokens (dist/tokens.json) as a map from token name to its entry, so templates read
+       values from the system instead of repeating them. Call with partialCached. */ -}}
+{{- $map := dict -}}
+{{- with resources.Get "motifspec/tokens.json" -}}
+  {{- range (. | transform.Unmarshal).tokens }}{{ $map = merge $map (dict .name .) }}{{ end -}}
+{{- else -}}
+  {{- errorf "motifspec/tokens.json is missing: is the MotifSpec module imported?" -}}
+{{- end -}}
+{{- return $map -}}

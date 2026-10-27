@@ -1,0 +1,30 @@
+{{- /* pagination.md below a paginated index: "Page 2 / 5", with Newer and Older in place of titles.
+       Context: dict "pager" "label". Renders nothing when everything fits on one page. */ -}}
+{{- $pg := .pager -}}
+{{- if gt $pg.TotalPages 1 }}
+<nav class="cx-pagination" aria-label="{{ .label }}">
+  {{- if $pg.HasPrev }}
+  <a class="cx-pagination__link" href="{{ $pg.Prev.URL }}" rel="prev">
+    <span class="cx-pagination__dir"><svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-back"></use></svg>Previous</span>
+    <span class="cx-pagination__title">Newer</span>
+  </a>
+  {{- else }}
+  <span class="cx-pagination__link" rel="prev" aria-disabled="true">
+    <span class="cx-pagination__dir"><svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-back"></use></svg>Previous</span>
+    <span class="cx-pagination__title">Newest page</span>
+  </span>
+  {{- end }}
+  <p class="cx-pagination__status">Page<strong>{{ $pg.PageNumber }} / {{ $pg.TotalPages }}</strong></p>
+  {{- if $pg.HasNext }}
+  <a class="cx-pagination__link" href="{{ $pg.Next.URL }}" rel="next">
+    <span class="cx-pagination__dir">Next<svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg></span>
+    <span class="cx-pagination__title">Older</span>
+  </a>
+  {{- else }}
+  <span class="cx-pagination__link" rel="next" aria-disabled="true">
+    <span class="cx-pagination__dir">Next<svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg></span>
+    <span class="cx-pagination__title">Oldest page</span>
+  </span>
+  {{- end }}
+</nav>
+{{- end -}}

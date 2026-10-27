@@ -1,0 +1,2 @@
+{{- /* heading-anchor.md: every heading gets an id; h2s get the "#" anchor after a space. */ -}}
+<h{{ .Level }} id="{{ .Anchor }}">{{ .Text }}{{ if eq .Level 2 }} <a class="cx-anchor" href="#{{ .Anchor }}" aria-label="Link to {{ .PlainText }}">#</a>{{ end }}</h{{ .Level }}>

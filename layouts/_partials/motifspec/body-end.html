@@ -1,0 +1,5 @@
+{{- /* docs/hugo.md. Call last inside <body>: drifts the backdrop and reveals the header's pause control. Without it
+       the contours stay still. */ -}}
+{{- with resources.Get "motifspec/plate.js" | minify | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous" defer></script>
+{{- end }}
