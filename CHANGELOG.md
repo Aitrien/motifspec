@@ -2,6 +2,16 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.13.0] - 2026-10-27
+
+### Added
+- Published to npm as `@aitrien/motifspec`. The package drops `"private"`, publishes as public, and ships the CSS, scripts, tokens, fonts and their licences, icons, component docs, Hugo templates and the checker. It leaves out the showcase pages, so it is about 238 KB packed instead of 540 KB.
+- Exports for `fonts.css`, `chroma.css`, `icons.svg`, `check` (the checker's functions) and `fonts/*`, which were in the package but couldn't be imported.
+- `npx motifspec-check`: the rule checker as a command. `--dirs` points it at a non-Hugo project's folders. It now also reads `.jsx`, `.tsx`, `.vue`, `.svelte`, `.astro` and `.mdx` files and `className` attributes, and skips `dist`, `build` and framework output folders.
+- The release workflow publishes each new version to npm after tagging it, using npm trusted publishing, with provenance. It skips a version that is already on npm.
+- `npm run pack:check`, run in CI: fails if the package is missing a file that an export, the command, the CSS's font URLs or the checker needs, or if it would ship the showcase.
+- README: "Using it from npm".
+
 ## [1.12.0] - 2026-10-27
 
 ### Added

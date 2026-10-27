@@ -1,8 +1,16 @@
 {
   "name": "@aitrien/motifspec",
-  "version": "1.12.0",
-  "private": true,
-  "description": "Liam Marshall's design system: DTCG tokens, component rules and generated CSS.",
+  "version": "1.13.0",
+  "description": "Liam Marshall's design system: DTCG tokens, component rules, generated CSS, Hugo templates and a rule checker.",
+  "keywords": [
+    "design-system",
+    "design-tokens",
+    "dtcg",
+    "css",
+    "hugo"
+  ],
+  "homepage": "https://github.com/Aitrien/motifspec#readme",
+  "bugs": "https://github.com/Aitrien/motifspec/issues",
   "type": "module",
   "license": "MIT",
   "repository": {
@@ -10,24 +18,40 @@
     "url": "git+https://github.com/aitrien/motifspec.git"
   },
   "changelog": "https://github.com/Aitrien/motifspec/blob/main/CHANGELOG.md",
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist",
+    "!dist/showcase.html",
+    "!dist/showcase.standalone.html",
     "tokens",
     "docs",
     "fonts",
     "icons",
+    "layouts",
+    "scripts/check.mjs",
+    "scripts/lib.mjs",
     "CHANGELOG.md"
   ],
+  "bin": {
+    "motifspec-check": "scripts/check.mjs"
+  },
   "exports": {
-    "./tokens.css": "./dist/tokens.css",
     "./codex.css": "./dist/codex.css",
+    "./tokens.css": "./dist/tokens.css",
+    "./fonts.css": "./dist/fonts.css",
+    "./chroma.css": "./dist/chroma.css",
     "./codex.js": "./dist/codex.js",
     "./theme-init.js": "./dist/theme-init.js",
-    "./tokens.js": "./dist/tokens.js",
-    "./tokens.json": "./dist/tokens.json",
     "./plate.js": "./dist/plate.js",
     "./plate.html": "./dist/plate.html",
     "./backdrop.html": "./dist/backdrop.html",
+    "./icons.svg": "./dist/icons.svg",
+    "./tokens.js": "./dist/tokens.js",
+    "./tokens.json": "./dist/tokens.json",
+    "./check": "./scripts/check.mjs",
+    "./fonts/*": "./fonts/*",
     "./package.json": "./package.json"
   },
   "scripts": {
@@ -35,7 +59,8 @@
     "build": "node scripts/validate.mjs && node scripts/build.mjs",
     "audit": "node scripts/audit.mjs",
     "check": "node scripts/check.mjs",
-    "release:check": "node scripts/release.mjs"
+    "release:check": "node scripts/release.mjs",
+    "pack:check": "node scripts/pack-check.mjs"
   },
   "engines": {
     "node": ">=20"

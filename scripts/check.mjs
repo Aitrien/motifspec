@@ -1,13 +1,17 @@
+#!/usr/bin/env node
 // The MotifSpec rule checker: one implementation for this repo's templates (npm run audit), for sites that use
 // MotifSpec (their CI runs this file from the pinned module) and for the MCP server's check_styles tool.
 //
-//   node scripts/check.mjs [project-root]        check a consuming project's layouts/ and content/
-//   node scripts/check.mjs [project-root] --json  the same, as JSON
+//   node scripts/check.mjs [project-root]                 check a consuming project's layouts/ and content/
+//   node scripts/check.mjs [project-root] --dirs src,app  check other folders instead (a non-Hugo project)
+//   node scripts/check.mjs [project-root] --json          print the problems as JSON
+//   npx motifspec-check [same options]                    the same, from the npm package
 //
 // Rules come from the files of this release: class names from dist/codex.css, tokens from dist/tokens.json, icons
 // from icons/manifest.json. A site therefore checks against the version it has pinned, not against main.
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'node:fs';
 import { extname, join, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ROOT } from './lib.mjs';
 
 export const RULES = {
@@ -48,7 +52,7 @@ const RAW_COLOR = /(?<![\w&/."-])#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3
 const RAW_UNIT = /(?<![\w.#-])-?(?:\d+\.?\d*|\.\d+)(?:px|rem|em|ch|ex|vw|vh|vmin|vmax|svh|dvh|lvh|cqi|cqw|pt|pc|cm|mm|in|ms|s)\b/g;
 const STYLE_ATTR = /\sstyle\s*=/g;
 const TOKEN_REF = /--cx-[a-z0-9-]+/g;
-const CLASS_ATTR = /\sclass\s*=\s*"([^"]*)"/g;
+const CLASS_ATTR = /\s(?:class|className)\s*=\s*["']([^"']*)["']/g;
 const ICON_REF = /#cx-icon-([a-z0-9-]*)/g;
 const TEMPLATE = /\{\{.*?\}\}/g; // Hugo actions; replaced by a placeholder so a class or icon built from them is skipped
 
@@ -86,8 +90,12 @@ export function checkText(text, { file = '<input>', kind = 'html' } = {}) {
   return problems;
 }
 
-const KIND = { '.html': 'html', '.xml': 'html', '.txt': 'md', '.md': 'md', '.json': 'md', '.css': 'css' };
-const SKIP = new Set(['.git', 'public', 'resources', 'node_modules']);
+const KIND = {
+  '.html': 'html', '.xml': 'html', '.jsx': 'html', '.tsx': 'html', '.vue': 'html', '.svelte': 'html', '.astro': 'html',
+  '.txt': 'md', '.md': 'md', '.mdx': 'md', '.json': 'md', '.css': 'css',
+};
+// Build output and dependencies, which contain MotifSpec's own CSS.
+const SKIP = new Set(['.git', 'public', 'resources', 'node_modules', 'dist', 'build', '.next', '.astro', '.svelte-kit']);
 function* walk(dir) {
   for (const name of readdirSync(dir)) {
     if (SKIP.has(name)) continue;
@@ -119,10 +127,16 @@ export function format(p) {
   return `${p.file}${p.line ? `:${p.line}` : ''}: [${p.rule}] "${p.match}". ${p.message}`;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Run as a command: directly, or through npm's bin symlink (node_modules/.bin/motifspec-check).
+const isMain = process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url);
+if (isMain) {
   const args = process.argv.slice(2);
-  const root = resolve(args.find((a) => !a.startsWith('--')) ?? '.');
-  const problems = checkProject(root);
+  const at = args.indexOf('--dirs');
+  const dirs = at >= 0 ? args[at + 1]?.split(',').filter(Boolean) : undefined;
+  if (at >= 0 && !dirs?.length) { console.error('--dirs needs a comma-separated list, e.g. --dirs src,app'); process.exit(2); }
+  const root = resolve(args.find((a, i) => !a.startsWith('--') && (at < 0 || i !== at + 1)) ?? '.');
+  if (!existsSync(root)) { console.error(`No such folder: ${root}`); process.exit(2); }
+  const problems = checkProject(root, dirs ? { dirs } : undefined);
   const version = JSON.parse(read('dist', 'tokens.json')).version;
   if (args.includes('--json')) {
     console.log(JSON.stringify({ version, problems }, null, 2));
