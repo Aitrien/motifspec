@@ -76,4 +76,9 @@ jobs:
             echo "$name@$version is already on npm."
             exit 0
           fi
-          npm publish --provenance --access public
+          # On failure, npm's error lines become annotations on the run, so the reason shows without opening the log.
+          set -o pipefail
+          if ! npm publish --provenance --access public 2>&1 | tee "$RUNNER_TEMP/publish.log"; then
+            grep -E "npm (error|ERR!)" "$RUNNER_TEMP/publish.log" | tail -n 10 | while IFS= read -r line; do echo "::error title=npm publish::$line"; done
+            exit 1
+          fi

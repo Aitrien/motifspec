@@ -2,6 +2,12 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.13.2] - 2026-10-27
+
+### Fixed
+- `package.json`'s `repository.url` now spells the repository `Aitrien/motifspec`, as GitHub does. npm compares it with the repository recorded in the provenance statement, and the lowercase spelling is the likely reason the workflow couldn't publish 1.13.1. 1.13.1 is tagged on GitHub but was never published to npm; this release has the same contents.
+- When `npm publish` fails in the release workflow, npm's error lines now appear as annotations on the run.
+
 ## [1.13.1] - 2026-10-27
 
 ### Changed
