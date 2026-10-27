@@ -2,6 +2,12 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.13.1] - 2026-10-27
+
+### Changed
+- The release workflow can be run by hand from the Actions tab to retry publishing to npm. Run that way, it publishes main's version only if that version's tag is main's current commit and npm doesn't have it yet, and it never tags.
+- No design changes. This is the first version published to npm by the release workflow (1.13.0 was published by hand), which completes the trusted-publishing setup.
+
 ## [1.13.0] - 2026-10-27
 
 ### Added

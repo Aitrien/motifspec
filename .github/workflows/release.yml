@@ -9,6 +9,9 @@ on:
     workflows: [CI]
     types: [completed]
     branches: [main]
+  # Run by hand from the Actions tab to retry publishing to npm: it publishes main's version only if that version's tag
+  # is main's current commit and npm doesn't have it yet. It never tags.
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -19,7 +22,7 @@ concurrency:
 
 jobs:
   release:
-    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,6 +43,8 @@ jobs:
     # release.yml in Aitrien/motifspec, so no npm token is stored. Set up once on npmjs.com under the package's
     # Settings → Trusted publisher. Skips a version that is already on npm, so re-running is safe.
     needs: release
+    # After a release, or by hand. A skipped release job (nothing new to tag) doesn't stop it, so a re-run can retry.
+    if: always() && (needs.release.result == 'success' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -47,7 +52,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
