@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # tags, for the release check
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -21,3 +23,5 @@ jobs:
         run: git diff --exit-code -- dist docs || (echo "::error::dist/ or the generated doc tables are stale. Run npm run build and commit the result." && exit 1)
       - name: Audit showcase
         run: npm run audit
+      - name: Release check
+        run: npm run release:check

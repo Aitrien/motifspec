@@ -33,7 +33,8 @@
   "scripts": {
     "validate": "node scripts/validate.mjs",
     "build": "node scripts/validate.mjs && node scripts/build.mjs",
-    "audit": "node scripts/audit.mjs"
+    "audit": "node scripts/audit.mjs",
+    "release:check": "node scripts/release.mjs"
   },
   "engines": {
     "node": ">=20"

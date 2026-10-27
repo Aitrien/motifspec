@@ -84,12 +84,12 @@ Generated CSS has a single `:root` block. Semantic colours are `light-dark(light
 
 Deprecate before removing. A semantic token that is no longer used gets a DTCG `$deprecated` string saying why and in which major it goes (`"Unused since the contour plate; removed in 2.0.0."`), and is listed under Deprecated in `CHANGELOG.md`. It stays in `tokens.css` (with a comment) and in `tokens.json` (with a `deprecated` field) until that major. The validator fails if a component, the Chroma mapping, a script or a component doc uses a deprecated token. Removal is the only major change, so the Go module path stays `github.com/aitrien/motifspec` until a removal is actually due.
 
-Consumers pin to a tag. Never move or delete a published tag.
+Consumers pin to a tag. Never move or delete a published tag. Tags are created only by `.github/workflows/release.yml`, after CI passes on main, from the version in `package.json`; don't tag by hand. A version can be released once: if a tag turns out wrong, release the next patch.
 
 Every version bump adds an entry to `CHANGELOG.md` (`## [x.y.z] - YYYY-MM-DD`, then Added / Changed / Removed / Fixed). `npm run build` fails if the version in `package.json` has none. The `changelog` URL in `package.json` points at the file on GitHub; version numbers in the showcase and site footers link to it.
 
 ## Files
 
-- `dist/` is generated. It is committed only by the release workflow, because Hugo Modules fetch the tagged commit as-is.
+- `dist/` is generated and committed with the change that produced it, because Hugo Modules fetch the tagged commit as-is. CI fails if it is stale.
 - Icons live in `icons/manifest.json` (kebab-case keys → Material Symbols names and a usage rule) with their source SVGs in `icons/svg/` and the Apache-2.0 licence. The build compiles `dist/icons.svg` and fails on any `cx-icon-*` reference that isn't in the manifest.
 - One component per file in `docs/components/`, following `_template.md`. The `tokens:` front matter is generated from `css/components.css` by `npm run build`; edit the CSS, not the list.
