@@ -99,6 +99,22 @@ These apply to all Markdown content once the module is imported.
 | `render-blockquote.html` | `> [!NOTE]`, `[!TIP]`, `[!WARNING]` and `[!CAUTION]` become callouts. A quotation must end with a line `— Name \| Source title`. | `callout.md`, `prose.md` |
 | `render-link.html` | Internal links are resolved, and a broken one fails the build. External links get the outward arrow. | `icon.md` |
 
+## Checking a site
+
+Run `scripts/check.mjs` from the pinned module, so the site is checked against the release it uses. `hugo config mounts` prints one JSON object per module; MotifSpec's is the one that mounts `assets/motifspec` (under a local `HUGO_MODULE_REPLACEMENTS` too), and its `dir` is where the module is:
+
+```js
+// scripts/audit.mjs in the site
+import { execFileSync } from 'node:child_process';
+import { join } from 'node:path';
+
+const mounts = execFileSync('hugo', ['config', 'mounts'], { encoding: 'utf8' });
+const motifspec = mounts.split(/\n(?=\{)/).map((m) => JSON.parse(m)).find((m) => m.mounts?.some((x) => x.target === 'assets/motifspec'));
+execFileSync('node', [join(motifspec.dir, 'scripts', 'check.mjs'), '.'], { stdio: 'inherit' });
+```
+
+It checks `layouts/` and `content/` and fails on stylesheets, style attributes, raw colours and units, primitive, unknown or deprecated tokens, classes and icons MotifSpec doesn't define, and "·" separators. In GitHub Actions each problem is also an annotation on the pull request; `--json` prints the problems as JSON. In CI, give the step the same `HUGO_CACHEDIR` and `HUGO_MODULE_PROXY` as the build, because `hugo config mounts` downloads the module if it isn't cached.
+
 ## Overriding
 
 A file in the site at the same path wins over the module's. Override a partial only to change content, never markup or classes. If a component needs to change, change it here and release it, so every site gets the fix.
