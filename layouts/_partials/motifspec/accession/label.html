@@ -1,0 +1,18 @@
+{{- /* accession-label.md, full form: number first, then date, then everything else.
+       Context: dict "page" and "variant": "lead" (above the title; role and stack are __detail fields, which a phone
+       hides) or "card" (after the article; the full label, shown only on a phone). */ -}}
+{{- $p := .page -}}
+{{- $lead := eq .variant "lead" -}}
+<dl class="cx-label cx-label--{{ .variant }}" aria-label="Accession label">
+  <div class="cx-label__id"><dt>No.</dt><dd>{{ $p.Params.accession }}</dd></div>
+  <div><dt>Filed</dt><dd><time datetime="{{ $p.Date.Format "2006-01-02" }}">{{ $p.Date.Format "2006-01-02" }}</time></dd></div>
+  {{- with $p.Params.role }}
+  <div{{ if $lead }} class="cx-label__detail"{{ end }}><dt>Role</dt><dd>{{ . }}</dd></div>
+  {{- end }}
+  {{- with $p.Params.stack }}
+  <div{{ if $lead }} class="cx-label__detail"{{ end }}><dt>Stack</dt><dd>{{ range $i, $s := . }}{{ if $i }} <span class="cx-sep" aria-hidden="true">|</span> {{ end }}{{ $s }}{{ end }}</dd></div>
+  {{- end }}
+  {{- with $p.Params.status }}
+  <div><dt>Status</dt><dd>{{ partial "motifspec/accession/status.html" . }}</dd></div>
+  {{- end }}
+</dl>

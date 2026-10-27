@@ -1,0 +1,7 @@
+{{- /* The content's h2 headings (with their h3 children) from Hugo's fragments tree. Content starts at h2, so
+       the tree's top level is a placeholder for the missing h1; step down to the first level that has an h2. */ -}}
+{{- $out := slice -}}
+{{- range .Fragments.Headings -}}
+  {{- if eq .Level 2 }}{{ $out = $out | append . }}{{ else }}{{ range .Headings }}{{ if eq .Level 2 }}{{ $out = $out | append . }}{{ end }}{{ end }}{{ end -}}
+{{- end -}}
+{{- return $out -}}

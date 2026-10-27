@@ -1,0 +1,5 @@
+{{- /* The "Filed under" tags after an article (docs/templates.md, tag.md). Context: a page. */ -}}
+<div class="cx-stack">
+  <p class="cx-eyebrow">Filed under</p>
+  {{ partial "motifspec/tags.html" (dict "page" . "max" 5) }}
+</div>

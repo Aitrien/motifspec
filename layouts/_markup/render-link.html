@@ -1,0 +1,14 @@
+{{- /* Links in prose. Internal page links are resolved (a broken one fails the build); links that leave the
+       site get the arrow-outward icon after their text (site-footer.md, icon.md). */ -}}
+{{- $dest := .Destination -}}
+{{- $u := urls.Parse $dest -}}
+{{- $external := and $u.Host (ne $u.Host (urls.Parse site.BaseURL).Host) -}}
+{{- if and (not $u.Scheme) (not $u.Host) $u.Path -}}
+  {{- with or (.Page.GetPage $u.Path) (site.GetPage $u.Path) -}}
+    {{- $dest = printf "%s%s" .RelPermalink (cond (ne $u.Fragment "") (printf "#%s" $u.Fragment) "") -}}
+  {{- else -}}
+    {{- with $.Page.Resources.Get $u.Path }}{{ $dest = .RelPermalink }}{{ else }}{{ if not (hasPrefix $u.Path "/") }}{{ errorf "content/%s: link %q does not resolve to a page or bundle file." $.Page.File.Path $.Destination }}{{ end }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+<a href="{{ $dest | safeURL }}"{{ with .Title }} title="{{ . }}"{{ end }}{{ if $external }} rel="noopener"{{ end }}>{{ .Text }}{{ if $external }}<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg>{{ end }}</a>
+{{- /* chomp */ -}}

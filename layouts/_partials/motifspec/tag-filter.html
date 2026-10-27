@@ -1,0 +1,22 @@
+{{- /* tag.md as a filter. A static site filters with links: each tag opens its term page (/tags/{term}/),
+       which lists the matching entries; the current tag carries aria-current. Works without JavaScript and
+       every filter state has its own URL. Context: dict "section" ("" for every collection) "current" (term page or nil). */ -}}
+{{- $section := .section -}}
+{{- $current := .current -}}
+{{- $terms := slice -}}
+{{- range site.Taxonomies.tags.ByCount -}}
+  {{- $n := len (cond (eq $section "") .Pages (where .Pages "Section" $section)) -}}
+  {{- if $n }}{{ $terms = $terms | append (dict "page" .Page "count" $n) }}{{ end -}}
+{{- end -}}
+{{- with $terms }}
+<nav aria-label="Filter by tag">
+  <ul class="cx-tags">
+    {{- with $section }}{{ with site.GetPage (printf "/%s" .) }}
+    <li><a class="cx-tag" href="{{ .RelPermalink }}"{{ if not $current }} aria-current="page"{{ end }}>all<span class="cx-tag__count">{{ len .RegularPages }}</span></a></li>
+    {{- end }}{{ end }}
+    {{- range . }}
+    <li><a class="cx-tag" href="{{ .page.RelPermalink }}"{{ if and $current (eq $current.RelPermalink .page.RelPermalink) }} aria-current="page"{{ end }}>{{ .page.Data.Term }}<span class="cx-tag__count">{{ .count }}</span></a></li>
+    {{- end }}
+  </ul>
+</nav>
+{{- end -}}

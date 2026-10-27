@@ -1,0 +1,2 @@
+{{- /* accession-label.md, compact form for meta lines: number, date, reading time. Context: a page. */ -}}
+<p class="cx-id"><span class="cx-id__no">{{ .Params.accession }}</span><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time><span>{{ .ReadingTime }} min read</span></p>

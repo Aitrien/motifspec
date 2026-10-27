@@ -1,0 +1,24 @@
+{{- /* The cx-article layout: TOC before the main column in the DOM, then prose ending in the flower end mark.
+       Context: dict "page" "toc" (always | auto). auto shows the TOC when the content has three or more h2s
+       (table-of-contents.md); a case study passes always. */ -}}
+{{- $p := .page -}}
+{{- $h2s := partial "motifspec/h2s.html" $p -}}
+{{- $toc := or (eq .toc "always") (ge (len $h2s) 3) -}}
+{{- if and (eq .toc "always") (lt (len $h2s) 1) }}{{ errorf "content/%s: toc \"always\" needs h2 sections to list (table-of-contents.md)." $p.File.Path }}{{ end -}}
+{{- /* ornament.md: the flower ("g") goes after the last sentence, so the content must end with a paragraph. */ -}}
+{{- $content := $p.Content | strings.TrimSpace -}}
+{{- if gt (len (findRE `class="cx-callout[ "]` $content)) 2 }}{{ errorf "content/%s: more than two callouts in one article; they lose force when repeated (callout.md)." $p.File.Path }}{{ end -}}
+{{- $endMark := `<span class="cx-end-mark" aria-hidden="true">g</span></p>` -}}
+{{- if strings.HasSuffix $content "</p>" -}}
+  {{- $content = printf "%s%s" (strings.TrimSuffix "</p>" $content) $endMark -}}
+{{- else -}}
+  {{- warnf "content/%s: the article should end with a paragraph so the end mark follows the last sentence." $p.File.Path -}}
+{{- end }}
+<div class="cx-article">
+  {{- if $toc }}
+  {{ partial "motifspec/table-of-contents.html" $p }}
+  {{- end }}
+  <div class="cx-article__main cx-prose">
+    {{ $content | safeHTML }}
+  </div>
+</div>

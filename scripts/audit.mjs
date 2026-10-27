@@ -1,6 +1,7 @@
-// npm run audit — prove dist/showcase.html, dist/codex.js and dist/theme-init.js have no raw colour, size or duration values outside the generated :root block.
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+// npm run audit — prove dist/showcase.html, dist/codex.js and dist/theme-init.js have no raw colour, size or duration values outside the generated :root block,
+// and that the Hugo templates in layouts/ have no style attributes, raw colours, sizes or durations at all.
+import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { join, relative } from 'node:path';
 import { ROOT } from './lib.mjs';
 
 const RAW_COLOR = /#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(/g;
@@ -49,6 +50,32 @@ export function auditHtml(html) {
   return problems;
 }
 
+// Templates take every value from classes, so any style attribute, raw colour or unit in them is a problem. The colour
+// pattern skips fragment links such as href="#cx-icon-add".
+const TEMPLATE_COLOR = /(?<![\w&/."-])#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3,4})(?![\w-])|\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(/g;
+const STYLE_ATTR = /\sstyle\s*=/g;
+function* walk(dir) {
+  for (const name of readdirSync(dir)) {
+    const p = join(dir, name);
+    if (statSync(p).isDirectory()) yield* walk(p); else if (p.endsWith('.html')) yield p;
+  }
+}
+export function auditLayouts(dir) {
+  const problems = [];
+  for (const file of walk(dir)) {
+    const rel = relative(ROOT, file);
+    readFileSync(file, 'utf8').split('\n').forEach((line, i) => {
+      for (const [re, what] of [[STYLE_ATTR, 'style attribute'], [TEMPLATE_COLOR, 'raw colour'], [RAW_UNIT, 'raw size or duration']]) {
+        for (const m of line.matchAll(re)) {
+          if (re === RAW_UNIT && /^-?0+(?:\.0+)?[a-z]+$/.test(m[0])) continue;
+          problems.push(`${rel}:${i + 1}: ${what} "${m[0].trim()}"`);
+        }
+      }
+    });
+  }
+  return problems;
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
   const html = readFileSync(join(ROOT, 'dist', 'showcase.html'), 'utf8');
   const problems = auditHtml(html);
@@ -58,6 +85,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     const own = auditHtml(`<style>\n:root {\n}\n</style><script>${js}</script>`);
     problems.push(...own.map((p) => `dist/${f}: ${p}`));
   }
+  problems.push(...auditLayouts(join(ROOT, 'layouts')));
   if (problems.length) { console.error(problems.map((p) => `✗ ${p}`).join('\n')); process.exit(1); }
-  console.log('No raw colour, size or duration values outside the :root block (CSS, style attributes, SVG colours, scripts, dist/codex.js, dist/theme-init.js).');
+  console.log('No raw colour, size or duration values outside the :root block (CSS, style attributes, SVG colours, scripts, dist/codex.js, dist/theme-init.js), and none at all in layouts/.');
 }

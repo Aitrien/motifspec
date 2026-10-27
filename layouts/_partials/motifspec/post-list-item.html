@@ -1,0 +1,15 @@
+{{- /* post-list-item.md: number, date and reading time beside the title, summary and tags. Context: dict "page" "level". */ -}}
+{{- $p := .page -}}
+{{- $h := .level | default 3 -}}
+<li class="cx-post">
+  <p class="cx-post__meta">
+    <span class="cx-id__no">{{ $p.Params.accession }}</span>
+    <time datetime="{{ $p.Date.Format "2006-01-02" }}">{{ $p.Date.Format "2006-01-02" }}</time>
+    <span>{{ $p.ReadingTime }} min</span>
+  </p>
+  <div class="cx-post__main">
+    <h{{ $h }} class="cx-post__title"><a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a></h{{ $h }}>
+    <p class="cx-post__summary">{{ $p.Summary | plainify }}</p>
+    {{- partial "motifspec/tags.html" (dict "page" $p "max" 5) }}
+  </div>
+</li>

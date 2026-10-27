@@ -1,0 +1,14 @@
+{{- /* figure.md for a raster image from the page bundle: WebP at two widths, explicit width and height, and a
+       numbered plate in the caption. Context: dict "image" (resource) "alt" "caption" (HTML) "plate" (number)
+       "eager" (true for the case-study hero, the likely largest paint) "prose" (true to keep the figure to the prose
+       measure instead of breaking out, for a supporting image). */ -}}
+{{- $img := .image -}}
+{{- $w := cond (gt $img.Width 1600) 1600 $img.Width -}}
+{{- $large := $img.Process (printf "resize %dx webp" $w) -}}
+{{- $small := $img.Process (printf "resize %dx webp" (div $w 2)) -}}
+<figure class="cx-figure{{ if not .prose }} cx-figure--breakout{{ end }}">
+  <div class="cx-figure__frame">
+    <img src="{{ $large.RelPermalink }}" srcset="{{ $small.RelPermalink }} {{ $small.Width }}w, {{ $large.RelPermalink }} {{ $large.Width }}w" alt="{{ .alt }}" width="{{ $large.Width }}" height="{{ $large.Height }}"{{ if .eager }} fetchpriority="high"{{ else }} loading="lazy"{{ end }} decoding="async">
+  </div>
+  <figcaption><span class="cx-figure__plate">Plate {{ .plate }}</span>{{ .caption }}</figcaption>
+</figure>

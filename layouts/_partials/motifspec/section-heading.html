@@ -1,0 +1,3 @@
+{{- /* heading-anchor.md, page-section form: the <section> carries the id and is labelled by the title text,
+       so the label excludes the anchor. Context: dict "id" "title". */ -}}
+<h2><span id="{{ .id }}-title">{{ .title }}</span> <a class="cx-anchor" href="#{{ .id }}" aria-label="Link to {{ .title }}">#</a></h2>

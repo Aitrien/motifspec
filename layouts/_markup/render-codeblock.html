@@ -1,0 +1,18 @@
+{{- /* code-block.md: header bar (language, optional file, copy button revealed by codex.js) around Chroma's
+       classed output. Breakout when a line is longer than the prose measure (size.measure.prose, in characters),
+       as code-block.md asks. Use {file="path"} for a path. */ -}}
+{{- $lang := .Type | default "text" -}}
+{{- $measure := (index (partialCached "motifspec/tokens.html" "tokens") "size.measure.prose").value | replaceRE `[^0-9]` "" | int -}}
+{{- $long := false -}}
+{{- range split .Inner "\n" }}{{ if gt (strings.RuneCount .) $measure }}{{ $long = true }}{{ end }}{{ end -}}
+{{- $result := transform.HighlightCodeBlock . -}}
+<figure class="cx-code{{ if $long }} cx-code--breakout{{ end }}">
+  <figcaption class="cx-code__bar">
+    <span>{{ $lang }}</span>
+    {{- with .Attributes.file }}
+    <span class="cx-code__file">{{ . }}</span>
+    {{- end }}
+    <button class="cx-code__copy" type="button" hidden><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use data-copy-icon href="#cx-icon-content-copy"></use></svg><span class="cx-code__copy-label">Copy</span></button>
+  </figcaption>
+  {{ replaceRE ` file="[^"]*"` "" (string $result.Wrapped) 1 | safeHTML }}
+</figure>
