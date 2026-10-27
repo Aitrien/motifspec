@@ -1,6 +1,6 @@
 # MotifSpec
 
-Liam Marshall's design system: the single source of truth for aitrien.com and every project after it. Tokens are [DTCG](https://www.designtokens.org/) JSON, components are documented rules with markup to copy, and an MCP server serves both to AI coding assistants.
+Liam Marshall's design system: the single source of truth for aitrien.com and every project after it. Tokens are [DTCG](https://www.designtokens.org/) JSON, components are documented rules with markup to copy, and one checker holds every project that uses it to those rules.
 
 ## Principles
 
@@ -33,6 +33,7 @@ Liam Marshall's design system: the single source of truth for aitrien.com and ev
 
 ```
 LICENSE             MIT, for code, tokens and docs
+AGENTS.md           Instructions for AI agents changing this repo (CLAUDE.md points to it)
 CHANGELOG.md        Every release, newest first (the build fails without an entry for the current version)
 tokens/             DTCG source of truth (color, typography, space, size, radius, border, motion)
 css/components.css  Reference implementation of every component (tokens only)
@@ -44,14 +45,13 @@ docs/hugo.md        The Hugo partials and render hooks, their contexts and the f
 layouts/            Hugo partials (_partials/motifspec/) and Markdown render hooks (_markup/), mounted by the module
 docs/syntax-highlighting.md
 fonts/              Self-hosted WOFF2 (Latin subsets) and their OFL licences
-scripts/            validate, build, audit, check (the rule checker sites run) and release
+scripts/            validate, build, audit, check (the rule checker projects run), pack-check and release
 js/codex.js         Theme toggle, copy buttons, tooltip dismissal, TOC docking and active section (shared by sites and the showcase)
 js/theme-init.js    One-line <head> snippet that applies a stored theme before first paint
 js/plate.js         Contour survey generator for the backdrop and the specimen plate: draws the static contours at build time and animates them in the browser
 showcase/           Source of the system's showcase page
-mcp/                MCP server (Phase 3)
 hugo.toml, go.mod   Hugo module definition and its mounts
-dist/               Generated: tokens.css, components in codex.css, chroma.css, fonts.css, icons.svg (sprite), tokens.json (for MCP), tokens.js (ES module export), codex.js and theme-init.js (behaviour), backdrop.html, plate.html and plate.js (backdrop and specimen plate), contrast.md, showcase.html (fragment for publishing), showcase.standalone.html (open locally)
+dist/               Generated: tokens.css, components in codex.css, chroma.css, fonts.css, icons.svg (sprite), tokens.json, tokens.js (ES module export), codex.js and theme-init.js (behaviour), backdrop.html, plate.html and plate.js (backdrop and specimen plate), contrast.md, showcase.html (fragment for publishing), showcase.standalone.html (open locally)
 ```
 
 ## Commands
@@ -65,7 +65,7 @@ npm run pack:check     # the npm package has every file the README and package.j
 npm run check -- <dir>  # check a project that uses MotifSpec (see below)
 ```
 
-`scripts/check.mjs` is the one rule checker: this repo's audit runs it on `layouts/` and the component docs' markup, sites run it from their pinned module, and the MCP server's `check_styles` will call it. It checks a project's `layouts/` and `content/` against the release it comes from, and fails on:
+`scripts/check.mjs` is the one rule checker: this repo's audit runs it on `layouts/` and the component docs' markup, and projects run it from the version they pin. It checks a project's `layouts/` and `content/` against the release it comes from, and fails on:
 
 - a stylesheet anywhere in the project, or a `style` attribute
 - a raw colour, or a number with a length or time unit (zero is allowed)
@@ -73,43 +73,21 @@ npm run check -- <dir>  # check a project that uses MotifSpec (see below)
 - a `cx-` class that the stylesheet and scripts don't define, or a `cx-icon-` that isn't in `icons/manifest.json`
 - "·" used as a separator
 
-Releases are automatic. Bump `version` in `package.json` and add its `CHANGELOG.md` entry in the PR; once it is merged and CI passes on main, `.github/workflows/release.yml` tags that commit, publishes a GitHub release with the entry as its notes, and publishes that commit to npm with provenance (npm trusted publishing: no token is stored). A merge that doesn't change the version releases nothing.
+Releases are automatic; `CONVENTIONS.md` (Versioning) says how.
 
 Node 20 or later, no dependencies.
 
 ## Using it in Hugo
 
-Import the module and pin a release with `hugo mod get github.com/aitrien/motifspec@vX.Y.Z`. It mounts `dist/` at `assets/motifspec`, `fonts/` at `static/fonts`, and `layouts/` at `layouts`, so a site gets the component partials and the Markdown render hooks as well as the CSS and scripts:
-
-```toml
-[module]
-  [[module.imports]]
-    path = "github.com/aitrien/motifspec"
-```
-
-A page template then needs only the shell partials around its own content:
-
-```go-html-template
-<head>
-  {{ partial "motifspec/head.html" . }}
-</head>
-<body class="cx-backdrop-page">
-  {{ partial "motifspec/body-start.html" . }}
-  {{ partial "motifspec/site-header.html" . }}
-  <main id="main" tabindex="-1">…</main>
-  {{ partial "motifspec/body-end.html" . }}
-</body>
-```
-
-`docs/hugo.md` lists every partial with its context, the front matter they read, the render hooks and the Markdown they expect, and the Goldmark settings they need. Keep the stylesheet's published path one level below the site root (Hugo publishes it at `/motifspec/`): its font URLs are `../fonts/…`, which resolve to the mounted `/fonts/`.
+Import `github.com/aitrien/motifspec` as a Hugo module and pin a release with `hugo mod get github.com/aitrien/motifspec@vX.Y.Z`. The site then gets the CSS, scripts, fonts, component partials and Markdown render hooks; `docs/hugo.md` covers setup, every partial and the front matter they read.
 
 ## Using it from npm
 
 ```sh
-npm install @aitrien/motifspec@1.13.0
+npm install --save-exact @aitrien/motifspec
 ```
 
-Pin an exact version, as a Hugo site pins a tag: the version you install is the version the checker and (later) the MCP server hold you to. The package has the CSS, scripts, tokens, fonts, icons, component docs, Hugo templates and the checker; it leaves out the showcase.
+Pin an exact version, as a Hugo site pins a tag: the version you install is the version the checker holds you to. The package has the CSS, scripts, tokens, fonts, icons, component docs, Hugo templates and the checker; it leaves out the showcase.
 
 | Import | What it is |
 |---|---|

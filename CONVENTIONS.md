@@ -4,7 +4,7 @@ These rules are the contract between this repo and everything that consumes it. 
 
 ## Token format
 
-Tokens use the [Design Tokens Community Group (DTCG)](https://www.designtokens.org/) format (2025.10): every token is an object with `$value` and `$type`, and **should** have a `$description` saying when to use it. The description is not decoration. The MCP server serves it to AI assistants, so write it as a usage rule.
+Tokens use the [Design Tokens Community Group (DTCG)](https://www.designtokens.org/) format (2025.10): every token is an object with `$value` and `$type`, and **should** have a `$description` saying when to use it. The description is not decoration: AI assistants read it to decide which token to use, so write it as a usage rule.
 
 ```json
 {
@@ -67,7 +67,6 @@ Categories and their files:
 | Platform | Pattern | Example |
 |---|---|---|
 | CSS custom property | `--cx-` + path joined by `-` | `--cx-color-text-muted` |
-| SCSS variable | `$cx-` + same | `$cx-color-text-muted` |
 | JS | camelCase path | `tokens.color.text.muted` |
 
 The `cx` prefix keeps tokens from colliding with a consuming site's own variables. `--cx-primitive-*` properties exist in the generated CSS only so semantic properties can point at them; never use them directly.
@@ -84,7 +83,7 @@ Generated CSS has a single `:root` block. Semantic colours are `light-dark(light
 
 Deprecate before removing. A semantic token that is no longer used gets a DTCG `$deprecated` string saying why and in which major it goes (`"Unused since the contour plate; removed in 2.0.0."`), and is listed under Deprecated in `CHANGELOG.md`. It stays in `tokens.css` (with a comment) and in `tokens.json` (with a `deprecated` field) until that major. The validator fails if a component, the Chroma mapping, a script or a component doc uses a deprecated token. Removal is the only major change, so the Go module path stays `github.com/aitrien/motifspec` until a removal is actually due.
 
-Consumers pin to a tag. Never move or delete a published tag. Tags are created only by `.github/workflows/release.yml`, after CI passes on main, from the version in `package.json`; don't tag by hand. A version can be released once: if a tag turns out wrong, release the next patch.
+Consumers pin to a tag. Releasing is automatic: bump `version` in `package.json` and add its `CHANGELOG.md` entry in the PR, and once it is merged and CI passes on main, `.github/workflows/release.yml` tags that commit, publishes a GitHub release with the entry as its notes, and publishes the commit to npm with provenance (npm trusted publishing, so no token is stored). A merge that doesn't change the version releases nothing. Don't tag by hand, and never move or delete a published tag: a version is released once, and if one turns out wrong, release the next patch.
 
 Every version bump adds an entry to `CHANGELOG.md` (`## [x.y.z] - YYYY-MM-DD`, then Added / Changed / Removed / Fixed). `npm run build` fails if the version in `package.json` has none. The `changelog` URL in `package.json` points at the file on GitHub; version numbers in the showcase and site footers link to it.
 

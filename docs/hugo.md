@@ -18,7 +18,7 @@ The module ships the components as Hugo partials and the Markdown render hooks t
     block = true                              # {caption="…"} on tables, {file="…"} on code, {width="prose"} on figures
 ```
 
-Pin a release with `hugo mod get github.com/aitrien/motifspec@vX.Y.Z`. The module mounts `dist/` at `assets/motifspec`, `fonts/` at `static/fonts` and `layouts/` at `layouts`.
+Pin a release with `hugo mod get github.com/aitrien/motifspec@vX.Y.Z`. The module mounts `dist/` at `assets/motifspec`, `fonts/` at `static/fonts` and `layouts/` at `layouts`. Hugo publishes the stylesheet at `/motifspec/`; keep it one level below the site root, because its font URLs are `../fonts/…`.
 
 ## The page shell
 
@@ -76,6 +76,18 @@ Every partial below is called as `partial "motifspec/<name>.html" <context>`.
 
 ## Front matter the partials read
 
+```yaml
+title: Interactive WebGL globe
+accession: LM-W-001
+date: 2026-03-14
+summary: A React app that renders live routes on a 3D globe.
+role: Sole engineer
+stack: [React, WebGL, Vite]
+status: live        # live | building | archived
+tags: [react, webgl, a11y]
+hero: { src: hero.png, alt: "…", caption: "…" }
+```
+
 | Field | Used by | Notes |
 |---|---|---|
 | `summary` | cards, rows | The lede and the card or row summary. |
@@ -113,7 +125,7 @@ const motifspec = mounts.split(/\n(?=\{)/).map((m) => JSON.parse(m)).find((m) =>
 execFileSync('node', [join(motifspec.dir, 'scripts', 'check.mjs'), '.'], { stdio: 'inherit' });
 ```
 
-It checks `layouts/` and `content/` and fails on stylesheets, style attributes, raw colours and units, primitive, unknown or deprecated tokens, classes and icons MotifSpec doesn't define, and "·" separators. In GitHub Actions each problem is also an annotation on the pull request; `--json` prints the problems as JSON. In CI, give the step the same `HUGO_CACHEDIR` and `HUGO_MODULE_PROXY` as the build, because `hugo config mounts` downloads the module if it isn't cached.
+It checks `layouts/` and `content/` for what the README's Commands section lists. In GitHub Actions each problem is also an annotation on the pull request; `--json` prints the problems as JSON. In CI, give the step the same `HUGO_CACHEDIR` and `HUGO_MODULE_PROXY` as the build, because `hugo config mounts` downloads the module if it isn't cached.
 
 ## Overriding
 

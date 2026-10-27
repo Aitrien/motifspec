@@ -179,7 +179,7 @@ for (const file of readdirSync(docsDir).filter((f) => f.endsWith('.md') && !f.st
   writeFileSync(join(docsDir, file), next);
 }
 
-// ------------------------------------------------------------------ tokens.json for the MCP server
+// ------------------------------------------------------------------ tokens.json for build tools and the checker
 const flat = [...tokens.values()].map((t) => {
   const o = { name: t.path, css: cssVar(t.path), tier: t.tier, type: t.type };
   if (t.tier === 'semantic') {

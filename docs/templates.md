@@ -16,15 +16,6 @@ Content hierarchy for the six page types. Every template sits on the backdrop (`
 - Work: `LM-W-001` onward. Writing: `LM-P-001` onward. Zero-padded, never reused, stored in front matter as `accession`.
 - They appear on cards, post rows, post meta lines and case-study labels.
 
-## Hugo front matter
+## Front matter
 
-```yaml
-title: Interactive WebGL globe
-accession: LM-W-001
-date: 2026-03-14
-summary: A React app that renders live routes on a 3D globe.
-role: Sole engineer
-stack: [React, WebGL, Vite]
-status: live        # live | building | archived
-tags: [react, webgl, a11y]
-```
+The fields each template reads are in `docs/hugo.md` (Front matter the partials read).
