@@ -1,0 +1,190 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  The MotifSpec MCP server at https://mcp.motifspec.com/mcp (Lambda behind an HTTP API on a custom domain), and the
+  role the release workflow uses to deploy its code. Deploy this stack once by hand; the workflow only replaces the
+  function's code.
+
+Parameters:
+  CertificateArn:
+    Type: String
+    AllowedPattern: "arn:aws:acm:.+"
+    Description: The ACM certificate for the domain. It must be in the same region as this stack.
+  DomainName:
+    Type: String
+    Default: mcp.motifspec.com
+  HostedZoneName:
+    Type: String
+    Default: motifspec.com.
+    Description: The Route 53 hosted zone the domain belongs to, with the trailing dot.
+  GitHubRepository:
+    Type: String
+    Default: Aitrien/motifspec
+    Description: owner/repo, spelled exactly as GitHub does. Only its main branch can deploy.
+  CreateGitHubOidcProvider:
+    Type: String
+    AllowedValues: ["true", "false"]
+    Default: "true"
+    Description: >-
+      Choose false if this AWS account already has the token.actions.githubusercontent.com identity provider
+      (IAM > Identity providers).
+
+Conditions:
+  CreateOidc: !Equals [!Ref CreateGitHubOidcProvider, "true"]
+
+Resources:
+  # Lets GitHub Actions prove which repository and branch a run comes from, so no AWS key is stored in GitHub.
+  GitHubOidcProvider:
+    Type: AWS::IAM::OIDCProvider
+    Condition: CreateOidc
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList: [sts.amazonaws.com]
+
+  FunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: lambda.amazonaws.com }
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/lambda/motifspec-mcp
+      RetentionInDays: 14
+
+  # Starts with placeholder code; the release workflow replaces it with the server.
+  Function:
+    Type: AWS::Lambda::Function
+    DependsOn: LogGroup
+    Properties:
+      FunctionName: motifspec-mcp
+      Description: MotifSpec MCP server (read-only; serves the published design system's rules, tokens and docs)
+      Runtime: nodejs22.x
+      Architectures: [arm64]
+      Handler: index.handler
+      MemorySize: 512
+      Timeout: 10
+      Role: !GetAtt FunctionRole.Arn
+      Code:
+        ZipFile: |
+          exports.handler = async () => ({
+            statusCode: 503,
+            headers: { "content-type": "text/plain" },
+            body: "The MotifSpec MCP server hasn't been deployed yet.",
+          });
+
+  Api:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: motifspec-mcp
+      ProtocolType: HTTP
+      # Only the custom domain serves it.
+      DisableExecuteApiEndpoint: true
+
+  Integration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref Api
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt Function.Arn
+      PayloadFormatVersion: "2.0"
+
+  Route:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: $default
+      Target: !Sub integrations/${Integration}
+
+  # Rate limits keep a public, sign-in-free server within the free allowances.
+  Stage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref Api
+      StageName: $default
+      AutoDeploy: true
+      DefaultRouteSettings:
+        ThrottlingRateLimit: 10
+        ThrottlingBurstLimit: 20
+
+  InvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref Function
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${Api}/*
+
+  Domain:
+    Type: AWS::ApiGatewayV2::DomainName
+    Properties:
+      DomainName: !Ref DomainName
+      DomainNameConfigurations:
+        - CertificateArn: !Ref CertificateArn
+          EndpointType: REGIONAL
+          SecurityPolicy: TLS_1_2
+
+  Mapping:
+    Type: AWS::ApiGatewayV2::ApiMapping
+    DependsOn: Stage
+    Properties:
+      ApiId: !Ref Api
+      DomainName: !Ref Domain
+      Stage: $default
+
+  Record:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Ref HostedZoneName
+      Name: !Ref DomainName
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt Domain.RegionalDomainName
+        HostedZoneId: !GetAtt Domain.RegionalHostedZoneId
+
+  # Assumable only by GitHub Actions runs on the repository's main branch, and only able to replace this one
+  # function's code.
+  DeployRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: motifspec-mcp-deploy
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !If
+                - CreateOidc
+                - !Ref GitHubOidcProvider
+                - !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                token.actions.githubusercontent.com:sub: !Sub repo:${GitHubRepository}:ref:refs/heads/main
+      Policies:
+        - PolicyName: deploy-motifspec-mcp-code
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:UpdateFunctionCode
+                  - lambda:GetFunction
+                  - lambda:GetFunctionConfiguration
+                Resource: !GetAtt Function.Arn
+
+Outputs:
+  DeployRoleArn:
+    Description: Goes in .github/workflows/release.yml (not a secret).
+    Value: !GetAtt DeployRole.Arn
+  Region:
+    Value: !Ref AWS::Region
+  Url:
+    Value: !Sub https://${DomainName}/mcp
