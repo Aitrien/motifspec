@@ -2,6 +2,17 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.16.0] - 2026-10-29
+
+### Added
+- `showcase` in `package.json`, the published showcase at https://motifspec.com, also served as `showcase` in `dist/tokens.json` and `dist/tokens.js`.
+
+### Changed
+- Site footers link the MotifSpec version to the showcase instead of the changelog: `aria-label="Version x.y.z: view the MotifSpec showcase"`, tooltip "View showcase". The showcase's own footer still links to the changelog. `site-footer.md` is updated.
+
+### Fixed
+- "Back to top" now goes to the top. The site header had `id="top"`, and because the header is sticky, the browser scrolled to where it was stuck, which moved the page by a header's height. The header has no id now, so `#top` scrolls to the top of the document, as HTML defines for a `#top` link with no matching element.
+
 ## [1.15.0] - 2026-10-29
 
 ### Added
