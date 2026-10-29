@@ -1,6 +1,6 @@
 # MotifSpec
 
-Liam Marshall's design system: the single source of truth for aitrien.com and every project after it. Tokens are [DTCG](https://www.designtokens.org/) JSON, components are documented rules with markup to copy, one checker holds every project that uses it to those rules, and an MCP server gives AI assistants all three.
+Liam Marshall's design system: the single source of truth for aitrien.com and every project after it. The showcase is at [motifspec.com](https://motifspec.com). Tokens are [DTCG](https://www.designtokens.org/) JSON, components are documented rules with markup to copy, one checker holds every project that uses it to those rules, and an MCP server gives AI assistants all three.
 
 ## Principles
 
