@@ -2,15 +2,15 @@ name: Release
 
 # Runs after CI passes on a push to main. If package.json has a version that isn't tagged yet, it tags the exact
 # commit CI checked and publishes a GitHub release with that version's CHANGELOG entry. Otherwise it does nothing.
-# Then it publishes that commit to npm. So releasing is: bump the version and add the CHANGELOG entry in a PR, then
-# merge it.
+# Then it publishes that commit to npm and deploys it as the MCP server. So releasing is: bump the version and add the
+# CHANGELOG entry in a PR, then merge it.
 on:
   workflow_run:
     workflows: [CI]
     types: [completed]
     branches: [main]
-  # Run by hand from the Actions tab to retry publishing to npm: it publishes main's version only if that version's tag
-  # is main's current commit and npm doesn't have it yet. It never tags.
+  # Run by hand from the Actions tab to retry publishing and deploying: it acts only if main's version tag is main's
+  # current commit, and npm skips a version it already has. It never tags.
   workflow_dispatch:
 
 permissions:
@@ -82,3 +82,68 @@ jobs:
             grep -E "npm (error|ERR!)" "$RUNNER_TEMP/publish.log" | tail -n 10 | while IFS= read -r line; do echo "::error title=npm publish::$line"; done
             exit 1
           fi
+
+  mcp:
+    # Deploys the release as the MCP server at https://mcp.motifspec.com/mcp: the AWS Lambda function in infra/mcp.yml.
+    # GitHub's OIDC token assumes the deploy role, which only main can use and which can only replace that function's
+    # code, so no AWS key is stored. Changes to infra/mcp.yml itself are applied by hand in CloudFormation.
+    needs: release
+    if: always() && (needs.release.result == 'success' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AWS_REGION: us-east-1
+      DEPLOY_ROLE: arn:aws:iam::758354548106:role/motifspec-mcp-deploy
+      URL: https://mcp.motifspec.com/mcp
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 0
+      - name: Is this commit a release?
+        id: tagged
+        run: |
+          version=$(node -p "require('./package.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if [ "$(git rev-list -n 1 "v$version" 2>/dev/null)" = "$(git rev-parse HEAD)" ]; then
+            echo "release=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "v$version is not this commit, so there is nothing new to deploy."
+          fi
+      - uses: actions/setup-node@v4
+        if: steps.tagged.outputs.release
+        with:
+          node-version: 22
+      - name: Bundle, and test the bundle
+        if: steps.tagged.outputs.release
+        run: |
+          npm ci
+          npm run mcp:bundle
+          MCP_HANDLER=build/mcp/index.mjs npm run test:mcp
+      - uses: aws-actions/configure-aws-credentials@v4
+        if: steps.tagged.outputs.release
+        with:
+          role-to-assume: ${{ env.DEPLOY_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Deploy to Lambda
+        if: steps.tagged.outputs.release
+        run: |
+          aws lambda update-function-code --function-name motifspec-mcp --zip-file fileb://build/mcp.zip --query LastUpdateStatus --output text
+          aws lambda wait function-updated --function-name motifspec-mcp
+      - name: Check the live server answers as this version
+        if: steps.tagged.outputs.release
+        env:
+          WANT: ${{ steps.tagged.outputs.version }}
+        run: |
+          body='{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"release","version":"0"}}}'
+          got=""
+          for attempt in 1 2 3 4 5 6; do
+            got=$(curl -sS -X POST "$URL" -H 'content-type: application/json' -H 'accept: application/json, text/event-stream' -d "$body" \
+              | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{console.log(JSON.parse(s).result.serverInfo.version)}catch{console.log(s.slice(0,200))}})")
+            if [ "$got" = "$WANT" ]; then echo "$URL serves MotifSpec $got."; exit 0; fi
+            sleep 5
+          done
+          echo "::error title=MCP server::$URL answered \"$got\", expected version $WANT."
+          exit 1

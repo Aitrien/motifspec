@@ -9,11 +9,12 @@ MotifSpec is a design system that other projects install at a pinned version, so
 
 - A token: `tokens/*.json`, with a `$description` that says when to use it. A foreground colour declares the surfaces it may sit on in `codex.pairsWith`.
 - A component is three files kept in step: its CSS in `css/components.css` (tokens only), its rules and markup in `docs/components/<name>.md` (from `_template.md`), and its Hugo partial in `layouts/_partials/motifspec/` (listed in `docs/hugo.md`). The doc is the contract.
+- The MCP server: `mcp/`, served from AWS. The release workflow deploys its code; `infra/mcp.yml` (the AWS stack) is applied by hand in CloudFormation, so a change there needs Liam to update the stack.
 - Never edit `dist/` or a component doc's `tokens:` list by hand. `npm run build` writes them; commit what it writes.
 
 ## Before you finish
 
-Run `npm run build`, `npm run audit`, `npm run release:check` and `npm run pack:check`. CI runs the same checks.
+Run `npm run build`, `npm run audit`, `npm run release:check`, `npm run pack:check` and `npm run test:mcp`. CI runs the same checks.
 
 ## Releasing
 
