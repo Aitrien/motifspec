@@ -2,6 +2,12 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.14.1] - 2026-10-29
+
+### Changed
+- Site nav: the current page's pill has no fill. It is outlined with a `color.border.strong` hairline (inset, so the pill keeps its size), with `color.text.primary` text, instead of the `color.surface.highlight` fill and `color.accent.border` outline. The outline is 3.23:1 on `color.surface.base` in light and 4.21:1 in dark, above the 3:1 target. On hover it takes the same wash as the other links. `site-header.md` is updated.
+- `color.surface.highlight`'s description: text selection and `<mark>` only, since the nav no longer uses it.
+
 ## [1.14.0] - 2026-10-28
 
 ### Added

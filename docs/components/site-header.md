@@ -5,12 +5,11 @@ tokens:
   - border.focus.offset
   - border.focus.width
   - border.width.hairline
-  - color.accent.border
   - color.accent.fill.rest
+  - color.border.strong
   - color.border.subtle
   - color.focus.ring
   - color.surface.base
-  - color.surface.highlight
   - color.text.muted
   - color.text.on-accent
   - color.text.primary
@@ -103,7 +102,7 @@ Copy the snippet as it is: the build fails if this doc and `js/theme-init.js` di
 
 ## Do
 
-- Mark the current section with `aria-current="page"`, including on child pages (a post marks Writing). It gets a `color.surface.highlight` background with a `color.accent.border` hairline inside its edge, not an underline. The outline is what stands out from the header (3:1); the fill alone is close to `color.surface.base` in both themes.
+- Mark the current section with `aria-current="page"`, including on child pages (a post marks Writing). It gets a `color.border.strong` hairline inside its edge and `color.text.primary` text: no fill and no underline.
 - Nav items are pills (`radius.pill`), the same shape as the pause control and the theme toggle, so every header control reads as one set.
 - When the nav and controls wrap below the wordmark, `dist/codex.js` sets `data-wrapped` on the header: the nav moves to the start of its row and is offset by its pills' padding, so the link text lines up with the wordmark and the page text, while the controls stay at the end. Without the script the row stays right-aligned.
 - Every header control rests in `color.text.secondary` and shares one hover, shown only where the pointer can hover (`@media (hover: hover)`), so it never sticks after a tap: `color.text.primary` text on a wash of `color.text.primary` at `color.wash.hover`. A solid `color.surface.hover` would all but match the frost.
@@ -129,5 +128,5 @@ Copy the snippet as it is: the build fails if this doc and `js/theme-init.js` di
 - Nav links, the pause control and the toggle are 44px (`size.target.touch`); the pause control and the toggle are pills with equal sides, so they render as circles.
 - The pause control is a native checkbox named "Pause background animation" (checked means paused), focusable by keyboard, with its focus ring on the round control.
 - The toggle's `aria-label` is its action ("Switch to light theme"); the visible tooltip repeats it and is `aria-hidden`. Escape hides the tooltip without moving the pointer (see `tooltip.md`).
-- `aria-current` carries the current state for assistive tech; the highlight is the visual cue.
-- Pairs: `color.text.secondary` and `color.text.primary` on `color.surface.base` (7:1); `color.text.primary` on `color.surface.highlight` (current, 7:1); `color.accent.border` on `color.surface.base` (current outline, 3:1). On a backdrop page the frost is measured as `color.surface.base`; the contour lines beneath it are not part of the check.
+- `aria-current` carries the current state for assistive tech; the outline is the visual cue.
+- Pairs: `color.text.secondary` and `color.text.primary` on `color.surface.base` (7:1); `color.border.strong` on `color.surface.base` (current outline, 3:1). On a backdrop page the frost is measured as `color.surface.base`; the contour lines beneath it are not part of the check.
