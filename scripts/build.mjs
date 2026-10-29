@@ -146,7 +146,7 @@ const DOC_SELECTORS = {
   'tooltip': ['.cx-tooltip'],
   'prose': ['.cx-sep', '.cx-prose', '.cx-lede', '.cx-end-mark', '.cx-code-inline', '.cx-page-head', '.cx-h1', '.cx-display', '.cx-meta', '.cx-eyebrow'],
   'code-block': ['.cx-code', '.chroma'],
-  'figure': ['.cx-figure'],
+  'figure': ['.cx-figure', '.cx-diagram'],
   'callout': ['.cx-callout'],
   'tag': ['.cx-tags', '.cx-tag'],
   'button-and-link': ['.cx-actions', '.cx-button', '.cx-link', '.cx-back'],
