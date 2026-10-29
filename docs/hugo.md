@@ -105,7 +105,7 @@ These apply to all Markdown content once the module is imported.
 | Hook | Markdown | Doc |
 |---|---|---|
 | `render-heading.html` | Headings get ids; h2s get a `#` anchor. | `heading-anchor.md` |
-| `render-image.html` | A standalone image is a numbered figure: `![alt](file.png "caption")`, image in the page bundle, alt and caption required. `{width="prose"}` on the next line keeps it to the text measure. Inline images stay plain. | `figure.md` |
+| `render-image.html` | A standalone image is a numbered figure: `![alt](file.png "caption")`, image in the page bundle, alt and caption required. `{width="prose"}` on the next line keeps it to the text measure. Inline images stay plain. An `.svg` on its own line becomes a diagram figure, inlined so its `cx-diagram` classes follow the theme. | `figure.md` |
 | `render-table.html` | `{caption="Title \| subtitle"}` on the line after a table is required. Numeric columns align right; more than four columns break out. | `data-table.md` |
 | `render-codeblock.html` | Header bar with language, optional `{file="path"}` and copy button. Breaks out when a line is longer than the prose measure. | `code-block.md` |
 | `render-blockquote.html` | `> [!NOTE]`, `[!TIP]`, `[!WARNING]` and `[!CAUTION]` become callouts. A quotation must end with a line `— Name \| Source title`. | `callout.md`, `prose.md` |

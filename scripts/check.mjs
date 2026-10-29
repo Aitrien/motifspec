@@ -91,7 +91,7 @@ export function checkText(text, { file = '<input>', kind = 'html' } = {}) {
 }
 
 const KIND = {
-  '.html': 'html', '.xml': 'html', '.jsx': 'html', '.tsx': 'html', '.vue': 'html', '.svelte': 'html', '.astro': 'html',
+  '.html': 'html', '.xml': 'html', '.svg': 'html', '.jsx': 'html', '.tsx': 'html', '.vue': 'html', '.svelte': 'html', '.astro': 'html',
   '.txt': 'md', '.md': 'md', '.mdx': 'md', '.json': 'md', '.css': 'css',
 };
 // Build output and dependencies, which contain MotifSpec's own CSS.

@@ -1,6 +1,7 @@
 {{- /* figure.md. A standalone image becomes a numbered figure: ![alt](file "caption"). On a page with a `hero` in front matter,
        the hero is Plate 1, so content plates start at 2. Inline images stay plain. Alt text is required.
-       {width="prose"} on the line after a figure keeps it to the prose measure instead of breaking out. */ -}}
+       {width="prose"} on the line after a figure keeps it to the prose measure instead of breaking out.
+       An .svg is a diagram: inlined, coloured by its cx-diagram classes, named by the alt text. */ -}}
 {{- $img := .Page.Resources.Get .Destination -}}
 {{- if not $img }}{{ errorf "content/%s: image %q is not in the page bundle." .Page.File.Path .Destination }}{{ end -}}
 {{- if not .PlainText }}{{ errorf "content/%s: image %q has no alt text. Describe what the image shows (figure.md)." .Page.File.Path .Destination }}{{ end -}}
@@ -8,6 +9,8 @@
   {{- if not .Title }}{{ errorf "content/%s: figure %q has no caption. Add one as the image title: ![alt](file \"what to notice\")." .Page.File.Path .Destination }}{{ end -}}
   {{- $first := cond (isset .Page.Params "hero") 2 1 -}}
   {{- partial "motifspec/figure.html" (dict "image" $img "alt" .PlainText "caption" (.Title | markdownify) "plate" (add .Ordinal $first) "prose" (eq (index .Attributes "width") "prose")) -}}
+{{- else if eq $img.MediaType.SubType "svg" -}}
+  {{- errorf "content/%s: %q is an SVG diagram; give it a line of its own so it becomes a figure (figure.md)." .Page.File.Path .Destination -}}
 {{- else -}}
   {{- $s := $img.Process "webp" -}}
   <img src="{{ $s.RelPermalink }}" alt="{{ .PlainText }}" width="{{ $s.Width }}" height="{{ $s.Height }}" loading="lazy" decoding="async">

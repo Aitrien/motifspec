@@ -2,7 +2,7 @@
 @font-face { font-family: "JetBrains Mono"; src: url("../fonts/jetbrains-mono-latin-wght.woff2") format("woff2"); font-weight: 100 800; font-style: normal; font-display: swap; }
 @font-face { font-family: "Yarndings 12"; src: url("../fonts/yarndings-12-latin.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
 
-/* MotifSpec 1.14.2 — generated from tokens/*.json. Do not edit.
+/* MotifSpec 1.15.0 — generated from tokens/*.json. Do not edit.
    Themes: semantic colours use light-dark(); color-scheme follows the system unless
    <html data-theme="light|dark"> pins it. --cx-primitive-* are for this file only. */
 :root {
@@ -887,6 +887,22 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 .cx-figure__frame > :where(img, svg) { display: block; width: 100%; height: auto; }
 /* Diagrams keep a legible text size and scroll inside the frame on narrow screens. */
 .cx-figure--diagram .cx-figure__frame > svg { min-width: calc(var(--cx-size-column-card) * 2); }
+/* Diagram parts: an SVG in a cx-figure--diagram is drawn and set only through these classes, so it follows the theme.
+   Every colour is a pair checked on color.surface.raised, the frame's surface. Strokes stay one screen hairline (or
+   the emphasis width) however the SVG scales. */
+.cx-diagram { font-family: var(--cx-font-family-body); }
+.cx-diagram :where(rect, path, line, polyline, polygon, circle, ellipse) { vector-effect: non-scaling-stroke; }
+.cx-diagram__node { fill: var(--cx-color-surface-raised); stroke: var(--cx-color-border-strong); stroke-width: var(--cx-border-width-hairline); }
+.cx-diagram__node--accent { stroke: var(--cx-color-accent-border); stroke-width: var(--cx-border-width-emphasis); }
+.cx-diagram__group { fill: none; stroke: var(--cx-color-border-strong); stroke-width: var(--cx-border-width-hairline); }
+.cx-diagram__edge { fill: none; stroke: var(--cx-color-border-strong); stroke-width: var(--cx-border-width-hairline); }
+.cx-diagram__edge--accent { stroke: var(--cx-color-accent-border); stroke-width: var(--cx-border-width-emphasis); }
+.cx-diagram__head { fill: var(--cx-color-border-strong); }
+.cx-diagram__head--accent { fill: var(--cx-color-accent-border); }
+.cx-diagram__title { fill: var(--cx-color-text-primary); font-size: var(--cx-font-size-small); font-weight: var(--cx-font-weight-ui); }
+.cx-diagram__text { fill: var(--cx-color-text-secondary); font-size: var(--cx-font-size-small); }
+.cx-diagram__label { fill: var(--cx-color-text-muted); font-family: var(--cx-font-family-mono); font-size: var(--cx-font-size-small); letter-spacing: var(--cx-font-tracking-label); text-transform: uppercase; }
+.cx-diagram__label--accent { fill: var(--cx-color-text-accent); }
 .cx-figure figcaption { display: flex; flex-wrap: wrap; gap: var(--cx-space-stack-xs) var(--cx-space-inline-md); max-width: var(--cx-size-measure-caption); color: var(--cx-color-text-secondary); font-size: var(--cx-font-size-small); line-height: var(--cx-font-line-height-ui); }
 .cx-figure__plate { color: var(--cx-color-text-accent); }
 

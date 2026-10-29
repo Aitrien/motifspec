@@ -2,6 +2,17 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.15.0] - 2026-10-29
+
+### Added
+- Diagrams. `cx-diagram` classes draw an SVG inside a `cx-figure--diagram`, using only existing tokens, so diagrams follow light and dark themes:
+  - nodes (`__node`, `--accent`), groups (`__group`), edges and arrowheads (`__edge`, `__head`, each with `--accent`)
+  - text (`__title`, `__text`, `__label`, `--accent`)
+
+  Every colour is a pair already checked on `color.surface.raised`, the frame's surface. Strokes stay a screen hairline at any scale. `figure.md` has the markup, the parts and the rules: viewBox at most 740 wide, ids prefixed.
+- Hugo: an `.svg` in a page bundle, on its own line in Markdown, becomes a diagram figure. It is inlined, numbered like other plates, and gets `role="img"` with the alt text as its name. The build stops if the file sets its own role, label or `<title>`, or has no `cx-diagram` class.
+- The checker reads `.svg` files, so a diagram with a raw colour, a style attribute or an unknown class fails like any template.
+
 ## [1.14.2] - 2026-10-29
 
 ### Fixed
