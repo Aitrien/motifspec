@@ -1,6 +1,6 @@
 # MotifSpec
 
-Liam Marshall's design system: the single source of truth for aitrien.com and every project after it. Tokens are [DTCG](https://www.designtokens.org/) JSON, components are documented rules with markup to copy, and one checker holds every project that uses it to those rules.
+Liam Marshall's design system: the single source of truth for aitrien.com and every project after it. Tokens are [DTCG](https://www.designtokens.org/) JSON, components are documented rules with markup to copy, one checker holds every project that uses it to those rules, and an MCP server gives AI assistants all three.
 
 ## Principles
 
@@ -50,6 +50,8 @@ js/codex.js         Theme toggle, copy buttons, tooltip dismissal, TOC docking a
 js/theme-init.js    One-line <head> snippet that applies a stored theme before first paint
 js/plate.js         Contour survey generator for the backdrop and the specimen plate: draws the static contours at build time and animates them in the browser
 showcase/           Source of the system's showcase page
+mcp/                The MCP server (server.mjs), its Lambda handler, bundle step and tests
+infra/mcp.yml       The server's AWS stack and deploy role (CloudFormation, applied by hand)
 hugo.toml, go.mod   Hugo module definition and its mounts
 dist/               Generated: tokens.css, components in codex.css, chroma.css, fonts.css, icons.svg (sprite), tokens.json, tokens.js (ES module export), codex.js and theme-init.js (behaviour), backdrop.html, plate.html and plate.js (backdrop and specimen plate), contrast.md, showcase.html (fragment for publishing), showcase.standalone.html (open locally)
 ```
@@ -63,6 +65,8 @@ npm run audit     # prove dist/showcase.html and the shipped scripts have no raw
 npm run release:check  # what merging this would release, and whether that release is valid
 npm run pack:check     # the npm package has every file the README and package.json promise
 npm run check -- <dir>  # check a project that uses MotifSpec (see below)
+npm run test:mcp       # call every MCP tool through the Lambda handler
+npm run mcp:bundle     # build/mcp.zip, the server's Lambda package
 ```
 
 `scripts/check.mjs` is the one rule checker: this repo's audit runs it on `layouts/` and the component docs' markup, and projects run it from the version they pin. It checks a project's `layouts/` and `content/` against the release it comes from, and fails on:
@@ -75,7 +79,7 @@ npm run check -- <dir>  # check a project that uses MotifSpec (see below)
 
 Releases are automatic; `CONVENTIONS.md` (Versioning) says how.
 
-Node 20 or later, no dependencies.
+Node 20 or later. The package has no dependencies; the MCP server's are dev dependencies, bundled into its deployment.
 
 ## Using it in Hugo
 
@@ -108,6 +112,27 @@ npx motifspec-check . --dirs src
 ```
 
 It reads `.html`, `.jsx`, `.tsx`, `.vue`, `.svelte`, `.astro`, `.md` and `.mdx` (both `class` and `className`), and skips `node_modules`, `dist` and `build`. Its stylesheet rule applies here too: a project using MotifSpec has no CSS of its own.
+
+## Using it from an AI assistant
+
+The MCP server at `https://mcp.motifspec.com/mcp` serves the latest release to any assistant that supports remote MCP servers. It needs no sign-in and only reads.
+
+| Tool | What it returns |
+|---|---|
+| `get_rules` | The rules above, and what the checker enforces |
+| `find_tokens` | Semantic tokens matching a query: CSS property, usage rule, light and dark values, the surfaces a colour may sit on |
+| `get_component` | A component's doc (markup, do and don't, accessibility), with its Hugo partial and Markdown form; without a name, the list |
+| `get_doc` | `docs/hugo.md` or `docs/templates.md` |
+| `check` | The checker's problems in a piece of markup, Markdown or CSS |
+
+To connect it:
+
+- **Claude (web, desktop):** Customize → Connectors → Add custom connector, with the URL above and "No sign in".
+- **Claude Code:** `claude mcp add --transport http motifspec https://mcp.motifspec.com/mcp`, or a project `.mcp.json`.
+- **VS Code:** add it to `.vscode/mcp.json` with `"type": "http"` and the URL.
+- **Others:** add a remote MCP server by URL.
+
+It serves the latest release. A project pinned to an older version can be offered something its version doesn't have yet; its own checker, at its pinned version, catches that.
 
 ## The identity in brief
 

@@ -2,6 +2,23 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.14.0] - 2026-10-28
+
+### Added
+- The MotifSpec MCP server, at `https://mcp.motifspec.com/mcp`, for any AI assistant that supports remote MCP servers. Read-only, no sign-in. Five tools:
+  - `get_rules`: the README's rules and what the checker enforces.
+  - `find_tokens`: semantic tokens matching a query, with usage rule, CSS property, light and dark values, and the surfaces a colour may sit on.
+  - `get_component`: a component's doc with its Hugo partial and Markdown form, or the list.
+  - `get_doc`: `docs/hugo.md` or `docs/templates.md`.
+  - `check`: the rule checker on a piece of markup, Markdown or CSS.
+
+  It answers from this release's own files and tells assistants which version it serves. Built with the official MCP SDK (stateless Streamable HTTP, JSON responses).
+- Hosting: AWS Lambda behind an API Gateway HTTP API on the custom domain, rate-limited, defined in `infra/mcp.yml`. The release workflow bundles the server (`npm run mcp:bundle`, about 260 KB), tests the bundle, deploys it with a role GitHub assumes through OIDC (no stored AWS key; only main can use it, and it can only replace the function's code), and checks the live server reports the new version.
+- `npm run test:mcp`, run in CI on the source and on the bundle: calls every tool through the Lambda handler.
+- README: "Using it from an AI assistant", with how to connect Claude, Claude Code, VS Code and others.
+
+The npm package is unchanged apart from the version: the server's SDK, zod and esbuild are dev dependencies, and `mcp/` and `infra/` aren't in the package.
+
 ## [1.13.3] - 2026-10-27
 
 ### Changed

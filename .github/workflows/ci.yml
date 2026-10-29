@@ -15,6 +15,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Install dev dependencies (the MCP server's)
+        run: npm ci
       - name: Validate tokens
         run: npm run validate
       - name: Build
@@ -27,3 +29,7 @@ jobs:
         run: npm run release:check
       - name: npm package check
         run: npm run pack:check
+      - name: MCP server tests
+        run: npm run test:mcp
+      - name: MCP server bundle
+        run: npm run mcp:bundle && MCP_HANDLER=build/mcp/index.mjs npm run test:mcp
