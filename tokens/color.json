@@ -917,7 +917,7 @@
       },
       "highlight": {
         "$value": "{primitive.color.sap.100}",
-        "$description": "Text selection, <mark>, and the current item in site navigation. Never for large areas or decoration.",
+        "$description": "Text selection and <mark>. Never for large areas or decoration.",
         "$extensions": {
           "codex.modes": {
             "dark": "{primitive.color.sap.800}"
