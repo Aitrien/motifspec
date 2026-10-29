@@ -2,6 +2,11 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.14.2] - 2026-10-29
+
+### Fixed
+- The Hugo shell partials publish the stylesheet and scripts at `/cx/` instead of `/motifspec/`. On GitHub Pages, a user site's `/motifspec/` path belongs to the motifspec repository's own Pages site, so turning on Pages for this repository hid aitrien.com's CSS and scripts. They stay one level below the root, so the stylesheet's `../fonts/` URLs still reach `/fonts/`. Asset paths inside Hugo (`resources.Get "motifspec/…"`) are unchanged.
+
 ## [1.14.1] - 2026-10-29
 
 ### Changed

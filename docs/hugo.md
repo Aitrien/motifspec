@@ -18,7 +18,7 @@ The module ships the components as Hugo partials and the Markdown render hooks t
     block = true                              # {caption="…"} on tables, {file="…"} on code, {width="prose"} on figures
 ```
 
-Pin a release with `hugo mod get github.com/aitrien/motifspec@vX.Y.Z`. The module mounts `dist/` at `assets/motifspec`, `fonts/` at `static/fonts` and `layouts/` at `layouts`. Hugo publishes the stylesheet at `/motifspec/`; keep it one level below the site root, because its font URLs are `../fonts/…`.
+Pin a release with `hugo mod get github.com/aitrien/motifspec@vX.Y.Z`. The module mounts `dist/` at `assets/motifspec`, `fonts/` at `static/fonts` and `layouts/` at `layouts`. The shell partials publish the stylesheet and scripts at `/cx/`: one level below the site root, because the stylesheet's font URLs are `../fonts/…`, and not `/motifspec/`, which on GitHub Pages belongs to the motifspec repository's own Pages site.
 
 ## The page shell
 
