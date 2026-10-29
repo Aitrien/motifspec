@@ -85,7 +85,7 @@ Deprecate before removing. A semantic token that is no longer used gets a DTCG `
 
 Consumers pin to a tag. Releasing is automatic: bump `version` in `package.json` and add its `CHANGELOG.md` entry in the PR, and once it is merged and CI passes on main, `.github/workflows/release.yml` tags that commit, publishes a GitHub release with the entry as its notes, publishes the commit to npm with provenance (npm trusted publishing, so no token is stored), deploys it as the MCP server, and publishes its showcase at motifspec.com. A merge that doesn't change the version releases nothing. Don't tag by hand, and never move or delete a published tag: a version is released once, and if one turns out wrong, release the next patch.
 
-Every version bump adds an entry to `CHANGELOG.md` (`## [x.y.z] - YYYY-MM-DD`, then Added / Changed / Removed / Fixed). `npm run build` fails if the version in `package.json` has none. The `changelog` URL in `package.json` points at the file on GitHub; version numbers in the showcase and site footers link to it.
+Every version bump adds an entry to `CHANGELOG.md` (`## [x.y.z] - YYYY-MM-DD`, then Added / Changed / Removed / Fixed). `npm run build` fails if the version in `package.json` has none. The `changelog` URL in `package.json` points at the file on GitHub; the showcase's footer links its version number to it. The `showcase` URL is the published showcase; site footers link their version number there.
 
 ## Files
 

@@ -70,7 +70,7 @@ The closing band of every page: a knitted ornament band, grouped links, a coloph
   <div class="cx-container">
     <div class="cx-footer__base">
       <span>© 2026 Liam Marshall</span>
-      <a class="cx-version" href="https://github.com/Aitrien/motifspec/blob/main/CHANGELOG.md" aria-label="Version 1.6.0: view changelog">MotifSpec v1.6.0<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg><span class="cx-tooltip cx-tooltip--above" aria-hidden="true">View changelog</span></a>
+      <a class="cx-version" href="https://motifspec.com" aria-label="Version 1.16.0: view the MotifSpec showcase">MotifSpec v1.16.0<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg><span class="cx-tooltip cx-tooltip--above" aria-hidden="true">View showcase</span></a>
       <a href="#top">Back to top<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-upward"></use></svg></a>
     </div>
   </div>
@@ -83,7 +83,8 @@ The closing band of every page: a knitted ornament band, grouped links, a coloph
 - Keep two to four columns; the grid wraps on its own.
 - Use the footer band as the page's single ornament when the page has no other.
 - On a backdrop page, let the footer sit on the frost: `cx-backdrop-page` removes its raised surface, and the bottom fade starts above it.
-- Put the MotifSpec version in the base row on sites that consume it, as a `cx-version` link to the changelog (`changelog` in `package.json`, also served in `dist/tokens.json`). Its tooltip opens above (`cx-tooltip--above`) because it sits at the bottom of the page.
+- Put the MotifSpec version in the base row on sites that consume it, as a `cx-version` link to the showcase (`showcase` in `package.json`, also served in `dist/tokens.json`). The showcase's own footer links its version to the changelog instead. Its tooltip opens above (`cx-tooltip--above`) because it sits at the bottom of the page.
+- Point "Back to top" at `#top` and give no element that id. With no `#top` element, the browser scrolls to the top of the document; an id on the sticky header would leave the page where it is, because a stuck header is already in view.
 
 ## Don't
 
