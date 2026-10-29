@@ -2,8 +2,8 @@ name: Release
 
 # Runs after CI passes on a push to main. If package.json has a version that isn't tagged yet, it tags the exact
 # commit CI checked and publishes a GitHub release with that version's CHANGELOG entry. Otherwise it does nothing.
-# Then it publishes that commit to npm and deploys it as the MCP server. So releasing is: bump the version and add the
-# CHANGELOG entry in a PR, then merge it.
+# Then it publishes that commit to npm, deploys it as the MCP server and publishes its showcase at motifspec.com. So
+# releasing is: bump the version and add the CHANGELOG entry in a PR, then merge it.
 on:
   workflow_run:
     workflows: [CI]
@@ -24,6 +24,8 @@ jobs:
   release:
     if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
     runs-on: ubuntu-latest
+    outputs:
+      released: ${{ steps.released.outputs.released }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,6 +39,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_SHA: ${{ github.event.workflow_run.head_sha }}
         run: node scripts/release.mjs --publish
+      - name: Is this commit a release?
+        id: released
+        env:
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          git fetch --tags --quiet
+          version=$(node -p "require('./package.json').version")
+          if [ "$(git rev-list -n 1 "v$version" 2>/dev/null)" = "$SHA" ]; then echo "released=true" >> "$GITHUB_OUTPUT"; fi
 
   npm:
     # Publishes the tagged commit to npm with npm trusted publishing: GitHub's OIDC token proves to npm that this run is
@@ -147,3 +157,45 @@ jobs:
           done
           echo "::error title=MCP server::$URL answered \"$got\", expected version $WANT."
           exit 1
+
+  pages:
+    # Publishes the release's showcase (dist/showcase.standalone.html, one self-contained file) as https://motifspec.com
+    # with GitHub Pages. The custom domain is set in the repo's Pages settings and DNS is in Route 53. Run by hand, it
+    # publishes main's showcase.
+    needs: release
+    if: always() && (needs.release.outputs.released == 'true' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - name: Assemble the site
+        id: site
+        run: |
+          version=$(node -p "require('./package.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          mkdir -p build/site
+          cp dist/showcase.standalone.html build/site/index.html
+          grep -q "v$version" build/site/index.html || { echo "::error::The showcase doesn't name v$version; was dist/ rebuilt?"; exit 1; }
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/site
+      - id: deploy
+        uses: actions/deploy-pages@v4
+      - name: Check the live site shows this version
+        env:
+          WANT: v${{ steps.site.outputs.version }}
+          URL: ${{ steps.deploy.outputs.page_url }}
+        run: |
+          for attempt in 1 2 3 4 5 6; do
+            if curl -fsSL "$URL" | grep -q "$WANT"; then echo "$URL shows MotifSpec $WANT."; exit 0; fi
+            sleep 10
+          done
+          echo "::warning title=Showcase::$URL didn't show $WANT within a minute. Pages can take a little longer, and HTTPS for a new custom domain can take up to an hour; check it by hand."
