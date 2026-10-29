@@ -16,10 +16,22 @@ Parameters:
     Type: String
     Default: motifspec.com.
     Description: The Route 53 hosted zone the domain belongs to, with the trailing dot.
+  # GitHub identifies the repository to AWS by name and by permanent ID (repo:owner@ownerId/repo@repoId:...), so a
+  # deleted or renamed repository's name can't be taken over to deploy here. Find the IDs with
+  # `gh api repos/OWNER/REPO --jq '.owner.id, .id'`.
+  GitHubOwner:
+    Type: String
+    Default: Aitrien
+  GitHubOwnerId:
+    Type: String
+    Default: "18094002"
   GitHubRepository:
     Type: String
-    Default: Aitrien/motifspec
-    Description: owner/repo, spelled exactly as GitHub does. Only its main branch can deploy.
+    Default: motifspec
+    Description: The repository name. Only its main branch can deploy.
+  GitHubRepositoryId:
+    Type: String
+    Default: "1417504796"
   CreateGitHubOidcProvider:
     Type: String
     AllowedValues: ["true", "false"]
@@ -149,7 +161,8 @@ Resources:
         HostedZoneId: !GetAtt Domain.RegionalHostedZoneId
 
   # Assumable only by GitHub Actions runs on the repository's main branch, and only able to replace this one
-  # function's code.
+  # function's code. The subject uses GitHub's immutable format, which repositories created or renamed after
+  # 15 July 2026 send (github.blog/changelog/2026-04-23-immutable-subject-claims-for-github-actions-oidc-tokens).
   DeployRole:
     Type: AWS::IAM::Role
     Properties:
@@ -167,7 +180,7 @@ Resources:
             Condition:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
-                token.actions.githubusercontent.com:sub: !Sub repo:${GitHubRepository}:ref:refs/heads/main
+                token.actions.githubusercontent.com:sub: !Sub repo:${GitHubOwner}@${GitHubOwnerId}/${GitHubRepository}@${GitHubRepositoryId}:ref:refs/heads/main
       Policies:
         - PolicyName: deploy-motifspec-mcp-code
           PolicyDocument:
