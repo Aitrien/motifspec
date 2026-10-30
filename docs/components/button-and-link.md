@@ -70,7 +70,7 @@ Buttons start actions or journeys; standalone links and back links move between 
 
 - Use `<a>` when it goes somewhere and `<button>` when it does something.
 - Write labels as verb plus object, in sentence case.
-- Keep `cx-button` pill-shaped (`radius.pill`). Pills are reserved for buttons, nav items and icon-only controls (the copy button, the theme toggle, the backdrop pause, heading anchors), so a pill always means "you can press this".
+- Keep `cx-button` pill-shaped (`radius.pill`). Pills are reserved for buttons, nav items and icon-only controls (the copy button, the theme toggle, the plate's pause, heading anchors), so a pill always means "you can press this".
 - Use the `arrow-forward` and `arrow-back` icons (see `icon.md`) with `cx-button__arrow`; they nudge by `motion.distance.nudge` on hover, in their own direction.
 
 ## Don't

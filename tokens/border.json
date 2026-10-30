@@ -46,7 +46,8 @@
       },
       "contour": {
         "$value": "{primitive.border.width.3}",
-        "$description": "Stroke of the backdrop's contour lines; index contours are twice this. Thicker than a hairline so the lines survive the frost blur. Not for the specimen plate, which keeps hairlines."
+        "$description": "Stroke of the backdrop's contour lines; index contours are twice this. Thicker than a hairline so the lines survive the frost blur. Not for the specimen plate, which keeps hairlines.",
+        "$deprecated": "Unused since the backdrop's contours became hairlines, as on the specimen plate, in 1.17.0; removed in 2.0.0."
       }
     },
     "focus": {

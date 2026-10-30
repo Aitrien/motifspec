@@ -44,9 +44,9 @@ Pin a release with `hugo mod get github.com/aitrien/motifspec@vX.Y.Z`. The modul
 | Partial | What it writes |
 |---|---|
 | `motifspec/head.html` | The stored-theme snippet, font preloads, `codex.css` and `codex.js`, in that order. |
-| `motifspec/body-start.html` | The backdrop, the icon sprite and the skip link to `#main`. |
-| `motifspec/site-header.html` | `site-header.md`: wordmark from `site.Title` and `site.Params.role`, nav from `site.Menus.main`, the backdrop pause control and the theme toggle. A menu entry is current when its `identifier` is the page's section. |
-| `motifspec/body-end.html` | `plate.js`, which drifts the backdrop and reveals the pause control. |
+| `motifspec/body-start.html` | Call with the page. On the home page, the head of the backdrop; then the icon sprite and the skip link to `#main`. |
+| `motifspec/site-header.html` | `site-header.md`: wordmark from `site.Title` and `site.Params.role`, nav from `site.Menus.main` and the theme toggle. A menu entry is current when its `identifier` is the page's section. |
+| `motifspec/body-end.html` | The foot of the backdrop, behind the footer, and `plate.js`, which settles the home page's contours and lets the pointer warm them. |
 
 The footer stays in the site: its columns are the site's own links and colophon. Use the markup in `site-footer.md`.
 

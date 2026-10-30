@@ -2,7 +2,7 @@
 @font-face { font-family: "JetBrains Mono"; src: url("../fonts/jetbrains-mono-latin-wght.woff2") format("woff2"); font-weight: 100 800; font-style: normal; font-display: swap; }
 @font-face { font-family: "Yarndings 12"; src: url("../fonts/yarndings-12-latin.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
 
-/* MotifSpec 1.16.0 — generated from tokens/*.json. Do not edit.
+/* MotifSpec 1.17.0 — generated from tokens/*.json. Do not edit.
    Themes: semantic colours use light-dark(); color-scheme follows the system unless
    <html data-theme="light|dark"> pins it. --cx-primitive-* are for this file only. */
 :root {
@@ -15,7 +15,7 @@
   /* border.width */
   --cx-border-width-hairline: var(--cx-primitive-border-width-1);
   --cx-border-width-emphasis: var(--cx-primitive-border-width-2);
-  --cx-border-width-contour: var(--cx-primitive-border-width-3);
+  --cx-border-width-contour: var(--cx-primitive-border-width-3); /* Deprecated: Unused since the backdrop's contours became hairlines, as on the specimen plate, in 1.17.0; removed in 2.0.0. */
 
   /* border.focus */
   --cx-border-focus-width: var(--cx-primitive-border-width-2);
@@ -94,6 +94,8 @@
   --cx-primitive-color-amount-2: 14%;
   --cx-primitive-color-amount-3: 40%;
   --cx-primitive-color-amount-4: 140%;
+  --cx-primitive-color-amount-5: 18%;
+  --cx-primitive-color-amount-6: 22%;
 
   /* color.surface */
   --cx-color-surface-base: light-dark(var(--cx-primitive-color-ash-50), var(--cx-primitive-color-ash-900));
@@ -173,9 +175,10 @@
   --cx-color-data-5: light-dark(var(--cx-primitive-color-ash-600), var(--cx-primitive-color-ash-400));
 
   /* color.backdrop */
-  --cx-color-backdrop-tint: var(--cx-primitive-color-amount-3);
+  --cx-color-backdrop-tint: var(--cx-primitive-color-amount-5);
   --cx-color-backdrop-grain: var(--cx-primitive-color-amount-2);
   --cx-color-backdrop-saturation: var(--cx-primitive-color-amount-4);
+  --cx-color-backdrop-calm: var(--cx-primitive-color-amount-6);
 
   /* color.wash */
   --cx-color-wash-hover: var(--cx-primitive-color-amount-1);
@@ -206,6 +209,7 @@
   --cx-motion-duration-slow: var(--cx-primitive-motion-duration-3);
   --cx-motion-duration-plate: var(--cx-primitive-motion-duration-4);
   --cx-motion-duration-drift: var(--cx-primitive-motion-duration-6);
+  --cx-motion-duration-settle: var(--cx-primitive-motion-duration-5);
   --cx-motion-duration-pulse: var(--cx-primitive-motion-duration-5); /* Deprecated: Unused since the contour plate; removed in 2.0.0. */
 
   /* motion.easing */
@@ -316,9 +320,9 @@
   --cx-size-breakpoint-lg: var(--cx-primitive-size-breakpoint-lg);
 
   /* size.backdrop */
-  --cx-size-backdrop-blur: var(--cx-primitive-size-effect-1);
+  --cx-size-backdrop-blur: var(--cx-primitive-size-effect-1); /* Deprecated: Unused since the backdrop's contours became sharp hairlines in 1.17.0; removed in 2.0.0. */
   --cx-size-backdrop-fade: var(--cx-primitive-size-effect-2);
-  --cx-size-backdrop-height: var(--cx-primitive-size-viewport-1);
+  --cx-size-backdrop-height: var(--cx-primitive-size-viewport-1); /* Deprecated: Unused since the backdrop layers scroll with the page at size.backdrop.fade tall in 1.17.0; removed in 2.0.0. */
 
   /* primitive.space.0 */
   --cx-primitive-space-0: 0;
@@ -598,19 +602,6 @@ p, li, dd, figcaption { text-wrap: pretty; }
   transition: background-color var(--cx-motion-duration-fast) var(--cx-motion-easing-standard), color var(--cx-motion-duration-fast) var(--cx-motion-easing-standard);
 }
 @media (hover: hover) { .cx-theme-toggle:hover { color: var(--cx-color-text-primary); background: var(--_wash); } }
-/* Backdrop pause: the same icon-only pill as the theme toggle. A native checkbox (checked = paused), so it works
-   without a click handler; it ships hidden and dist/plate.js reveals it when the backdrop starts to drift. */
-.cx-backdrop__pause {
-  position: relative; flex: none; display: inline-grid; place-items: center;
-  width: var(--cx-size-target-touch); height: var(--cx-size-target-touch);
-  border-radius: var(--cx-radius-pill); color: var(--cx-color-text-secondary); cursor: pointer;
-  transition: background-color var(--cx-motion-duration-fast) var(--cx-motion-easing-standard), color var(--cx-motion-duration-fast) var(--cx-motion-easing-standard);
-}
-@media (hover: hover) { .cx-backdrop__pause:hover { color: var(--cx-color-text-primary); background: var(--_wash); } }
-.cx-backdrop__pause:has(:focus-visible) { outline: var(--cx-border-focus-width) solid var(--cx-color-focus-ring); outline-offset: var(--cx-border-focus-offset); }
-.cx-backdrop__pause :is(.cx-icon, .cx-tooltip [data-when]) { display: none; }
-.cx-backdrop__pause:not(:has(:checked)) [data-when="running"],
-.cx-backdrop__pause:has(:checked) [data-when="paused"] { display: inline-block; }
 .cx-theme-toggle .cx-icon { display: none; }
 .cx-theme-toggle [data-icon="to-dark"] { display: inline-block; }
 :root[data-theme="dark"] .cx-theme-toggle [data-icon="to-dark"] { display: none; }
@@ -1056,14 +1047,17 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 .cx-ornament { font-family: var(--cx-font-family-ornament); line-height: var(--cx-font-line-height-display); color: var(--cx-color-ornament-rest); font-size: var(--cx-size-ornament-md); }
 .cx-ornament--lg { font-size: var(--cx-size-ornament-lg); }
 
-/* ------------------------------------------------------------ backdrop (the contour survey behind every page, under a grainy frost) */
-/* Layers, bottom to top: the canvas (color.surface.base), the contours, the frost (tint + blur), the grain, then the
-   page. The page's own surface fades out over its first and last size.backdrop.fade, so the frost shows behind the
-   header and footer and reading happens on the plain surface. The backdrop is the first child of <body>. */
+/* ------------------------------------------------------------ backdrop (contour surveys behind the home page's statement and every footer, under a grainy frost) */
+/* Layers, bottom to top: the canvas (color.surface.base), the contours, the frost (tint), the grain, then the page. The
+   page's own surface fades out over its first and last size.backdrop.fade, so the frost shows behind the header and
+   footer and reading happens on the plain surface. Two layers, each size.backdrop.fade tall and scrolling with the page:
+   the head (home page only, first child of the page) and the foot (every page, at the bottom). */
 :root:has(.cx-backdrop-page) { background: var(--cx-color-surface-base); }
 /* When the page class sits on a wrapper (a fragment such as the showcase), body's own surface would cover the backdrop. */
 body:not(.cx-backdrop-page):has(.cx-backdrop-page) { background: transparent; }
+/* Positioned so the layers can sit at its top and bottom; no z-index, so the layers still paint under its surface. */
 .cx-backdrop-page {
+  position: relative;
   background: linear-gradient(to top, transparent, var(--cx-color-surface-base) var(--cx-size-backdrop-fade),
     var(--cx-color-surface-base) calc(100% - var(--cx-size-backdrop-fade)), transparent);
 }
@@ -1078,30 +1072,36 @@ body:not(.cx-backdrop-page):has(.cx-backdrop-page) { background: transparent; }
 .cx-backdrop-page .cx-header[data-scrolled="true"] { background-color: var(--cx-color-surface-base); }
 .cx-backdrop-page .cx-footer { background: transparent; }
 .cx-backdrop {
-  /* Larger than the viewport by three blur radii on every side, so the blurred contours are whole at the screen edge.
-     Its height is the large viewport, not the bottom edge: on a phone the address bar slides away as you scroll, and
-     a layer pinned to the bottom would resize with it, re-fit the contours and make them jump. */
-  position: fixed; inset: calc(var(--cx-size-backdrop-blur) * -3); bottom: auto;
-  height: calc(var(--cx-size-backdrop-height) + var(--cx-size-backdrop-blur) * 6);
+  position: absolute; left: 0; right: 0; height: var(--cx-size-backdrop-fade);
   z-index: -1; overflow: hidden; pointer-events: none;
-  /* Read by js/plate.js, as on the plate. */
-  --cx-plate-drift: var(--cx-motion-duration-drift); --cx-plate-draw: var(--cx-motion-duration-plate);
+  /* Read by js/plate.js. */
+  --cx-plate-settle: var(--cx-motion-duration-settle);
+  /* The calm side: where text sits, the contours keep color.backdrop.calm of their strength. A mask only reads alpha,
+     so any opaque token colour works as "full". */
+  --_full: var(--cx-color-text-primary);
+  --_calm: color-mix(in srgb, var(--cx-color-text-primary) var(--cx-color-backdrop-calm), transparent);
+  -webkit-mask-image: linear-gradient(to right, var(--_calm) 30%, var(--_full) 72%);
+  mask-image: linear-gradient(to right, var(--_calm) 30%, var(--_full) 72%);
 }
-.cx-backdrop .cx-plate__map {
-  position: relative; z-index: 0;
-  /* The frost's blur is applied to the contours themselves. The layer reaches three blur radii past the viewport, so
-     the blur never runs out of picture at the screen edge (backdrop-filter does, and leaves sharp lines there). */
-  filter: blur(var(--cx-size-backdrop-blur)) saturate(var(--cx-color-backdrop-saturation));
+/* The head is also calm along the header. */
+.cx-backdrop--head {
+  top: 0;
+  -webkit-mask-image: linear-gradient(to right, var(--_calm) 30%, var(--_full) 72%), linear-gradient(to bottom, var(--_calm) 17%, var(--_full) 42%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, var(--_calm) 30%, var(--_full) 72%), linear-gradient(to bottom, var(--_calm) 17%, var(--_full) 42%);
+  mask-composite: intersect;
 }
-/* No draw-in: the backdrop is already there when a page opens. */
-.cx-backdrop .cx-plate__line { stroke-width: var(--cx-border-width-contour); stroke-dasharray: none; stroke-dashoffset: 0; animation: none; }
-.cx-backdrop .cx-plate__line--index { stroke-width: calc(var(--cx-border-width-contour) * 2); }
+.cx-backdrop--foot { bottom: 0; }
+.cx-backdrop .cx-plate__map { position: relative; z-index: 0; width: 100%; height: 100%; filter: saturate(var(--cx-color-backdrop-saturation)); }
+/* Sharp hairlines, as on the plate, without its survey grid. No draw-in: the backdrop is already there when a page opens. */
+.cx-backdrop .cx-plate__grid { display: none; }
+.cx-backdrop .cx-plate__line { stroke-width: var(--cx-border-width-hairline); stroke-dasharray: none; stroke-dashoffset: 0; animation: none; }
+.cx-backdrop .cx-plate__line--index { stroke-width: var(--cx-border-width-emphasis); }
 .cx-backdrop::before {
   content: ""; position: absolute; inset: 0; z-index: 1;
   background: color-mix(in srgb, var(--cx-color-surface-base) var(--cx-color-backdrop-tint), transparent);
 }
-/* Grain: monochrome fractal noise over the frost. No blend mode: in Chromium, blending this layer brought sharp,
-   unblurred lines back. */
+/* Grain: monochrome fractal noise over the frost. No blend mode. */
 .cx-backdrop::after {
   content: ""; position: absolute; inset: 0; z-index: 2; opacity: var(--cx-color-backdrop-grain);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
@@ -1119,8 +1119,6 @@ body:not(.cx-backdrop-page):has(.cx-backdrop-page) { background: transparent; }
   /* The plate is drawn complete and stays still; its pause control disappears because there is nothing to pause. */
   .cx-plate__line { animation: none !important; stroke-dasharray: none; }
   .cx-plate__pause { display: none; }
-  /* The backdrop stays still too, so its header control goes. */
-  .cx-backdrop__pause { display: none; }
 }
 
 /* Hugo Chroma classes -> MotifSpec tokens (generated from syntax/chroma.json). Both themes via tokens. */

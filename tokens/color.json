@@ -863,6 +863,20 @@
             "codex.tier": "primitive",
             "codex.unit": "%"
           }
+        },
+        "5": {
+          "$value": 18,
+          "$extensions": {
+            "codex.tier": "primitive",
+            "codex.unit": "%"
+          }
+        },
+        "6": {
+          "$value": 22,
+          "$extensions": {
+            "codex.tier": "primitive",
+            "codex.unit": "%"
+          }
         }
       }
     }
@@ -1879,8 +1893,8 @@
     "backdrop": {
       "$type": "number",
       "tint": {
-        "$value": "{primitive.color.amount.3}",
-        "$description": "Share of color.surface.base laid over the blurred backdrop contours, in percent: enough to soften the lines into relief behind the header, the opening of a page and the footer."
+        "$value": "{primitive.color.amount.5}",
+        "$description": "Share of color.surface.base laid over the backdrop contours, in percent: a light frost that softens the sharp hairlines without hiding them, behind the home page's statement and the footer."
       },
       "grain": {
         "$value": "{primitive.color.amount.2}",
@@ -1888,7 +1902,11 @@
       },
       "saturation": {
         "$value": "{primitive.color.amount.4}",
-        "$description": "Saturation applied with the frost blur, in percent, so blurred contour colour stays green instead of greying out."
+        "$description": "Saturation applied to the backdrop contours under the frost, in percent, so their colour stays green instead of greying out."
+      },
+      "calm": {
+        "$value": "{primitive.color.amount.6}",
+        "$description": "Strength the backdrop contours keep where text sits on the frost, in percent: on the left, where the statement and the footer start, and along the header. They come up to full strength towards the open side. A mask amount only."
       }
     },
     "wash": {

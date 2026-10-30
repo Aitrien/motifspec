@@ -42,7 +42,7 @@ tokens:
 
 # Site header and nav
 
-The bar at the top of every page: wordmark, primary nav, the backdrop pause control and the theme toggle. On a backdrop page (`backdrop.md`) it sits on the frost and scrolls away with the page; elsewhere it is sticky.
+The bar at the top of every page: wordmark, primary nav and the theme toggle. On a backdrop page (`backdrop.md`) it sits on the frost and scrolls away with the page; elsewhere it is sticky.
 
 ## When to use
 
@@ -70,12 +70,6 @@ The bar at the top of every page: wordmark, primary nav, the backdrop pause cont
           <li><a href="/about/">About</a></li>
         </ul>
       </nav>
-      <label class="cx-backdrop__pause" hidden>
-        <input class="cx-visually-hidden" type="checkbox" aria-label="Pause background animation">
-        <svg class="cx-icon" data-when="running" aria-hidden="true" focusable="false"><use href="#cx-icon-pause"></use></svg>
-        <svg class="cx-icon" data-when="paused" aria-hidden="true" focusable="false"><use href="#cx-icon-play"></use></svg>
-        <span class="cx-tooltip" aria-hidden="true"><span data-when="running">Pause background</span><span data-when="paused">Play background</span></span>
-      </label>
       <button class="cx-theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch to dark theme">
         <svg class="cx-icon" data-icon="to-dark" aria-hidden="true" focusable="false"><use href="#cx-icon-theme-dark"></use></svg>
         <svg class="cx-icon" data-icon="to-light" aria-hidden="true" focusable="false"><use href="#cx-icon-theme-light"></use></svg>
@@ -103,10 +97,9 @@ Copy the snippet as it is: the build fails if this doc and `js/theme-init.js` di
 ## Do
 
 - Mark the current section with `aria-current="page"`, including on child pages (a post marks Writing). It gets a `color.border.strong` hairline inside its edge and `color.text.primary` text: no fill and no underline.
-- Nav items are pills (`radius.pill`), the same shape as the pause control and the theme toggle, so every header control reads as one set.
+- Nav items are pills (`radius.pill`), the same shape as the theme toggle, so every header control reads as one set.
 - When the nav and controls wrap below the wordmark, `dist/codex.js` sets `data-wrapped` on the header: the nav moves to the start of its row and is offset by its pills' padding, so the link text lines up with the wordmark and the page text, while the controls stay at the end. Without the script the row stays right-aligned.
 - Every header control rests in `color.text.secondary` and shares one hover, shown only where the pointer can hover (`@media (hover: hover)`), so it never sticks after a tap: `color.text.primary` text on a wash of `color.text.primary` at `color.wash.hover`. A solid `color.surface.hover` would all but match the frost.
-- Include the backdrop pause control on every backdrop page, between the nav and the theme toggle. It ships `hidden` and `dist/plate.js` reveals it when the drift starts; it never appears on a page without the backdrop. The choice is kept like the theme: `dist/plate.js` stores `paused` under `cx-backdrop` and restores it on every page.
 - On a backdrop page, let the header start on the frost. `dist/codex.js` sets `data-scrolled` on it: from then on it is sticky, and as soon as the page leaves the top (`"true"`) its `color.surface.base` surface fades in over `motion.duration.slow`. Back at the top (`"false"`) the surface fades out and the frost shows through again. Without the script the header has no surface and scrolls away with the page.
 - Keep labels to one functional word each.
 - Ship the toggle with `hidden` and let the script reveal it, so no dead control appears without JavaScript.
@@ -117,7 +110,7 @@ Copy the snippet as it is: the build fails if this doc and `js/theme-init.js` di
 ## Don't
 
 - Don't hide the nav behind a menu button at small widths. The list scrolls inside its row instead.
-- Don't add icons or ornaments to nav items. The pause control and the theme toggle are the only header controls with icons.
+- Don't add icons or ornaments to nav items. The theme toggle is the only header control with an icon.
 - Don't make the header sticky on a backdrop page without its surface; see-through, it would sit on the text below it. The `data-scrolled` rules keep the two together.
 - Don't animate the header on scroll beyond that surface fade (no shrink, hide or reveal).
 
@@ -125,8 +118,7 @@ Copy the snippet as it is: the build fails if this doc and `js/theme-init.js` di
 
 - The skip link is the first focusable element and targets `<main id="main">`.
 - `<nav aria-label="Main">`; only one nav per page uses that label.
-- Nav links, the pause control and the toggle are 44px (`size.target.touch`); the pause control and the toggle are pills with equal sides, so they render as circles.
-- The pause control is a native checkbox named "Pause background animation" (checked means paused), focusable by keyboard, with its focus ring on the round control.
+- Nav links and the toggle are 44px (`size.target.touch`); the toggle is a pill with equal sides, so it renders as a circle.
 - The toggle's `aria-label` is its action ("Switch to light theme"); the visible tooltip repeats it and is `aria-hidden`. Escape hides the tooltip without moving the pointer (see `tooltip.md`).
 - `aria-current` carries the current state for assistive tech; the outline is the visual cue.
 - Pairs: `color.text.secondary` and `color.text.primary` on `color.surface.base` (7:1); `color.border.strong` on `color.surface.base` (current outline, 3:1). On a backdrop page the frost is measured as `color.surface.base`; the contour lines beneath it are not part of the check.

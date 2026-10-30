@@ -65,7 +65,7 @@
     },
     "pause": {
       "symbol": "pause",
-      "use": "Pause control for the contour drift (the backdrop in the header, or the specimen plate) while it is running."
+      "use": "Pause control for the specimen plate's drift while it is running."
     },
     "play": {
       "symbol": "play_arrow",

@@ -4,7 +4,6 @@ status: stable
 tokens:
   - border.focus.offset
   - border.focus.width
-  - border.width.contour
   - border.width.emphasis
   - border.width.hairline
   - color.backdrop.saturation
@@ -28,7 +27,6 @@ tokens:
   - motion.easing.enter
   - motion.easing.standard
   - radius.pill
-  - size.backdrop.blur
   - size.column.card
   - size.mark.tick
   - size.target.touch
@@ -48,7 +46,7 @@ A contour survey of generated terrain: simplex-noise height lines drawn as a sta
 
 ## When not to use
 
-- On a page with the backdrop (`backdrop.md`), which already draws the survey behind it: one contour field per page. The showcase, which documents both, is the only exception.
+- On a page with the backdrop (`backdrop.md`), which already draws the survey behind it: one kind of contour field per page. The showcase, which documents both, is the only exception.
 - On article, index or 404 pages.
 - As a loading indicator, or as a map of a real place. It is generated, not surveyed.
 - Without its pause control.

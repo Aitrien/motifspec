@@ -2,6 +2,30 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.17.0] - 2026-10-30
+
+### Changed
+- The backdrop no longer drifts behind every page. People found the moving contours distracting, so it is now two still layers that scroll with the page:
+  - the head, on the home page only, behind the header and the statement
+  - the foot, on every page, behind the footer, on a different stretch of terrain (`dist/backdrop-foot.html`, new)
+
+  The head settles into place over `motion.duration.settle` on arrival, then stays still. On both, the pointer warms the ground under it into a hill of rings that flattens again once it moves on, like an attention heatmap drawn as a survey. Under reduced motion nothing moves.
+- The contours are sharp: the specimen plate's hairline and emphasis weights instead of a blurred 3px stroke, without the survey grid, under a lighter frost (`color.backdrop.tint` is now 18%).
+- Where text sits on the frost, on the left and along the header, the contours keep `color.backdrop.calm` of their strength and come up to full strength towards the open side. The lines run behind the text, not around it.
+- Hugo: `motifspec/body-start.html` inlines the head on the home page only, and `motifspec/body-end.html` now inlines the foot before `plate.js`. Both partials are called as before.
+- `cx-backdrop-page` is now `position: relative`, so the layers can sit at its top and bottom.
+
+### Added
+- `motion.duration.settle` (3200ms): the backdrop's settle on arrival, and the timing of a warmed hill.
+- `color.backdrop.calm` (22%): how much of their strength the contours keep where text sits.
+- `cx-backdrop--head` and `cx-backdrop--foot`.
+
+### Removed
+- The backdrop pause control (`cx-backdrop__pause`) in the site header and its stored `cx-backdrop` preference. Nothing runs for more than five seconds any more, so WCAG 2.2.2 doesn't call for one. The specimen plate keeps its own.
+
+### Deprecated
+- `size.backdrop.blur` and `border.width.contour`: the contours are no longer blurred. `size.backdrop.height`: each layer is `size.backdrop.fade` tall. All three are removed in 2.0.0.
+
 ## [1.16.0] - 2026-10-29
 
 ### Added

@@ -1,4 +1,4 @@
-/* MotifSpec 1.16.0 — generated from tokens/*.json. Do not edit.
+/* MotifSpec 1.17.0 — generated from tokens/*.json. Do not edit.
    Themes: semantic colours use light-dark(); color-scheme follows the system unless
    <html data-theme="light|dark"> pins it. --cx-primitive-* are for this file only. */
 :root {
@@ -11,7 +11,7 @@
   /* border.width */
   --cx-border-width-hairline: var(--cx-primitive-border-width-1);
   --cx-border-width-emphasis: var(--cx-primitive-border-width-2);
-  --cx-border-width-contour: var(--cx-primitive-border-width-3);
+  --cx-border-width-contour: var(--cx-primitive-border-width-3); /* Deprecated: Unused since the backdrop's contours became hairlines, as on the specimen plate, in 1.17.0; removed in 2.0.0. */
 
   /* border.focus */
   --cx-border-focus-width: var(--cx-primitive-border-width-2);
@@ -90,6 +90,8 @@
   --cx-primitive-color-amount-2: 14%;
   --cx-primitive-color-amount-3: 40%;
   --cx-primitive-color-amount-4: 140%;
+  --cx-primitive-color-amount-5: 18%;
+  --cx-primitive-color-amount-6: 22%;
 
   /* color.surface */
   --cx-color-surface-base: light-dark(var(--cx-primitive-color-ash-50), var(--cx-primitive-color-ash-900));
@@ -169,9 +171,10 @@
   --cx-color-data-5: light-dark(var(--cx-primitive-color-ash-600), var(--cx-primitive-color-ash-400));
 
   /* color.backdrop */
-  --cx-color-backdrop-tint: var(--cx-primitive-color-amount-3);
+  --cx-color-backdrop-tint: var(--cx-primitive-color-amount-5);
   --cx-color-backdrop-grain: var(--cx-primitive-color-amount-2);
   --cx-color-backdrop-saturation: var(--cx-primitive-color-amount-4);
+  --cx-color-backdrop-calm: var(--cx-primitive-color-amount-6);
 
   /* color.wash */
   --cx-color-wash-hover: var(--cx-primitive-color-amount-1);
@@ -202,6 +205,7 @@
   --cx-motion-duration-slow: var(--cx-primitive-motion-duration-3);
   --cx-motion-duration-plate: var(--cx-primitive-motion-duration-4);
   --cx-motion-duration-drift: var(--cx-primitive-motion-duration-6);
+  --cx-motion-duration-settle: var(--cx-primitive-motion-duration-5);
   --cx-motion-duration-pulse: var(--cx-primitive-motion-duration-5); /* Deprecated: Unused since the contour plate; removed in 2.0.0. */
 
   /* motion.easing */
@@ -312,9 +316,9 @@
   --cx-size-breakpoint-lg: var(--cx-primitive-size-breakpoint-lg);
 
   /* size.backdrop */
-  --cx-size-backdrop-blur: var(--cx-primitive-size-effect-1);
+  --cx-size-backdrop-blur: var(--cx-primitive-size-effect-1); /* Deprecated: Unused since the backdrop's contours became sharp hairlines in 1.17.0; removed in 2.0.0. */
   --cx-size-backdrop-fade: var(--cx-primitive-size-effect-2);
-  --cx-size-backdrop-height: var(--cx-primitive-size-viewport-1);
+  --cx-size-backdrop-height: var(--cx-primitive-size-viewport-1); /* Deprecated: Unused since the backdrop layers scroll with the page at size.backdrop.fade tall in 1.17.0; removed in 2.0.0. */
 
   /* primitive.space.0 */
   --cx-primitive-space-0: 0;
