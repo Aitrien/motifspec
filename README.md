@@ -9,7 +9,7 @@ Liam Marshall's design system: the single source of truth for aitrien.com and ev
 3. **Measure it, don't eyeball it.** Reading text meets 7:1, controls and focus meet 3:1, and every pair is checked in both themes on every build.
 4. **HTML first, script second.** Content, navigation and code work without JavaScript. Scripts add the theme toggle, copy buttons and TOC tracking.
 5. **Square, hairline, labelled.** Structure is drawn with 1px rules, square corners and mono labels, like a field ledger. Buttons, nav items and icon-only controls are the one exception: they are pills, so anything you can press is recognisable at a glance.
-6. **Motion confirms a change.** Only state changes animate, plus the pausable drift of the contour survey behind the page; text never moves, and reduced motion means none.
+6. **Motion confirms a change.** Only state changes animate, plus the contour survey: it settles once on arrival and answers the pointer, and the specimen plate's drift can be paused. Text never moves, and reduced motion means none.
 7. **One accent, one ornament.** Sap green marks action. Yarndings and the contour survey (the backdrop, or the specimen plate) are the only decoration, once per view.
 
 ## Rules for AI assistants
@@ -53,7 +53,7 @@ showcase/           Source of the system's showcase page
 mcp/                The MCP server (server.mjs), its Lambda handler, bundle step and tests
 infra/mcp.yml       The server's AWS stack and deploy role (CloudFormation, applied by hand)
 hugo.toml, go.mod   Hugo module definition and its mounts
-dist/               Generated: tokens.css, components in codex.css, chroma.css, fonts.css, icons.svg (sprite), tokens.json, tokens.js (ES module export), codex.js and theme-init.js (behaviour), backdrop.html, plate.html and plate.js (backdrop and specimen plate), contrast.md, showcase.html (fragment for publishing), showcase.standalone.html (open locally)
+dist/               Generated: tokens.css, components in codex.css, chroma.css, fonts.css, icons.svg (sprite), tokens.json, tokens.js (ES module export), codex.js and theme-init.js (behaviour), backdrop.html and backdrop-foot.html, plate.html and plate.js (backdrop and specimen plate), contrast.md, showcase.html (fragment for publishing), showcase.standalone.html (open locally)
 ```
 
 ## Commands
@@ -99,7 +99,7 @@ Pin an exact version, as a Hugo site pins a tag: the version you install is the 
 | `@aitrien/motifspec/tokens.css`, `fonts.css`, `chroma.css` | The parts on their own: tokens only, `@font-face` only, syntax highlighting only. |
 | `@aitrien/motifspec/codex.js` | Behaviour: theme toggle, copy buttons, TOC, tooltips. Load with `defer`. |
 | `@aitrien/motifspec/theme-init.js` | Inline it in `<head>` before the stylesheet so a stored theme applies before first paint. |
-| `@aitrien/motifspec/plate.js`, `backdrop.html` | The contour backdrop and its animation (`backdrop.md`). |
+| `@aitrien/motifspec/plate.js`, `backdrop.html`, `backdrop-foot.html` | The contour backdrop and its motion (`backdrop.md`). |
 | `@aitrien/motifspec/icons.svg` | The icon sprite. Inline it once in `<body>`. |
 | `@aitrien/motifspec/tokens.js`, `tokens.json` | Every token with its value, tier and CSS name, for build tools. |
 | `@aitrien/motifspec/check` | `checkText` and `checkProject` from the rule checker. |
@@ -142,7 +142,7 @@ It serves the latest release. A project pinned to an older version can be offere
 | Colour | Five dye-plant hues generated in OKLCH: ash (neutral), sap (accent and success), woad (focus and info), weld (warning) and madder (danger). Cool paper in light mode, green-black in dark mode. |
 | Type | National Park (display and body), JetBrains Mono (code and labels), Yarndings 12 (ornament). 88 KB total. |
 | Signature | The accession label: every entry has a catalogue number (`LM-W-004`, `LM-P-031`) shown on a framed label with registration ticks. |
-| Decoration | The backdrop: a contour survey of generated terrain that slowly drifts behind every page under a grainy frost, showing through above the header and below the footer. The same survey framed as the specimen plate (Plate 0) for landing pages, and a knitted Yarndings band in the footer. |
+| Decoration | The backdrop: contour surveys of generated terrain under a light, grainy frost, behind the home page's statement and every footer. They settle once on arrival and warm into hills under the pointer, like a heatmap. The same survey framed as the specimen plate (Plate 0) for landing pages, and a knitted Yarndings band in the footer. |
 | Icons | 16 Material Symbols (Sharp, weight 300) as a self-hosted SVG sprite: direction arrows, theme, copy, callout kinds, RSS, external links. Functional only. |
 | Separator | A muted pipe, `\|`, hidden from screen readers. |
 

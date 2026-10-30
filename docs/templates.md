@@ -1,6 +1,6 @@
 # Page templates
 
-Content hierarchy for the six page types. Every template sits on the backdrop (`components/backdrop.md`): the frost shows through behind the header and the opening of the page, and again behind the footer. Every template keeps the full site header (Work, Writing, About, the backdrop pause, the theme toggle) and the footer. Every `<h2>` section heading carries a heading anchor.
+Content hierarchy for the six page types. Every template sits on the backdrop (`components/backdrop.md`): its contours show behind the footer, and on the home page behind the header and the statement too. Every template keeps the full site header (Work, Writing, About, the theme toggle) and the footer. Every `<h2>` section heading carries a heading anchor.
 
 | Template | Order | Dominant | Secondary |
 |---|---|---|---|

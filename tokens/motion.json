@@ -164,7 +164,11 @@
       },
       "drift": {
         "$value": "{primitive.motion.duration.6}",
-        "$description": "Time the contour terrain (the backdrop, or the specimen plate) takes to drift one noise unit, so its lines reshape slowly and continuously. The only looping motion in the system: one contour field per page, with a visible pause control, stopped under prefers-reduced-motion."
+        "$description": "Time the specimen plate's terrain takes to drift one noise unit, so its lines reshape slowly and continuously. The only looping motion in the system: one plate per page, with a visible pause control, stopped under prefers-reduced-motion. The backdrop doesn't drift."
+      },
+      "settle": {
+        "$value": "{primitive.motion.duration.5}",
+        "$description": "The backdrop's response time. The home page's contours settle into place over it on arrival and then stay still, and a hill the pointer warms takes about two-thirds of it to rise and twice it to flatten. Under five seconds, so nothing runs long enough to need a pause control; none of it happens under prefers-reduced-motion."
       },
       "pulse": {
         "$value": "{primitive.motion.duration.5}",

@@ -1,5 +1,7 @@
-{{- /* docs/hugo.md. Call last inside <body>: drifts the backdrop and reveals the header's pause control. Without it
-       the contours stay still. */ -}}
+{{- /* docs/hugo.md. Call last inside <body>, after the footer: the foot of the contour backdrop behind the footer
+       (backdrop.md), and plate.js, which settles the home page's contours on arrival and lets the pointer warm them.
+       Without the script the contours stay still. */ -}}
+{{ with resources.Get "motifspec/backdrop-foot.html" }}{{ .Content | safeHTML }}{{ else }}{{ errorf "motifspec/backdrop-foot.html is missing: is the MotifSpec module imported?" }}{{ end }}
 {{- with resources.Get "motifspec/plate.js" | resources.Copy "cx/plate.js" | minify | fingerprint }}
 <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous" defer></script>
 {{- end }}

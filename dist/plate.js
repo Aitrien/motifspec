@@ -1,8 +1,9 @@
 // Specimen plate and backdrop: a contour survey of simplex-noise terrain.
 // The build runs contours() once (t = 0) to write the static SVG, so the plate and the backdrop are complete
 // without JavaScript.
-// In the browser, mount() redraws the same contours as the terrain drifts through time. Same code, same seed,
-// so the first animated frame matches the static one exactly.
+// In the browser, mount() redraws the same contours: a plate as its terrain drifts through time, a backdrop as it
+// settles on arrival and as the pointer warms it. Same code, same seed, so the first animated frame matches the static
+// one exactly.
 (function (g) {
   'use strict';
 
@@ -60,7 +61,8 @@
     octaves: 2,
     massif: 1.1,    // how strongly the terrain rises toward the centre
     levels: 14,     // contour lines
-    index: 5        // every nth line is an index contour
+    index: 5,       // every nth line is an index contour
+    bump: 0.045     // radius of a hill the pointer warms, in survey widths
   };
 
   function survey(opts) {
@@ -72,12 +74,16 @@
     for (k = 1; k <= o.levels; k++) levels.push(lo + k * step);
     var h = new Float32Array((N + 1) * (N + 1));
 
-    function height(t) {
+    // bumps: soft hills added to the terrain, [{ x, y, a }] in survey widths (0 to 1), each a Gaussian of radius o.bump.
+    function height(t, bumps) {
+      var nb = bumps ? bumps.length : 0, r2 = o.bump * o.bump;
       for (var j = 0; j <= N; j++) for (var i = 0; i <= N; i++) {
         var x = i / N, y = j / N, f = o.scale, a = 1, v = 0, norm = 0;
         for (var oc = 0; oc < o.octaves; oc++) { v += a * noise(x * f, y * f, t + oc * 13.7); norm += a; a *= 0.35; f *= 2.3; }
         var dx = x - 0.5, dy = y - 0.5, r = Math.min(1, Math.sqrt(dx * dx + dy * dy) / 0.62);
-        h[j * (N + 1) + i] = v / norm + o.massif * (1 - r * r);
+        var add = 0;
+        for (var b = 0; b < nb; b++) { var bx = x - bumps[b].x, by = y - bumps[b].y; add += bumps[b].a * Math.exp(-(bx * bx + by * by) / r2); }
+        h[j * (N + 1) + i] = v / norm + o.massif * (1 - r * r) + add;
       }
     }
 
@@ -201,56 +207,47 @@
     return {
       options: o,
       levels: levels,
-      // Path data for every level at time t (in noise units).
-      contours: function (t) {
-        height(t || 0);
+      // Path data for every level at time t (in noise units), with any bumps added.
+      contours: function (t, bumps) {
+        height(t || 0, bumps);
         return levels.map(function (lv, i) { return { level: i + 1, index: (i + 1) % o.index === 0, d: path(trace(lv)) }; });
       }
     };
   }
 
   // ------------------------------------------------------------ static markup (used by the build)
-  // kind 'backdrop' draws the same survey full-bleed behind a page (docs/components/backdrop.md): sliced to cover
-  // the viewport instead of fitted into the plate's square.
+  // kind 'head' or 'foot' draws the same survey full-bleed behind a page (docs/components/backdrop.md): sliced to cover
+  // its layer instead of fitted into the plate's square, on a finer grid so a warmed hill is round.
+  var BACKDROP = { head: { seed: 3, cells: 48 }, foot: { seed: 7, cells: 48 } };
   function markup(opts, kind) {
-    var bg = kind === 'backdrop';
+    var bg = kind === 'head' || kind === 'foot';
+    if (bg) { opts = opts || {}; for (var key in BACKDROP[kind]) if (opts[key] == null) opts[key] = BACKDROP[kind][key]; }
     var s = survey(opts), S = s.options.size, q = S / 4;
     var grid = [q, 2 * q, 3 * q].map(function (v) { return 'M' + v + ' 0V' + S + 'M0 ' + v + 'H' + S; }).join('');
     var paths = s.contours(0).map(function (c, i) {
       return '<path class="cx-plate__line' + (c.index ? ' cx-plate__line--index' : '') + '" style="--i: ' + i + '" pathLength="1" d="' + c.d + '"></path>';
     }).join('');
-    return '<div class="' + (bg ? 'cx-backdrop' : 'cx-plate') + '" aria-hidden="true" data-plate-seed="' + s.options.seed + '">' +
+    return '<div class="' + (bg ? 'cx-backdrop cx-backdrop--' + kind : 'cx-plate') + '" aria-hidden="true" data-plate-seed="' + s.options.seed + '"' + (bg ? ' data-plate-cells="' + s.options.cells + '"' : '') + '>' +
       '<svg class="cx-plate__map" viewBox="0 0 ' + S + ' ' + S + '"' + (bg ? ' preserveAspectRatio="xMidYMid slice"' : '') + ' focusable="false">' +
       '<path class="cx-plate__grid" d="' + grid + '"></path>' + paths + '</svg></div>';
   }
-  function backdrop(opts) { return markup(opts, 'backdrop'); }
+  function backdrop(kind, opts) { return markup(opts, kind || 'head'); }
 
   // ------------------------------------------------------------ animation (browser only)
-  function mount(root) {
+  function ms(win, root, name) { // durations come from the tokens, through custom properties on the element
+    var v = win.getComputedStyle(root).getPropertyValue(name).trim();
+    return v.endsWith('ms') ? parseFloat(v) : parseFloat(v) * 1000;
+  }
+
+  // A specimen plate: its lines draw in, then the terrain drifts until it is paused, hidden or off screen.
+  function mountPlate(root) {
     var doc = root.ownerDocument, win = doc.defaultView;
-    // A plate's pause control sits in its frame; the backdrop's sits in the site header.
-    var toggle = root.classList.contains('cx-backdrop')
-      ? doc.querySelector('.cx-backdrop__pause')
-      : (root.closest('.cx-plate-frame') || root.parentElement).querySelector('.cx-plate__pause');
+    var toggle = (root.closest('.cx-plate-frame') || root.parentElement).querySelector('.cx-plate__pause');
     var input = toggle && toggle.querySelector('input');
-    // The backdrop's pause is a reader preference, like the theme: it is stored under cx-backdrop ("paused", or no key
-    // for running) and restored on every page. A plate's pause belongs to that plate and isn't kept.
-    if (input && root.classList.contains('cx-backdrop')) {
-      try { if (win.localStorage.getItem('cx-backdrop') === 'paused') input.checked = true; } catch (e) { /* storage blocked */ }
-      input.addEventListener('change', function () {
-        try { if (input.checked) win.localStorage.setItem('cx-backdrop', 'paused'); else win.localStorage.removeItem('cx-backdrop'); }
-        catch (e) { /* storage blocked: the pause still applies to this page */ }
-      });
-    }
     var paths = root.querySelectorAll('.cx-plate__line');
     var reduce = win.matchMedia('(prefers-reduced-motion: reduce)');
-    function ms(name) { // durations come from the tokens, through custom properties on the plate
-      var v = win.getComputedStyle(root).getPropertyValue(name).trim();
-      return v.endsWith('ms') ? parseFloat(v) : parseFloat(v) * 1000;
-    }
-    var drift = ms('--cx-plate-drift'), delay = ms('--cx-plate-draw');
+    var drift = ms(win, root, '--cx-plate-drift'), delay = ms(win, root, '--cx-plate-draw');
     var s = survey({ seed: Number(root.getAttribute('data-plate-seed')) || DEFAULTS.seed });
-    var backdrop = root.classList.contains('cx-backdrop');
     // The drift never starts at full speed: from rest its speed eases up over one draw duration, on load and again
     // after a pause, a hidden tab or scrolling back into view. Pausing still stops it at once.
     var elapsed = 0, last = null, raf = 0, frames = 0, visible = true, ready = false, warm = 0;
@@ -277,10 +274,70 @@
     if (reduce.addEventListener) reduce.addEventListener('change', update);
     doc.addEventListener('visibilitychange', update);
     if ('IntersectionObserver' in win) new win.IntersectionObserver(function (e) { visible = e[0].isIntersecting; update(); }).observe(root);
-    // A plate draws its lines in first; the backdrop has no draw-in, so it starts as soon as the script runs.
-    if (backdrop) ready = true; else win.setTimeout(function () { ready = true; update(); }, delay);
+    win.setTimeout(function () { ready = true; update(); }, delay);
     update();
   }
+
+  // A backdrop never drifts. The head settles into place over one settle duration on arrival (fast, then easing to a
+  // stop) and stays still. While a layer is on screen, the pointer warms the ground under it into a hill of rings,
+  // which rises over two-thirds of a settle, stays while the pointer rests there, and flattens over two settles once it
+  // moves on. Nothing runs on its own for
+  // more than five seconds, so there is no pause control; under prefers-reduced-motion none of it happens.
+  var SETTLE_FROM = -0.14, HEAT_MAX = 0.95, HEAT_STEP = 0.08, HEAT_KEEP = 40, MOVE_PX = 14;
+  function mountBackdrop(root) {
+    var doc = root.ownerDocument, win = doc.defaultView;
+    if (win.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var svg = root.querySelector('.cx-plate__map'), paths = root.querySelectorAll('.cx-plate__line');
+    var s = survey({ seed: Number(root.getAttribute('data-plate-seed')) || DEFAULTS.seed, cells: Number(root.getAttribute('data-plate-cells')) || DEFAULTS.cells });
+    var settle = ms(win, root, '--cx-plate-settle'), rise = settle * 2 / 3, cool = settle * 2;
+    var head = root.classList.contains('cx-backdrop--head');
+    var heat = [], under = null, t0 = null, settling = head, raf = 0, last = null, visible = true, lastXY = null;
+
+    // The survey square covers the layer (slice), so a screen point maps to survey widths through its larger side.
+    function toSurvey(px, py) {
+      var r = svg.getBoundingClientRect(), side = Math.max(r.width, r.height);
+      return [(px - r.left - (r.width - side) / 2) / side, (py - r.top - (r.height - side) / 2) / side];
+    }
+    function tick(now) {
+      raf = 0;
+      var dt = last === null ? 0 : Math.min(now - last, settle / 16); last = now;
+      var t = 0, moving = false;
+      if (settling) {
+        if (t0 === null) t0 = now;
+        var p = Math.min(1, (now - t0) / settle);
+        t = SETTLE_FROM * Math.pow(1 - p, 3); // eases out: quick on arrival, still at the end
+        if (p < 1) moving = true; else settling = false;
+      }
+      heat.forEach(function (h) {
+        if (h === under) { if (h.a < HEAT_MAX) { h.a = Math.min(HEAT_MAX, h.a + dt / rise * HEAT_MAX); moving = true; } }
+        else { h.a -= dt / cool * HEAT_MAX; moving = true; }
+      });
+      heat = heat.filter(function (h) { return h.a > 0; });
+      s.contours(t, heat).forEach(function (c, i) { paths[i].setAttribute('d', c.d); });
+      if (moving) raf = win.requestAnimationFrame(tick); else last = null;
+    }
+    function wake() { if (!raf) raf = win.requestAnimationFrame(tick); }
+    function warmAt(px, py) {
+      var r = root.getBoundingClientRect();
+      if (!visible || px < r.left || px > r.right || py < r.top || py > r.bottom) { under = null; return; }
+      var q = toSurvey(px, py), near = null, best = s.options.bump * 0.8;
+      heat.forEach(function (h) { var d = Math.hypot(h.x - q[0], h.y - q[1]); if (d < best) { best = d; near = h; } });
+      if (!near) { near = { x: q[0], y: q[1], a: 0 }; heat.push(near); if (heat.length > HEAT_KEEP) heat.shift(); }
+      near.a = Math.min(HEAT_MAX, near.a + HEAT_STEP);
+      under = near;
+      wake();
+    }
+    win.addEventListener('pointermove', function (e) {
+      if (lastXY && Math.hypot(e.clientX - lastXY[0], e.clientY - lastXY[1]) < MOVE_PX) return;
+      lastXY = [e.clientX, e.clientY]; warmAt(e.clientX, e.clientY);
+    }, { passive: true });
+    win.addEventListener('pointerdown', function (e) { warmAt(e.clientX, e.clientY); }, { passive: true });
+    doc.documentElement.addEventListener('pointerleave', function () { under = null; wake(); });
+    if ('IntersectionObserver' in win) new win.IntersectionObserver(function (e) { visible = e[0].isIntersecting; }).observe(root);
+    if (settling) wake();
+  }
+
+  function mount(root) { if (root.classList.contains('cx-backdrop')) mountBackdrop(root); else mountPlate(root); }
 
   g.cxPlate = { survey: survey, markup: markup, backdrop: backdrop, mount: mount, defaults: DEFAULTS };
 

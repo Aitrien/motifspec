@@ -362,16 +362,18 @@
       "$type": "dimension",
       "blur": {
         "$value": "{primitive.size.effect.1}",
-        "$description": "Blur radius of the frost over the backdrop contours. Wide enough that the lines read as soft relief, never as text-like strokes behind the header and footer."
+        "$description": "Blur radius of the frost over the backdrop contours. Wide enough that the lines read as soft relief, never as text-like strokes behind the header and footer.",
+        "$deprecated": "Unused since the backdrop's contours became sharp hairlines in 1.17.0; removed in 2.0.0."
       },
       "fade": {
         "$value": "{primitive.size.effect.2}",
-        "$description": "Length of the fade at the top and bottom of a backdrop page, over which the page surface gives way to the frost. The header and the opening statement sit inside it; reading text below it is on the plain surface."
+        "$description": "Length of the fade at the top and bottom of a backdrop page, over which the page surface gives way to the frost, and the height of each backdrop layer. The header and the home page's statement sit inside the top fade, the footer inside the bottom one; reading text between them is on the plain surface."
       },
       "height": {
         "$type": "number",
         "$value": "{primitive.size.viewport.1}",
-        "$description": "Height of the backdrop layer before its blur overhang: the large viewport, so the contours keep their size and position as a phone's address bar slides away. Never a dynamic or small viewport unit, which resize the layer as you scroll and make the contours jump."
+        "$description": "Height of the backdrop layer before its blur overhang: the large viewport, so the contours keep their size and position as a phone's address bar slides away. Never a dynamic or small viewport unit, which resize the layer as you scroll and make the contours jump.",
+        "$deprecated": "Unused since the backdrop layers scroll with the page at size.backdrop.fade tall in 1.17.0; removed in 2.0.0."
       }
     }
   }
