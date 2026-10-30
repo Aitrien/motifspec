@@ -2,6 +2,15 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.17.1] - 2026-10-30
+
+### Fixed
+- The MCP server works with stricter clients, such as Gemini's custom connected apps:
+  - A GET to `/mcp`, which some clients send after connecting to open a notification stream, now gets 405 at once. It used to wait out the Lambda's 10-second timeout and come back as an error.
+  - DELETE gets 405 at once too, since the server has no sessions to end.
+  - A request that doesn't accept both JSON and an event stream (`application/json` alone, `*/*`, or no `Accept` header) gets the same JSON answer instead of 406.
+  - Browser-based clients can connect: preflights get 204, and every answer carries CORS headers. The server is read-only and has no sign-in, so any origin is allowed.
+
 ## [1.17.0] - 2026-10-30
 
 ### Changed
