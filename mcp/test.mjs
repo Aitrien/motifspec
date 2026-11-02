@@ -77,6 +77,29 @@ test('check reports problems with rule and line, and passes clean markup', async
   assert.match(await call('check', { text: '<article class="cx-card"></article>' }), /No problems/);
 });
 
+test('clients that are strict about the transport connect too', async () => {
+  const at = (method, headers = {}, body) => handler({ rawPath: '/mcp', requestContext: { http: { method } }, headers: { host: 'mcp.motifspec.com', ...headers }, body, isBase64Encoded: false });
+  const init = JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'test', version: '0' } } });
+  // A GET (the notification stream) and a DELETE (ending a session) answer 405 straight away; no stream is held open.
+  for (const m of ['GET', 'DELETE']) {
+    const r = await Promise.race([at(m, { accept: 'text/event-stream' }), new Promise((res) => setTimeout(() => res({ statusCode: 'timeout' }), 1000))]);
+    assert.equal(r.statusCode, 405, m);
+    assert.match(r.headers.allow, /POST/);
+  }
+  // Any Accept header gets the JSON answer instead of 406.
+  for (const accept of ['application/json', '*/*', undefined]) {
+    const r = await at('POST', { 'content-type': 'application/json', ...(accept ? { accept } : {}) }, init);
+    assert.equal(r.statusCode, 200, String(accept));
+    assert.equal(JSON.parse(r.body).result.serverInfo.name, 'motifspec');
+  }
+  // A browser's CORS preflight is allowed, and answers carry the CORS headers.
+  const pre = await at('OPTIONS', { origin: 'https://example.com', 'access-control-request-method': 'POST' });
+  assert.equal(pre.statusCode, 204);
+  assert.equal(pre.headers['access-control-allow-origin'], '*');
+  const r = await at('POST', { 'content-type': 'application/json', accept: 'application/json, text/event-stream', origin: 'https://example.com' }, init);
+  assert.equal(r.headers['access-control-allow-origin'], '*');
+});
+
 test('other paths answer plainly', async () => {
   const root = await handler({ rawPath: '/', requestContext: { http: { method: 'GET' } }, headers: {} });
   assert.equal(root.statusCode, 200);
