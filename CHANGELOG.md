@@ -2,6 +2,11 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.17.3] - 2026-11-04
+
+### Fixed
+- A data table with visually hidden text in a cell no longer widens the page on a phone. The hidden text was positioned against the page instead of the table's scroll box, so it stuck out past the edge; `.cx-table` is now positioned, which keeps it inside.
+
 ## [1.17.2] - 2026-11-04
 
 ### Changed
