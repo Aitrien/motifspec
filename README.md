@@ -25,6 +25,15 @@ A layout is a kind of site: its shell, page templates, components, decoration an
 
 Each component doc says which layouts it belongs to in its front matter (`layouts:`). Shared components belong to every layout.
 
+A project declares its layout so the checker can hold it to it. A Hugo site sets it in its config:
+
+```toml
+[params.motifspec]
+  layout = "dashboard"
+```
+
+An à la carte project also lists the components it uses, by doc name: `components = ["table-of-contents", "heading-anchor"]`. Outside Hugo, pass `--layout` (and `--components`) to the checker. A project that declares nothing is checked as portfolio.
+
 ## Rules for AI assistants
 
 - Choose the layout first (`docs/layouts/`), and use the project's stack if it has one; otherwise see the layout's stack table. Use shared components and the components of that layout only.
@@ -91,6 +100,10 @@ npm run mcp:bundle     # build/mcp.zip, the server's Lambda package
 - a primitive, unknown or deprecated `--cx-` token
 - a `cx-` class that the stylesheet and scripts don't define, or a `cx-icon-` that isn't in `icons/manifest.json`
 - "·" used as a separator
+- an unknown layout, or an unknown component in an à la carte list
+- in an à la carte project's own stylesheet, the same raw values and tokens, and any selector that targets a `cx-` class
+
+It warns, without failing, when a component (its classes or its Hugo partial) is used outside its layouts, or an à la carte project uses a layout component it hasn't listed. These become failures in a later release.
 
 Releases are automatic; `CONVENTIONS.md` (Versioning) says how.
 
@@ -126,7 +139,7 @@ Copy component markup from `docs/components/*.md` (in the package under `node_mo
 npx motifspec-check . --dirs src
 ```
 
-It reads `.html`, `.jsx`, `.tsx`, `.vue`, `.svelte`, `.astro`, `.md` and `.mdx` (both `class` and `className`), and skips `node_modules`, `dist` and `build`. Its stylesheet rule applies here too: a project using MotifSpec has no CSS of its own.
+Add `--layout dashboard` (or the project's layout) so components are checked against it; à la carte projects add `--components` with their list. It reads `.html`, `.jsx`, `.tsx`, `.vue`, `.svelte`, `.astro`, `.md` and `.mdx` (both `class` and `className`), and skips `node_modules`, `dist` and `build`. Its stylesheet rule applies here too: a project using MotifSpec has no CSS of its own, except an à la carte project's frame (`docs/layouts/a-la-carte.md`).
 
 ## Using it from an AI assistant
 
@@ -138,7 +151,7 @@ The MCP server at `https://mcp.motifspec.com/mcp` serves the latest release to a
 | `find_tokens` | Semantic tokens matching a query: CSS property, usage rule, light and dark values, the surfaces a colour may sit on |
 | `get_component` | A component's doc (markup, do and don't, accessibility), with its Hugo partial and Markdown form; without a name, the list |
 | `get_doc` | `docs/hugo.md`, or a layout from `docs/layouts/` (`portfolio`, `dashboard`, `documentation`, `a-la-carte`) |
-| `check` | The checker's problems in a piece of markup, Markdown or CSS |
+| `check` | The checker's problems in a piece of markup, Markdown or CSS; with a `layout`, warnings for components from other layouts |
 
 To connect it:
 

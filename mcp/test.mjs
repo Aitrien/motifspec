@@ -2,6 +2,7 @@
 // every PR; the release workflow runs it on the bundle it deploys (MCP_HANDLER points at it).
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const { handler } = await import(process.env.MCP_HANDLER ? pathToFileURL(process.env.MCP_HANDLER).href : './lambda.mjs');
@@ -81,6 +82,40 @@ test('check reports problems with rule and line, and passes clean markup', async
   assert.match(bad, /a\.html:1: \[style-attribute\]/);
   assert.match(bad, /\[unknown-class\] "cx-nope"/);
   assert.match(await call('check', { text: '<article class="cx-card"></article>' }), /No problems/);
+});
+
+test('check warns about components from another layout, and holds à la carte CSS to tokens', async () => {
+  const label = '<dl class="cx-label"><div class="cx-label__id"><dt>No.</dt><dd>LM-W-001</dd></div></dl>';
+  assert.match(await call('check', { text: label }), /^No problems/);
+  const dash = await call('check', { text: label, layout: 'dashboard' });
+  assert.match(dash, /^No problems: checked against MotifSpec [\d.]+, dashboard layout\./);
+  assert.match(dash, /warning\(s\):\n.*\[wrong-layout\] "cx-label \(accession-label\.md: portfolio; this project is dashboard\)"/);
+  assert.match(await call('check', { text: label, layout: 'portfolio' }), /^No problems[^\n]*\.$/);
+  const toc = '<nav class="cx-toc"></nav>';
+  assert.match(await call('check', { text: toc, layout: 'a-la-carte' }), /\[unlisted-component\] "cx-toc/);
+  assert.doesNotMatch(await call('check', { text: toc, layout: 'a-la-carte', components: ['table-of-contents'] }), /warning/);
+  const css = await call('check', { text: '.stage { inset: 0; padding: var(--cx-space-inset-md); }\n.cx-button { color: red; }', kind: 'css' });
+  assert.match(css, /\[cx-override\] "\.cx-button"/);
+  assert.doesNotMatch(css, /\.stage/);
+});
+
+test('a project declares its layout in its Hugo config, and the CLI exits 0 on warnings only', async () => {
+  const { mkdtempSync, mkdirSync, writeFileSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const { checkProject, declaredLayout } = await import('../scripts/check.mjs');
+  const root = mkdtempSync(join(tmpdir(), 'motifspec-'));
+  mkdirSync(join(root, 'layouts'));
+  writeFileSync(join(root, 'layouts', 'a.html'), '<article class="cx-card"></article>');
+  assert.deepEqual(checkProject(root), []);
+  writeFileSync(join(root, 'hugo.toml'), '[params]\n  role = "x"\n[params.motifspec]\n  layout = "dashboard"\n');
+  assert.equal(declaredLayout(root).layout, 'dashboard');
+  const problems = checkProject(root);
+  assert.deepEqual(problems.map((p) => [p.rule, p.severity]), [['wrong-layout', 'warning']]);
+  writeFileSync(join(root, 'hugo.toml'), '[params.motifspec]\n  layout = "a-la-carte"\n  components = ["project-card"]\n');
+  writeFileSync(join(root, 'frame.css'), '.frame { inset: 0; }\n');
+  assert.deepEqual(checkProject(root), []);
+  writeFileSync(join(root, 'hugo.toml'), '[params.motifspec]\n  layout = "kiosk"\n');
+  assert.deepEqual(checkProject(root).map((p) => p.rule), ['unknown-layout']);
 });
 
 test('clients that are strict about the transport connect too', async () => {

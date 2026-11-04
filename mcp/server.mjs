@@ -6,11 +6,9 @@ import { join } from 'node:path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { ROOT } from '../scripts/lib.mjs';
-import { checkText, format } from '../scripts/check.mjs';
+import { checkText, format, LAYOUTS } from '../scripts/check.mjs';
 
 const read = (...p) => readFileSync(join(ROOT, ...p), 'utf8');
-// One file each in docs/layouts/. Fixed here rather than read from the folder, because the tool's schema lists them.
-export const LAYOUTS = ['portfolio', 'dashboard', 'documentation', 'a-la-carte'];
 
 let data;
 /** Everything the tools serve, read once per process. */
@@ -143,19 +141,25 @@ export function createServer() {
     'check',
     {
       title: 'Check markup or CSS',
-      description: 'Runs MotifSpec\'s rule checker (the same one projects run in CI) on text you wrote: raw colours and sizes, style attributes, primitive, unknown or deprecated tokens, undefined cx- classes and icons, and "·" separators. Returns each problem with its line, rule and fix, or confirms there are none.',
+      description: 'Runs MotifSpec\'s rule checker (the same one projects run in CI) on text you wrote: raw colours and sizes, style attributes, primitive, unknown or deprecated tokens, undefined cx- classes and icons, and "·" separators. With a layout, it also warns about components from another layout. CSS is checked as an à la carte project\'s own stylesheet, which may not target or define cx- classes. Returns each problem with its line, rule and fix, or confirms there are none.',
       inputSchema: {
         text: z.string().describe('The file content to check.'),
-        kind: z.enum(['html', 'md', 'css']).default('html').describe('html for templates and components (also JSX, Vue, Svelte, Astro), md for Markdown content, css for stylesheets.'),
+        kind: z.enum(['html', 'md', 'css']).default('html').describe('html for templates and components (also JSX, Vue, Svelte, Astro), md for Markdown content, css for an à la carte project\'s own stylesheet.'),
         file: z.string().optional().describe('A file name to show in the results.'),
+        layout: z.enum(LAYOUTS).optional().describe('The project\'s layout. Recommended: without it, components from other layouts aren\'t flagged.'),
+        components: z.array(z.string()).optional().describe('For a-la-carte: the component doc names the project uses, e.g. ["table-of-contents"].'),
       },
       annotations: readOnly,
     },
-    async ({ text: input, kind, file }) => {
-      const problems = checkText(input, { kind, file: file ?? `<${kind}>` });
-      return text(problems.length
-        ? `${problems.length} problem(s), checked against MotifSpec ${d.version}:\n${problems.map(format).join('\n')}`
-        : `No problems: checked against MotifSpec ${d.version}.`);
+    async ({ text: input, kind, file, layout, components }) => {
+      const problems = checkText(input, { kind, file: file ?? `<${kind}>`, layout, components, projectCss: kind === 'css' });
+      const errors = problems.filter((p) => p.severity === 'error');
+      const warnings = problems.filter((p) => p.severity === 'warning');
+      const against = `checked against MotifSpec ${d.version}${layout ? `, ${layout} layout` : ''}`;
+      return text([
+        errors.length ? `${errors.length} problem(s), ${against}:\n${errors.map(format).join('\n')}` : `No problems: ${against}.`,
+        warnings.length ? `${warnings.length} warning(s):\n${warnings.map(format).join('\n')}` : '',
+      ].filter(Boolean).join('\n\n'));
     },
   );
 
