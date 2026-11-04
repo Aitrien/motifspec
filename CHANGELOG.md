@@ -8,6 +8,10 @@ Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entri
 - Layouts: `docs/layouts/` has one file each for the portfolio, dashboard and documentation layouts, and for à la carte (a project that fits none of them). Each gives the shell, page templates, components, decoration, heading rules and a table for choosing a stack. Dashboard and documentation are marked in progress, with what exists now and what doesn't.
 - Every component doc says which layouts it belongs to (`layouts:` in its front matter), and the build fails if one doesn't. The README has a Layouts section, and its first rule for AI assistants is to choose the layout and keep the project's stack.
 - The MCP server's `get_doc` serves the four layouts, and `get_component` lists each component with its layouts. Its instructions say to choose the layout first.
+- Projects declare their layout: a Hugo site in `[params.motifspec]` (`layout`, and `components` for à la carte), anything else with the checker's `--layout` and `--components`. A project that declares nothing is checked as portfolio, as before.
+- The checker warns when a component's classes or Hugo partial are used outside its layouts, or when an à la carte project uses a layout component it hasn't listed. These are warnings in this release and failures in a later one; warnings don't fail the run.
+- An à la carte project may have a stylesheet of its own for its frame. The checker holds it to semantic tokens and fails any selector that targets a `cx-` class (`cx-override`). It fails an unknown layout or component name too.
+- The MCP server's `check` takes `layout` and `components`, reports warnings separately from problems, and checks CSS as an à la carte project's own stylesheet.
 
 ### Changed
 - `docs/templates.md` is now `docs/layouts/portfolio.md`. `get_doc("templates")` still returns it.

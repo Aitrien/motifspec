@@ -125,7 +125,7 @@ const motifspec = mounts.split(/\n(?=\{)/).map((m) => JSON.parse(m)).find((m) =>
 execFileSync('node', [join(motifspec.dir, 'scripts', 'check.mjs'), '.'], { stdio: 'inherit' });
 ```
 
-It checks `layouts/` and `content/` for what the README's Commands section lists. In GitHub Actions each problem is also an annotation on the pull request; `--json` prints the problems as JSON. In CI, give the step the same `HUGO_CACHEDIR` and `HUGO_MODULE_PROXY` as the build, because `hugo config mounts` downloads the module if it isn't cached.
+It checks `layouts/` and `content/` for what the README's Commands section lists, against the layout the site declares in `[params.motifspec]` (see the README's Layouts section; portfolio when it declares none). In GitHub Actions each problem is also an annotation on the pull request; `--json` prints the problems as JSON. In CI, give the step the same `HUGO_CACHEDIR` and `HUGO_MODULE_PROXY` as the build, because `hugo config mounts` downloads the module if it isn't cached.
 
 ## Overriding
 

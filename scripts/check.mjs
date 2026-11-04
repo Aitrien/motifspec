@@ -5,6 +5,12 @@
 //   node scripts/check.mjs [project-root]                 check a consuming project's layouts/ and content/
 //   node scripts/check.mjs [project-root] --dirs src,app  check other folders instead (a non-Hugo project)
 //   node scripts/check.mjs [project-root] --json          print the problems as JSON
+//   node scripts/check.mjs [project-root] --layout dashboard               check against a layout (docs/layouts/)
+//   node scripts/check.mjs [project-root] --layout a-la-carte --components table-of-contents,heading-anchor
+//
+// Without --layout, a Hugo site's layout comes from [params.motifspec] in its config (hugo.toml, hugo.yaml,
+// hugo.json, config.*, or config/_default/), and a project that declares nothing is checked as portfolio.
+// A component used outside its layouts is a warning in this release, not a failure.
 //   npx motifspec-check [same options]                    the same, from the npm package
 //
 // Rules come from the files of this release: class names from dist/codex.css, tokens from dist/tokens.json, icons
@@ -25,7 +31,16 @@ export const RULES = {
   'unknown-class': 'Not a MotifSpec class. Copy the markup from docs/components/*.md; don\'t invent cx- classes.',
   'unknown-icon': 'Not an approved icon. Use a key from icons/manifest.json, for its listed role.',
   separator: 'Separate inline metadata with <span class="cx-sep" aria-hidden="true">|</span>, never "·".',
+  'wrong-layout': 'This component belongs to another layout. Use a component of this layout, or declare à la carte and list it (docs/layouts/a-la-carte.md).',
+  'unlisted-component': 'An à la carte project uses only shared components and the ones it lists. Add this one to the list if you mean to use it.',
+  'cx-override': 'Project CSS can\'t target or define cx- classes: MotifSpec\'s components aren\'t restyled, and the project\'s own classes don\'t start with cx-.',
+  'unknown-layout': 'Not a MotifSpec layout. Use portfolio, dashboard, documentation or a-la-carte (docs/layouts/).',
+  'unknown-component': 'Not a MotifSpec component. Use a doc name from docs/components/, without .md.',
 };
+// Problems that warn rather than fail. Using a component outside its layouts fails from a later release.
+export const WARNINGS = new Set(['wrong-layout', 'unlisted-component']);
+// One file each in docs/layouts/. Fixed here rather than read from the folder, because the MCP tools' schemas list them.
+export const LAYOUTS = ['portfolio', 'dashboard', 'documentation', 'a-la-carte'];
 
 const read = (...p) => readFileSync(join(ROOT, ...p), 'utf8');
 let data;
@@ -42,8 +57,66 @@ function load() {
     icons: new Set(Object.keys(JSON.parse(read('icons', 'manifest.json')).icons)),
     tokens: new Map(tokens.map((t) => [t.css, t])),
     breakpoints: new Set(Object.entries(sizes.primitive.size.breakpoint).filter(([k]) => !k.startsWith('$')).map(([, t]) => `${t.$value.value}${t.$value.unit}`)),
+    ...componentLayouts(),
   };
   return data;
+}
+
+/**
+ * Which layouts each class and Hugo partial belongs to, from the component docs: a doc's layouts (its front matter)
+ * apply to every cx- class in its HTML examples, and to the partials docs/hugo.md lists for it. A class in any shared
+ * doc is shared; a partial is restricted by every doc its row names.
+ */
+function componentLayouts() {
+  const dir = join(ROOT, 'docs', 'components');
+  const docs = new Map(); // doc name -> layouts, or null when shared
+  const classDocs = new Map(); // class -> doc names that use it
+  for (const f of readdirSync(dir).filter((x) => x.endsWith('.md') && !x.startsWith('_'))) {
+    const md = readFileSync(join(dir, f), 'utf8');
+    const name = f.replace(/\.md$/, '');
+    const layouts = md.match(/^layouts: \[(.*)\]/m)?.[1].split(',').map((l) => l.trim()) ?? ['shared'];
+    docs.set(name, layouts.includes('shared') ? null : layouts);
+    for (const block of md.matchAll(/```html[^\n]*\n([\s\S]*?)```/g)) {
+      for (const m of block[1].matchAll(CLASS_ATTR)) {
+        for (const c of m[1].split(/\s+/)) if (c.startsWith('cx-')) classDocs.set(c, new Set([...(classDocs.get(c) ?? []), name]));
+      }
+    }
+  }
+  const restrictedClasses = new Map(); // class -> restricted doc names (only classes no shared doc uses)
+  for (const [c, names] of classDocs) if ([...names].every((n) => docs.get(n))) restrictedClasses.set(c, [...names]);
+  const partials = new Map(); // partial file -> restricted doc names it renders
+  for (const row of read('docs', 'hugo.md').split('\n').filter((l) => /^\| `[a-z0-9/_-]+\.html` \|/.test(l))) {
+    const [file, related] = row.split('|').slice(1, 3).map((c) => c.trim());
+    const names = [...related.matchAll(/`([a-z0-9-]+)\.md`/g)].map((m) => m[1]).filter((n) => docs.get(n));
+    if (names.length) partials.set(file.replace(/`/g, ''), names);
+  }
+  return { docs, restrictedClasses, partials };
+}
+
+/** A problem for using restricted docs `names` (all of which `thing` needs) under a layout, or null if allowed. */
+function layoutProblem(thing, names, { layout, components }) {
+  const { docs } = load();
+  if (layout === 'a-la-carte') {
+    const missing = names.filter((n) => !components?.includes(n));
+    // A class from several docs is fine if any of them is listed; a partial needs every doc it renders.
+    if (thing.startsWith('cx-') ? missing.length < names.length : !missing.length) return null;
+    return ['unlisted-component', `${thing} (${missing.map((n) => `${n}.md`).join(', ')})`];
+  }
+  const allowed = thing.startsWith('cx-') ? names.some((n) => docs.get(n).includes(layout)) : names.every((n) => docs.get(n).includes(layout));
+  if (allowed) return null;
+  const from = names.map((n) => `${n}.md: ${docs.get(n).join(', ')}`).join('; ');
+  return ['wrong-layout', `${thing} (${from}; this project is ${layout})`];
+}
+
+// Selectors in CSS (the text before each "{" that opens a rule), with the line each starts on.
+function* selectors(css) {
+  let start = 0;
+  const text = css.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' '));
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '{') { yield [text.slice(start, i), text.slice(0, start).split('\n').length]; start = i + 1; }
+    else if (ch === '}' || ch === ';') start = i + 1;
+  }
 }
 
 // A hex colour that isn't part of a fragment link such as href="#cx-icon-add" or an HTML entity.
@@ -58,12 +131,18 @@ const TEMPLATE = /\{\{.*?\}\}/g; // Hugo actions; replaced by a placeholder so a
 
 /**
  * Check one file's text. kind: "html" (templates and markup), "md" (content) or "css".
- * Returns [{ file, line, rule, match, message }].
+ * layout (optional): check that components belong to it; components: the doc names an à la carte project lists.
+ * projectCss: the text is a project's own stylesheet (à la carte), so it may not target or define cx- classes.
+ * Returns [{ file, line, rule, match, message, severity }], severity "error" or "warning".
  */
-export function checkText(text, { file = '<input>', kind = 'html' } = {}) {
-  const { classes, icons, tokens, breakpoints } = load();
+export function checkText(text, { file = '<input>', kind = 'html', layout, components, projectCss = false } = {}) {
+  const { classes, icons, tokens, breakpoints, restrictedClasses, partials } = load();
   const problems = [];
-  const add = (line, rule, match) => problems.push({ file, line, rule, match, message: RULES[rule] });
+  const add = (line, rule, match) => problems.push({ file, line, rule, match, message: RULES[rule], severity: WARNINGS.has(rule) ? 'warning' : 'error' });
+  const declared = { layout, components };
+  if (kind === 'css' && projectCss) {
+    for (const [sel, n] of selectors(text)) for (const m of sel.matchAll(/\.cx-[a-z0-9_-]+/g)) add(n + sel.slice(0, m.index).split('\n').length - 1, 'cx-override', m[0]);
+  }
   text.split('\n').forEach((raw, i) => {
     const n = i + 1;
     // In CSS, a breakpoint value in an @media condition is the build's own output and allowed.
@@ -80,7 +159,21 @@ export function checkText(text, { file = '<input>', kind = 'html' } = {}) {
       if (line.includes('·')) add(n, 'separator', '·');
       const plain = line.replace(TEMPLATE, '§');
       for (const m of plain.matchAll(CLASS_ATTR)) {
-        for (const c of m[1].split(/\s+/)) if (c.startsWith('cx-') && !c.includes('§') && !classes.has(c)) add(n, 'unknown-class', c);
+        for (const c of m[1].split(/\s+/)) {
+          if (!c.startsWith('cx-') || c.includes('§')) continue;
+          if (!classes.has(c)) add(n, 'unknown-class', c);
+          else if (layout && restrictedClasses.has(c)) {
+            const p = layoutProblem(c, restrictedClasses.get(c), declared);
+            if (p) add(n, ...p);
+          }
+        }
+      }
+      if (layout) {
+        for (const m of line.matchAll(/partial(?:Cached)?\s+"motifspec\/([a-z0-9/_-]+\.html)"/g)) {
+          if (!partials.has(m[1])) continue;
+          const p = layoutProblem(`motifspec/${m[1]}`, partials.get(m[1]), declared);
+          if (p) add(n, ...p);
+        }
       }
       for (const m of plain.matchAll(ICON_REF)) {
         if (m[1] && plain[m.index + m[0].length] !== '§' && !icons.has(m[1])) add(n, 'unknown-icon', `cx-icon-${m[1]}`);
@@ -104,20 +197,65 @@ function* walk(dir) {
   }
 }
 
-/** Check a project that uses MotifSpec: no stylesheets anywhere, and every file in `dirs` checked by checkText. */
-export function checkProject(root, { dirs = ['layouts', 'content'] } = {}) {
-  const problems = [];
-  for (const file of walk(root)) {
-    if (['.css', '.scss', '.sass', '.less'].includes(extname(file))) {
-      problems.push({ file: relative(root, file), line: 0, rule: 'stylesheet', match: extname(file), message: RULES.stylesheet });
+/**
+ * A Hugo site's [params.motifspec] (layout, components) from its config, or {} when it declares nothing.
+ * Reads hugo/config .toml, .yaml, .yml or .json at the root, and config/_default/ (hugo, config or params files).
+ */
+export function declaredLayout(root) {
+  const files = ['hugo', 'config'].flatMap((n) => ['toml', 'yaml', 'yml', 'json'].map((e) => [`${n}.${e}`, false]))
+    .concat(['hugo', 'config', 'params'].flatMap((n) => ['toml', 'yaml', 'yml', 'json'].map((e) => [join('config', '_default', `${n}.${e}`), n === 'params'])));
+  const list = (v) => v?.split(',').map((x) => x.trim().replace(/^["']|["']$/g, '')).filter(Boolean);
+  for (const [f, isParams] of files) {
+    const path = join(root, f);
+    if (!existsSync(path)) continue;
+    const text = readFileSync(path, 'utf8');
+    let found;
+    if (f.endsWith('.json')) {
+      const json = JSON.parse(text);
+      found = (isParams ? json : json.params)?.motifspec;
+    } else if (f.endsWith('.toml')) {
+      const table = text.match(new RegExp(`^\\[${isParams ? '' : 'params\\.'}motifspec\\]\\s*$([\\s\\S]*?)(?=^\\[|(?![\\s\\S]))`, 'm'))?.[1];
+      if (table) found = { layout: table.match(/^\s*layout\s*=\s*["']([^"']+)["']/m)?.[1], components: list(table.match(/^\s*components\s*=\s*\[([\s\S]*?)\]/m)?.[1]) };
+    } else {
+      const block = text.match(isParams ? /^motifspec:\s*\n((?:[ \t]+.*\n?)*)/m : /^[ \t]+motifspec:\s*\n((?:[ \t]+.*\n?)*)/m)?.[1];
+      if (block) {
+        const inline = block.match(/^\s*components:\s*\[(.*)\]/m)?.[1];
+        const dashed = block.match(/^\s*components:\s*\n((?:\s*-\s*.+\n?)*)/m)?.[1]?.match(/-\s*(.+)/g)?.map((x) => x.replace(/^-\s*/, ''));
+        found = { layout: block.match(/^\s*layout:\s*["']?([a-z-]+)/m)?.[1], components: inline ? list(inline) : list(dashed?.join(',')) };
+      }
     }
+    if (found?.layout || found?.components) return { layout: found.layout, components: found.components, from: f };
+  }
+  return {};
+}
+
+/**
+ * Check a project that uses MotifSpec: no stylesheets anywhere (except an à la carte project's own, held to tokens),
+ * and every file in `dirs` checked by checkText against the project's layout.
+ */
+export function checkProject(root, { dirs = ['layouts', 'content'], layout, components } = {}) {
+  const problems = [];
+  const declared = declaredLayout(root);
+  const fromConfig = (v) => (v === undefined ? declared.from : undefined);
+  const layoutFrom = fromConfig(layout) ?? '<options>';
+  const componentsFrom = fromConfig(components) ?? '<options>';
+  layout ??= declared.layout ?? 'portfolio';
+  components ??= declared.components;
+  const add = (file, rule, match) => problems.push({ file, line: 0, rule, match, message: RULES[rule], severity: WARNINGS.has(rule) ? 'warning' : 'error' });
+  if (!LAYOUTS.includes(layout)) { add(layoutFrom, 'unknown-layout', layout); return problems; }
+  const { docs } = load();
+  for (const c of components ?? []) if (!docs.has(c)) add(componentsFrom, 'unknown-component', c);
+  for (const file of walk(root)) {
+    if (!['.css', '.scss', '.sass', '.less'].includes(extname(file))) continue;
+    if (layout === 'a-la-carte') problems.push(...checkText(readFileSync(file, 'utf8'), { file: relative(root, file), kind: 'css', projectCss: true }));
+    else add(relative(root, file), 'stylesheet', extname(file));
   }
   for (const dir of dirs) {
     const abs = join(root, dir);
     if (!existsSync(abs)) continue;
     for (const file of walk(abs)) {
       const kind = KIND[extname(file)];
-      if (kind && kind !== 'css') problems.push(...checkText(readFileSync(file, 'utf8'), { file: relative(root, file), kind }));
+      if (kind && kind !== 'css') problems.push(...checkText(readFileSync(file, 'utf8'), { file: relative(root, file), kind, layout, components }));
     }
   }
   return problems;
@@ -131,23 +269,33 @@ export function format(p) {
 const isMain = process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isMain) {
   const args = process.argv.slice(2);
-  const at = args.indexOf('--dirs');
-  const dirs = at >= 0 ? args[at + 1]?.split(',').filter(Boolean) : undefined;
-  if (at >= 0 && !dirs?.length) { console.error('--dirs needs a comma-separated list, e.g. --dirs src,app'); process.exit(2); }
-  const root = resolve(args.find((a, i) => !a.startsWith('--') && (at < 0 || i !== at + 1)) ?? '.');
+  const VALUED = ['--dirs', '--layout', '--components'];
+  const opt = (flag) => {
+    const at = args.indexOf(flag);
+    if (at < 0) return undefined;
+    const v = args[at + 1];
+    if (!v || v.startsWith('--')) { console.error(`${flag} needs a value, e.g. ${flag === '--layout' ? '--layout dashboard' : `${flag} a,b`}`); process.exit(2); }
+    return v;
+  };
+  const dirs = opt('--dirs')?.split(',').filter(Boolean);
+  const layout = opt('--layout');
+  const components = opt('--components')?.split(',').filter(Boolean);
+  const root = resolve(args.find((a, i) => !a.startsWith('--') && !VALUED.includes(args[i - 1])) ?? '.');
   if (!existsSync(root)) { console.error(`No such folder: ${root}`); process.exit(2); }
-  const problems = checkProject(root, dirs ? { dirs } : undefined);
+  const problems = checkProject(root, { ...(dirs && { dirs }), layout, components });
+  const errors = problems.filter((p) => p.severity === 'error');
   const version = JSON.parse(read('dist', 'tokens.json')).version;
   if (args.includes('--json')) {
     console.log(JSON.stringify({ version, problems }, null, 2));
-  } else if (problems.length) {
-    for (const p of problems) {
-      console.error(`✗ ${format(p)}`);
-      if (process.env.GITHUB_ACTIONS) console.log(`::error file=${p.file},line=${p.line || 1},title=MotifSpec ${p.rule}::${p.message}`);
-    }
-    console.error(`${problems.length} problem(s), checked against MotifSpec ${version}.`);
   } else {
-    console.log(`No problems in ${relative(process.cwd(), root) || '.'}: checked against MotifSpec ${version}.`);
+    for (const p of problems) {
+      console.error(`${p.severity === 'error' ? '✗' : '⚠'} ${format(p)}`);
+      if (process.env.GITHUB_ACTIONS) console.log(`::${p.severity} file=${p.file},line=${p.line || 1},title=MotifSpec ${p.rule}::${p.message}`);
+    }
+    const where = relative(process.cwd(), root) || '.';
+    const warnings = problems.length - errors.length;
+    if (errors.length) console.error(`${errors.length} problem(s)${warnings ? ` and ${warnings} warning(s)` : ''}, checked against MotifSpec ${version}.`);
+    else console.log(`No problems in ${where}${warnings ? `, ${warnings} warning(s)` : ''}: checked against MotifSpec ${version}.`);
   }
-  process.exit(problems.length ? 1 : 0);
+  process.exit(errors.length ? 1 : 0);
 }
