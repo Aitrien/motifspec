@@ -1,6 +1,6 @@
 <title>Liam Marshall MotifSpec</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Design tokens, component rules and templates for connected applications.">
+<meta name="description" content="A design system proof of concept: tokens, component rules and page templates, shown in an example brand.">
 <!-- CX:THEME_INIT -->
 <!-- CX:STYLE -->
 
@@ -33,19 +33,12 @@
     <section class="sc-hero" id="top" aria-labelledby="hero-title">
       <div class="sc-hero__copy">
         <p class="cx-eyebrow">MotifSpec <span class="cx-sep" aria-hidden="true">|</span> <a class="cx-version" href="{{CHANGELOG_URL}}" aria-label="Version {{VERSION}}: view changelog">v{{VERSION}}<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg><span class="cx-tooltip cx-tooltip--start" aria-hidden="true">View changelog</span></a></p>
-        <h1 class="cx-display" id="hero-title">One source of truth for everything I build for the web.</h1>
-        <p class="cx-lede">Tokens, component rules and page templates for connected applications. An MCP server hands these rules to AI coding assistants, so each one is written to be followed, not admired.</p>
+        <h1 class="cx-display" id="hero-title">A design system proof of concept, shown in an example brand.</h1>
+        <p class="cx-lede">Tokens, component rules and page templates, served to AI coding assistants through an MCP server. The colours, type and contours are an example, ready to swap for a real brand.</p>
         <div class="cx-actions">
           <a class="cx-button cx-button--primary" href="#components">Browse components <svg class="cx-icon cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg></a>
           <a class="cx-button" href="#principles">Read the principles</a>
         </div>
-        <dl class="cx-label" aria-label="Accession label">
-          <div class="cx-label__id"><dt>No.</dt><dd>LM-W-002</dd></div>
-          <div><dt>Version</dt><dd><a class="cx-version" href="{{CHANGELOG_URL}}" aria-label="Version {{VERSION}}: view changelog">{{VERSION}}<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg><span class="cx-tooltip cx-tooltip--start" aria-hidden="true">View changelog</span></a></dd></div>
-          <div><dt>Tokens</dt><dd>{{TOKEN_COUNT}}</dd></div>
-          <div><dt>Contrast</dt><dd>{{PAIR_PASS}}/{{PAIR_COUNT}} pass</dd></div>
-          <div><dt>Fonts</dt><dd>{{FONT_KB}} KB</dd></div>
-        </dl>
       </div>
       <div class="sc-hero__plate">
         <figure class="cx-plate-frame">
@@ -56,7 +49,7 @@
             <span class="cx-tooltip" aria-hidden="true"><span data-when="running">Pause animation</span><span data-when="paused">Play animation</span></span>
           </label>
           {{PLATE}}
-          <figcaption>Plate 0 <span class="cx-sep" aria-hidden="true">|</span> Contour survey <span class="cx-sep" aria-hidden="true">|</span> Simplex noise, 14 levels, index every fifth</figcaption>
+          <figcaption>Plate 0 <span class="cx-sep" aria-hidden="true">|</span> Contour survey</figcaption>
         </figure>
       </div>
     </section>
@@ -66,7 +59,7 @@
       <div class="sc-part__head">
         <p class="cx-eyebrow">Read first</p>
         <h2><span id="principles-title">Principles</span> <a class="cx-anchor" href="#principles" aria-label="Link to Principles">#</a></h2>
-        <p>The same seven lines open the README, which is the first thing an AI assistant reads.</p>
+        <p>Written to be followed, and validated each time the design system is updated.</p>
       </div>
       <ul class="sc-principles">
         <li><strong>Name the role, not the page.</strong><span>Tokens and components describe the job they do, so a recipe app, a docs site and this portfolio can share them.</span></li>
@@ -74,7 +67,7 @@
         <li><strong>Measure it, don't eyeball it.</strong><span>Reading text meets 7:1, controls and focus meet 3:1, and every pair is checked in both themes on every build.</span></li>
         <li><strong>HTML first, script second.</strong><span>Content, navigation and code work without JavaScript. Scripts add the theme toggle, copy buttons and TOC tracking.</span></li>
         <li><strong>Square, hairline, labelled.</strong><span>Structure is drawn with 1px rules, square corners and mono labels, like a field ledger. Buttons, nav items and icon-only controls are the one exception: they are pills, so anything you can press is recognisable at a glance.</span></li>
-        <li><strong>Motion confirms a change.</strong><span>Only state changes animate, plus the pausable drift of the contour survey behind the page; text never moves, and reduced motion means none.</span></li>
+        <li><strong>Motion confirms a change.</strong><span>Only state changes animate, plus the contour survey: it settles once on arrival and answers the pointer, and the specimen plate's drift can be paused. Text never moves, and reduced motion means none.</span></li>
         <li><strong>One accent, one ornament.</strong><span>Sap green marks action. Yarndings and the contour survey (the backdrop, or the specimen plate) are the only decoration, once per view.</span></li>
       </ul>
     </section>
@@ -84,7 +77,7 @@
       <div class="sc-part__head">
         <p class="cx-eyebrow">Tokens</p>
         <h2><span id="foundations-title">Foundations</span> <a class="cx-anchor" href="#foundations" aria-label="Link to Foundations">#</a></h2>
-        <p>Five dye-plant hues, three typefaces and a 4px grid. Primitives hold raw values; everything you build with is a semantic token that points at them, and dark mode re-points the same names.</p>
+        <p>Five hues, three typefaces and a 4px grid. You build with semantic tokens, which point at primitives and switch for dark mode.</p>
       </div>
 
       <div class="sc-block" id="colour">
@@ -183,7 +176,7 @@
       <div class="sc-part__head">
         <p class="cx-eyebrow">docs/components/*.md</p>
         <h2><span id="components-title">Components</span> <a class="cx-anchor" href="#components" aria-label="Link to Components">#</a></h2>
-        <p>Each one is a doc an assistant can fetch: when to use it, markup to copy, and the tokens it uses. Entries below are sample content for layout, not real posts or metrics.</p>
+        <p>Each is a doc an assistant can fetch: when to use it, the markup and its tokens. Entries below are sample content.</p>
       </div>
 
       <div class="sc-block">
@@ -377,7 +370,7 @@
               <text class="sc-svg-text sc-svg-text--muted" x="214" y="146">fails on any</text><text class="sc-svg-text sc-svg-text--muted" x="214" y="162">rule or pair</text>
             </svg>
           </div>
-          <figcaption><span class="cx-figure__plate">Plate 2</span>One build feeds both consumers. A failing contrast pair stops the release before any site sees it.</figcaption>
+          <figcaption><span class="cx-figure__plate">Plate 2</span>One build feeds both consumers, and a failing contrast pair stops the release.</figcaption>
         </figure>
       </div>
 
@@ -492,7 +485,7 @@
       <div class="sc-part__head">
         <p class="cx-eyebrow">Step 1 hierarchy</p>
         <h2><span id="templates-title">Templates</span> <a class="cx-anchor" href="#templates" aria-label="Link to Templates">#</a></h2>
-        <p>Six page types at thumbnail scale. The outlined block is what dominates; dashed blocks are secondary. Every template sits on the backdrop and keeps the full header nav.</p>
+        <p>Six page types at thumbnail scale. Outlined blocks dominate; dashed blocks are secondary.</p>
       </div>
       <ul class="sc-templates">
         <li><figure class="sc-tpl">

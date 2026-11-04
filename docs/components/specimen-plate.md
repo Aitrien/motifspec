@@ -64,7 +64,7 @@ The build writes the plate to `dist/plate.html` (the contours at time zero) and 
     <span class="cx-tooltip" aria-hidden="true"><span data-when="running">Pause animation</span><span data-when="paused">Play animation</span></span>
   </label>
   {{ (resources.Get "motifspec/plate.html").Content | safeHTML }}
-  <figcaption>Plate 0 <span class="cx-sep" aria-hidden="true">|</span> Contour survey <span class="cx-sep" aria-hidden="true">|</span> Simplex noise, 14 levels, index every fifth</figcaption>
+  <figcaption>Plate 0 <span class="cx-sep" aria-hidden="true">|</span> Contour survey</figcaption>
 </figure>
 <script src="{{ (resources.Get "motifspec/plate.js" | minify | fingerprint).RelPermalink }}" defer></script>
 ```
@@ -74,7 +74,7 @@ The build writes the plate to `dist/plate.html` (the contours at time zero) and 
 - Keep the survey conventions: 14 contour levels, every fifth an index contour (`color.ornament.strong`, `border.width.emphasis`), the rest hairlines in `color.ornament.rest`, over a quarter grid in `color.ornament.muted`.
 - Let each contour draw in once on load (`motion.duration.plate`, `motion.easing.enter`, staggered from the lowest line), then let the script start the drift: it eases up from rest over `motion.duration.plate`, then the terrain moves one noise unit every `motion.duration.drift`, linearly, and the lines are recomputed on every second frame.
 - Change the terrain with `data-plate-seed` (and the matching `seed` option at build time), never by editing path data.
-- Keep the caption factual: what it is, the method and the contour count.
+- Keep the caption short: the plate number and what it shows.
 
 ## Don't
 
