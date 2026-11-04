@@ -58,15 +58,21 @@ test('find_tokens matches every word, returns semantic tokens with values and su
 });
 
 test('get_component lists components, returns a doc with its Hugo partial, and handles unknown names', async () => {
-  assert.match(await call('get_component'), /^project-card: /m);
+  assert.match(await call('get_component'), /^project-card \[portfolio\]: /m);
+  assert.match(await call('get_component'), /^callout \[shared\]: /m);
   const card = await call('get_component', { name: 'project-card' });
   assert.match(card, /cx-card/);
   assert.match(card, /motifspec\/|project-card\.html/);
   assert.match(await call('get_component', { name: 'nope' }), /No component "nope"/);
 });
 
-test('get_doc returns the Hugo guide and the templates', async () => {
+test('get_doc returns the Hugo guide and every layout, and "templates" still returns the portfolio layout', async () => {
   assert.match(await call('get_doc', { name: 'hugo' }), /# Using MotifSpec in Hugo/);
+  for (const [name, title] of [['portfolio', 'Portfolio layout'], ['dashboard', 'Dashboard layout'], ['documentation', 'Documentation layout'], ['a-la-carte', 'À la carte']]) {
+    const doc = await call('get_doc', { name });
+    assert.match(doc, new RegExp(`^# ${title}`));
+    assert.match(doc, /## Choosing a stack/);
+  }
   assert.match(await call('get_doc', { name: 'templates' }), /Catalogue numbers/);
 });
 

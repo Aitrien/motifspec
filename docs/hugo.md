@@ -66,7 +66,7 @@ Every partial below is called as `partial "motifspec/<name>.html" <context>`.
 | `table-of-contents.html` | `table-of-contents.md` | A page. `article.html` already calls it. |
 | `tags.html` | `tag.md` | `dict "page" . "max" 3`. |
 | `tag-filter.html` | `tag.md` | `dict "section" "work" "current" nil` on a section page, or `dict "section" "" "current" .` on a term page. |
-| `filed-under.html` | `tag.md`, `docs/templates.md` | A page. "Filed under" and its tags, after an article. |
+| `filed-under.html` | `tag.md`, `docs/layouts/portfolio.md` | A page. "Filed under" and its tags, after an article. |
 | `pagination-entries.html` | `pagination.md` | `dict "page" . "label" "Post navigation" "noun" "Post"`. Previous and next in the page's section, oldest first. |
 | `pagination-pages.html` | `pagination.md` | `dict "pager" $pager "label" "Writing pages"`. Pages of a paginated list; nothing when it fits on one page. |
 | `back-link.html` | `button-and-link.md` | `dict "href" "…" "label" "All work"`. |

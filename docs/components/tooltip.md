@@ -1,6 +1,7 @@
 ---
 name: tooltip
 status: stable
+layouts: [shared]
 tokens:
   - color.surface.inverse
   - color.text.inverse

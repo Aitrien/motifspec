@@ -1,6 +1,7 @@
 ---
 name: backdrop
 status: stable
+layouts: [portfolio, documentation, dashboard]
 tokens:
   - border.width.emphasis
   - border.width.hairline
@@ -22,8 +23,9 @@ Contour surveys drawn full-bleed behind the top of the home page and the bottom 
 
 ## When to use
 
-- The foot on every page of a site built from the system, in all six templates (`templates.md`), 404 included.
+- The foot on every page of a portfolio or documentation site, 404 included (`docs/layouts/`).
 - The head on the home page only, behind the statement: it is where a visitor starts. Every other page opens on the plain surface.
+- On a dashboard, behind the main area, as `docs/layouts/dashboard.md` says.
 - Once each per page, both inside `<body class="cx-backdrop-page">`: the head as its first child, the foot after the footer.
 
 ## When not to use

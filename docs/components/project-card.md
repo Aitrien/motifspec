@@ -1,6 +1,7 @@
 ---
 name: project-card
 status: stable
+layouts: [portfolio]
 tokens:
   - border.focus.offset
   - border.focus.width

@@ -1,6 +1,7 @@
 ---
 name: button-and-link
 status: stable
+layouts: [shared]
 tokens:
   - border.focus.offset
   - border.focus.width

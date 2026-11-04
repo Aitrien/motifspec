@@ -1,6 +1,7 @@
 ---
 name: icon
 status: stable
+layouts: [shared]
 tokens:
   - size.icon.lg
   - size.icon.md

@@ -1,6 +1,7 @@
 ---
 name: callout
 status: stable
+layouts: [shared]
 tokens:
   - border.width.emphasis
   - border.width.hairline

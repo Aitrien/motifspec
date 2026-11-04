@@ -9,6 +9,8 @@ import { ROOT } from '../scripts/lib.mjs';
 import { checkText, format } from '../scripts/check.mjs';
 
 const read = (...p) => readFileSync(join(ROOT, ...p), 'utf8');
+// One file each in docs/layouts/. Fixed here rather than read from the folder, because the tool's schema lists them.
+export const LAYOUTS = ['portfolio', 'dashboard', 'documentation', 'a-la-carte'];
 
 let data;
 /** Everything the tools serve, read once per process. */
@@ -31,17 +33,20 @@ export function load() {
         const body = md.replace(/^---\n[\s\S]*?\n---\n/, '').trim();
         const title = body.match(/^# (.+)$/m)?.[1] ?? name;
         const summary = body.split('\n\n').find((p) => p && !p.startsWith('#'))?.trim() ?? '';
-        return [name, { name, title, summary, md }];
+        const layouts = md.match(/^layouts: \[(.*)\]/m)?.[1] ?? 'shared';
+        return [name, { name, title, summary, layouts, md }];
       }),
   );
   const hugo = read('docs', 'hugo.md');
+  const layouts = Object.fromEntries(LAYOUTS.map((l) => [l, read('docs', 'layouts', `${l}.md`)]));
   data = {
     version: pkg.version,
     rules: section(readme, 'Rules for AI assistants'),
     checks: section(readme, 'Commands').split('\n').filter((l) => l.startsWith('- ')).join('\n'),
     tokens: JSON.parse(read('dist', 'tokens.json')).tokens.filter((t) => t.tier !== 'primitive'),
     components,
-    docs: { hugo, templates: read('docs', 'templates.md') },
+    // "templates" was docs/templates.md until 1.18.0; it is now the portfolio layout, and the old name still works.
+    docs: { hugo, ...layouts, templates: layouts.portfolio },
     // The rows of docs/hugo.md's partial tables, by the component doc they name or the partial file they describe.
     hugoRows: hugo.split('\n').filter((l) => l.startsWith('| `')),
   };
@@ -60,6 +65,7 @@ export function createServer() {
       instructions: [
         `MotifSpec ${d.version}: Liam Marshall's design system (CSS, tokens, components, Hugo templates).`,
         'Before writing markup or CSS for a MotifSpec project, call get_rules. Build UI from get_component, choose tokens with find_tokens, and use the Hugo partials get_component names when the project is a Hugo site.',
+        'Choose the layout first with get_doc (portfolio, dashboard, documentation or a-la-carte). Keep the project\'s stack if it has one; otherwise follow the layout\'s stack table.',
         'Before finishing, call check on what you wrote and fix every problem it reports.',
         `This server serves the latest release. A project pins its own version (go.mod or package.json); if that is older than ${d.version}, something served here may not exist in it yet.`,
       ].join('\n'),
@@ -111,7 +117,7 @@ export function createServer() {
       annotations: readOnly,
     },
     async ({ name }) => {
-      if (!name) return text(Object.values(d.components).map((c) => `${c.name}: ${c.title}. ${c.summary}`).join('\n'));
+      if (!name) return text(Object.values(d.components).map((c) => `${c.name} [${c.layouts}]: ${c.title}. ${c.summary}`).join('\n'));
       const c = d.components[name];
       if (!c) return text(`No component "${name}". Call get_component without a name for the list.`);
       const rows = d.hugoRows.filter((r) => r.includes(`\`${name}.md\``) || r.includes(`\`${name}.html\``));
@@ -126,8 +132,8 @@ export function createServer() {
     'get_doc',
     {
       title: 'Get a guide',
-      description: '"hugo": using MotifSpec in a Hugo site (setup, page shell, every partial and its context, front matter, Markdown render hooks). "templates": the content hierarchy of each page type and catalogue numbers.',
-      inputSchema: { name: z.enum(['hugo', 'templates']) },
+      description: '"hugo": using MotifSpec in a Hugo site (setup, page shell, every partial and its context, front matter, Markdown render hooks). "portfolio", "dashboard", "documentation", "a-la-carte": a layout\'s shell, page templates, components, decoration, headings and stack. "templates" is the portfolio layout\'s former name.',
+      inputSchema: { name: z.enum(['hugo', ...LAYOUTS, 'templates']) },
       annotations: readOnly,
     },
     async ({ name }) => text(d.docs[name]),
@@ -157,5 +163,5 @@ export function createServer() {
 }
 
 /** Whether a file this server reads is missing; used by tests and the bundle step. */
-export const FILES = ['package.json', 'README.md', 'dist/tokens.json', 'dist/codex.css', 'dist/codex.js', 'dist/plate.js', 'tokens/size.json', 'icons/manifest.json', 'docs/hugo.md', 'docs/templates.md', 'docs/components'];
+export const FILES = ['package.json', 'README.md', 'dist/tokens.json', 'dist/codex.css', 'dist/codex.js', 'dist/plate.js', 'tokens/size.json', 'icons/manifest.json', 'docs/hugo.md', 'docs/layouts', 'docs/components'];
 export const missingFiles = () => FILES.filter((f) => !existsSync(join(ROOT, f)));

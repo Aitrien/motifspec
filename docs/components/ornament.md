@@ -1,6 +1,7 @@
 ---
 name: ornament
 status: stable
+layouts: [portfolio, documentation]
 tokens:
   - border.width.hairline
   - color.border.subtle
@@ -31,6 +32,7 @@ Yarndings 12 knitting-chart glyphs: the footer band, the prose divider, the arti
 
 - As icons, bullets, status markers or anything that carries meaning.
 - More than one ornament group in a viewport.
+- On dashboards (`docs/layouts/dashboard.md`), which have no ornaments.
 - Glyphs in `codex.glyphs.forbidden` (`u v w x y z [ ] { }`): faces, a robot, hearts and animals read as emoji and are never allowed.
 
 ## Markup

@@ -1,6 +1,7 @@
 ---
 name: heading-anchor
 status: stable
+layouts: [portfolio, documentation]
 tokens:
   - border.focus.offset
   - border.focus.width
@@ -27,7 +28,7 @@ A "#" link after a section heading, so readers can copy a link straight to that 
 
 ## When to use
 
-- On every `<h2>` that has an id: prose sections in posts and case studies, top-level sections of index and docs pages.
+- On every `<h2>` that has an id in reading text: prose sections in posts and case studies, top-level sections of index and docs pages.
 - On `<h3>` in long documentation where readers link to sub-sections.
 
 ## When not to use
@@ -35,6 +36,7 @@ A "#" link after a section heading, so readers can copy a link straight to that 
 - On the page `<h1>`; the page URL already points there.
 - On headings without an id, or on card and list titles that are themselves links.
 - On `<h4>` and below.
+- On dashboard sections (`docs/layouts/dashboard.md`): they are places on a screen, not parts of an article. Give them an id and no anchor.
 
 ## Markup
 

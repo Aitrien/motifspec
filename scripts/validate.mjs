@@ -9,6 +9,8 @@ const errors = [...loadErrors, ...validate(tokens)];
 // Component docs follow docs/components/_template.md and only list semantic tokens that exist.
 const SECTIONS = ['## When to use', '## When not to use', '## Markup', '```html preview', '## Do', "## Don't", '## Accessibility'];
 const docsDir = join(ROOT, 'docs', 'components');
+// The layouts a component can belong to: one file each in docs/layouts/, except à la carte, which has no components of its own.
+const LAYOUTS = readdirSync(join(ROOT, 'docs', 'layouts')).filter((f) => f.endsWith('.md') && f !== 'a-la-carte.md').map((f) => f.replace(/\.md$/, ''));
 for (const file of readdirSync(docsDir).filter((f) => f.endsWith('.md') && !f.startsWith('_'))) {
   const doc = readFileSync(join(docsDir, file), 'utf8');
   const fm = doc.match(/^---\n([\s\S]*?)\n---\n/);
@@ -16,6 +18,9 @@ for (const file of readdirSync(docsDir).filter((f) => f.endsWith('.md') && !f.st
   const name = fm[1].match(/^name: (.+)$/m)?.[1];
   if (name !== file.replace(/\.md$/, '')) errors.push(`docs/components/${file}: name "${name}" does not match file name`);
   if (!/^status: (draft|stable|deprecated)\b/m.test(fm[1])) errors.push(`docs/components/${file}: status must be draft, stable or deprecated`);
+  const layouts = fm[1].match(/^layouts: \[(.*)\]\s*(?:#.*)?$/m)?.[1].split(',').map((l) => l.trim()).filter(Boolean);
+  if (!layouts?.length) errors.push(`docs/components/${file}: needs "layouts: [shared]" or the layouts it belongs to (docs/layouts/)`);
+  else if (layouts.includes('shared') ? layouts.length > 1 : layouts.some((l) => !LAYOUTS.includes(l))) errors.push(`docs/components/${file}: layouts must be [shared] or any of ${LAYOUTS.join(', ')}`);
   for (const t of fm[1].match(/^  - (.+)$/gm) ?? []) {
     const path = t.slice(4).trim();
     if (path !== 'AUTO' && (!tokens.has(path) || tokens.get(path).tier !== 'semantic')) errors.push(`docs/components/${file}: tokens lists unknown or non-semantic ${path}`);
