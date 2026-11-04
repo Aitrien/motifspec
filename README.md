@@ -133,7 +133,7 @@ Pin an exact version, as a Hugo site pins a tag: the version you install is the 
 | `@aitrien/motifspec/check` | `checkText` and `checkProject` from the rule checker. |
 | `@aitrien/motifspec/fonts/*` | The WOFF2 files, for preloading. |
 
-Copy component markup from `docs/components/*.md` (in the package under `node_modules/@aitrien/motifspec/docs/`). Then check the project, pointing `--dirs` at the folders with your markup:
+Copy component markup from `docs/components/*.md` (in the package under `node_modules/@aitrien/motifspec/docs/`). For React and similar, the MCP server's `get_component` with `form: "jsx"` gives the same examples as JSX, converted mechanically; components with script describe what to implement in their Behaviour section. Then check the project, pointing `--dirs` at the folders with your markup:
 
 ```sh
 npx motifspec-check . --dirs src
@@ -149,7 +149,7 @@ The MCP server at `https://mcp.motifspec.com/mcp` serves the latest release to a
 |---|---|
 | `get_rules` | The rules above, and what the checker enforces |
 | `find_tokens` | Semantic tokens matching a query: CSS property, usage rule, light and dark values, the surfaces a colour may sit on |
-| `get_component` | A component's doc (markup, do and don't, accessibility), with its Hugo partial and Markdown form; without a name, the list |
+| `get_component` | A component's doc (markup, do and don't, accessibility, behaviour). `form` picks the markup: `html`, `jsx` or `hugo` (with its partial); without it, the HTML and the partial. Without a name, the list with each component's layouts |
 | `get_doc` | `docs/hugo.md`, or a layout from `docs/layouts/` (`portfolio`, `dashboard`, `documentation`, `a-la-carte`) |
 | `check` | The checker's problems in a piece of markup, Markdown or CSS; with a `layout`, warnings for components from other layouts |
 

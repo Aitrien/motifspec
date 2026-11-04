@@ -174,3 +174,67 @@ export function contrastReport(tokens) {
   }
   return rows;
 }
+
+// ------------------------------------------------------------------ JSX: the components' markup for React and similar
+// HTML attribute names that differ in JSX. Anything else (aria-*, data-*, viewBox, href) keeps its name.
+const JSX_NAMES = {
+  class: 'className', for: 'htmlFor', tabindex: 'tabIndex', datetime: 'dateTime', readonly: 'readOnly', maxlength: 'maxLength',
+  minlength: 'minLength', colspan: 'colSpan', rowspan: 'rowSpan', autocomplete: 'autoComplete', autofocus: 'autoFocus',
+  inputmode: 'inputMode', enterkeyhint: 'enterKeyHint', spellcheck: 'spellCheck', srcset: 'srcSet', crossorigin: 'crossOrigin',
+  novalidate: 'noValidate', accesskey: 'accessKey', contenteditable: 'contentEditable', fetchpriority: 'fetchPriority',
+  'text-anchor': 'textAnchor', 'marker-end': 'markerEnd', 'marker-start': 'markerStart', 'stroke-width': 'strokeWidth',
+  'stroke-linecap': 'strokeLinecap', 'stroke-linejoin': 'strokeLinejoin', 'stroke-dasharray': 'strokeDasharray',
+  'fill-rule': 'fillRule', 'clip-rule': 'clipRule', 'vector-effect': 'vectorEffect', 'xlink:href': 'href',
+};
+const VOID = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr']);
+const FORM_FIELDS = new Set(['input', 'textarea', 'select']);
+const ATTR = /\s*([^\s=/>]+)(?:\s*=\s*("[^"]*"|'[^']*'|[^\s>]+))?/g;
+
+/**
+ * A component's HTML example as JSX, converted mechanically: renamed attributes, void elements closed, comments as
+ * {/* *\/}, braces in text escaped, uncontrolled form values as defaultValue and defaultChecked, and more than one root
+ * wrapped in a fragment. Returns null for an example written in Hugo template syntax ({{ }}), which has no JSX form.
+ */
+export function htmlToJsx(html) {
+  if (html.includes('{{')) return null;
+  let roots = 0;
+  let depth = 0;
+  const out = [];
+  let last = 0;
+  const text = (t) => {
+    if (depth === 0 && t.trim()) roots++;
+    return t.replace(/[{}]/g, (b) => `{'${b}'}`);
+  };
+  for (const m of html.matchAll(/<!--([\s\S]*?)-->|<(\/?)([a-zA-Z][a-zA-Z0-9-]*)((?:\s+[^<>]*?)?)\s*(\/?)>/g)) {
+    out.push(text(html.slice(last, m.index)));
+    last = m.index + m[0].length;
+    if (m[1] !== undefined) { if (depth === 0) roots++; out.push(`{/*${m[1].replace(/\*\//g, '* /')}*/}`); continue; }
+    const [, , closing, tag, attrs = '', selfClosed] = m;
+    if (closing) { depth--; out.push(`</${tag}>`); continue; }
+    if (depth === 0) roots++;
+    const parts = [...attrs.matchAll(ATTR)].filter((a) => a[1]).map(([, name, value]) => {
+      let n = JSX_NAMES[name.toLowerCase()] ?? name;
+      if (FORM_FIELDS.has(tag) && n === 'value') n = 'defaultValue';
+      if (FORM_FIELDS.has(tag) && n === 'checked') n = 'defaultChecked';
+      if (FORM_FIELDS.has(tag) && n === 'selected') n = 'defaultValue';
+      if (value === undefined) return n;
+      return `${n}=${/^["']/.test(value) ? value : `"${value}"`}`;
+    });
+    const isVoid = VOID.has(tag.toLowerCase()) || selfClosed;
+    if (!isVoid) depth++;
+    out.push(`<${tag}${parts.length ? ' ' + parts.join(' ') : ''}${isVoid ? ' />' : '>'}`);
+  }
+  out.push(text(html.slice(last)));
+  const jsx = out.join('').trim();
+  return roots > 1 ? `<>\n${jsx}\n</>` : jsx;
+}
+
+/** A component doc with each `html preview` example replaced by its JSX form (see htmlToJsx). */
+export function docAsJsx(md) {
+  return md.replace(/```html preview\n([\s\S]*?)```/g, (block, html) => {
+    const jsx = htmlToJsx(html);
+    return jsx === null
+      ? `This example is written for Hugo, so it has no JSX form. Outside Hugo, use the files the README's npm table lists.\n\n${block}`
+      : `\`\`\`jsx\n${jsx}\n\`\`\``;
+  });
+}

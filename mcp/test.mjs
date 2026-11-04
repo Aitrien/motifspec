@@ -67,6 +67,35 @@ test('get_component lists components, returns a doc with its Hugo partial, and h
   assert.match(await call('get_component', { name: 'nope' }), /No component "nope"/);
 });
 
+test('get_component returns one form of the markup when asked, and every JSX form compiles', async () => {
+  const { transform } = await import('esbuild');
+  const { readdirSync, readFileSync } = await import('node:fs');
+  const { htmlToJsx } = await import('../scripts/lib.mjs');
+  const all = await call('get_component', { name: 'project-card' });
+  const html = await call('get_component', { name: 'project-card', form: 'html' });
+  const jsx = await call('get_component', { name: 'project-card', form: 'jsx' });
+  const hugo = await call('get_component', { name: 'project-card', form: 'hugo' });
+  assert.match(all, /## In a Hugo site/);
+  assert.doesNotMatch(html, /## In a Hugo site/);
+  assert.ok(html.length < all.length, 'form "html" is shorter than the default answer');
+  assert.match(hugo, /## In a Hugo site/);
+  assert.match(jsx, /```jsx\n/);
+  assert.match(jsx, /className="cx-card/);
+  assert.doesNotMatch(jsx, /```html preview|\sclass="/);
+  assert.match(await call('get_component', { name: 'backdrop', form: 'jsx' }), /written for Hugo, so it has no JSX form/);
+  let compiled = 0;
+  for (const f of readdirSync(new URL('../docs/components/', import.meta.url)).filter((x) => x.endsWith('.md'))) {
+    const md = readFileSync(new URL(`../docs/components/${f}`, import.meta.url), 'utf8');
+    for (const [, block] of md.matchAll(/```html preview\n([\s\S]*?)```/g)) {
+      const out = htmlToJsx(block);
+      if (out === null) continue;
+      await assert.doesNotReject(transform(`export default () => (${out});`, { loader: 'jsx' }), `${f}: JSX form doesn't compile`);
+      compiled++;
+    }
+  }
+  assert.ok(compiled > 20, `compiled ${compiled} examples`);
+});
+
 test('get_doc returns the Hugo guide and every layout, and "templates" still returns the portfolio layout', async () => {
   assert.match(await call('get_doc', { name: 'hugo' }), /# Using MotifSpec in Hugo/);
   for (const [name, title] of [['portfolio', 'Portfolio layout'], ['dashboard', 'Dashboard layout'], ['documentation', 'Documentation layout'], ['a-la-carte', 'À la carte']]) {

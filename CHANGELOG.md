@@ -2,7 +2,7 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
-## [Unreleased]
+## [1.18.0] - 2026-11-04
 
 ### Added
 - Layouts: `docs/layouts/` has one file each for the portfolio, dashboard and documentation layouts, and for à la carte (a project that fits none of them). Each gives the shell, page templates, components, decoration, heading rules and a table for choosing a stack. Dashboard and documentation are marked in progress, with what exists now and what doesn't.
@@ -18,12 +18,14 @@ Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entri
 - Disclosure (`disclosure.md`, shared): a styled native `<details>` with a turning chevron.
 - Keyboard key (`keyboard-key.md`, shared): `cx-kbd`, the prose keycap outside prose.
 - Thirteen icons for navigation and tools: `search`, `menu`, `close`, `edit`, `dashboard`, `notifications`, `dns`, `storage`, `lan`, `apps`, `settings`, `restart` and `logs`. `icon.md` allows icons before side navigation items and on toolbar controls in the dashboard and documentation layouts.
+- A JSX form of every component example: the MCP server's `get_component` takes `form` (`html`, `jsx` or `hugo`) and returns only that markup, so answers are shorter. The JSX is converted from the HTML examples (renamed attributes, closed void elements, comments, fragments), and a test compiles every example with esbuild. The two examples written in Hugo template syntax say they have no JSX form.
 - Behaviour sections in the docs of components with script (site header's theme toggle, code block's copy button, table of contents, tooltip) and in the disclosure's, so an app that renders them itself can match.
 
 ### Changed
 - `docs/templates.md` is now `docs/layouts/portfolio.md`. `get_doc("templates")` still returns it.
 - `cx-status` sets its own mono label type, so it can stand on its own in a table or a feed; inside accession labels and meta lines it looks the same as before.
 - Rules that only suit a portfolio say so: catalogue numbers, the six page templates and the backdrop on every page are in the portfolio layout. Heading anchors are for reading text; dashboard sections have an id and no anchor. The seventh principle is now "One accent; decoration as the layout allows".
+- The MCP server's tool descriptions are shorter, so what it sends with every request stays the same size despite the new options (+23 characters, from 3,689).
 - The rule that JavaScript is enhancement says what it means in an app that needs script to render, and a new rule says MotifSpec's own files are served by the project, never a CDN, while an app's data is the project's business.
 
 ## [1.17.3] - 2026-11-04

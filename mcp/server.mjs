@@ -5,7 +5,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { ROOT } from '../scripts/lib.mjs';
+import { ROOT, docAsJsx } from '../scripts/lib.mjs';
 import { checkText, format, LAYOUTS } from '../scripts/check.mjs';
 
 const read = (...p) => readFileSync(join(ROOT, ...p), 'utf8');
@@ -62,7 +62,7 @@ export function createServer() {
     {
       instructions: [
         `MotifSpec ${d.version}: Liam Marshall's design system (CSS, tokens, components, Hugo templates).`,
-        'Before writing markup or CSS for a MotifSpec project, call get_rules. Build UI from get_component, choose tokens with find_tokens, and use the Hugo partials get_component names when the project is a Hugo site.',
+        'Before writing markup or CSS for a MotifSpec project, call get_rules. Build UI from get_component (form "hugo" in a Hugo site, "jsx" in React), and choose tokens with find_tokens.',
         'Choose the layout first with get_doc (portfolio, dashboard, documentation or a-la-carte). Keep the project\'s stack if it has one; otherwise follow the layout\'s stack table.',
         'Before finishing, call check on what you wrote and fix every problem it reports.',
         `This server serves the latest release. A project pins its own version (go.mod or package.json); if that is older than ${d.version}, something served here may not exist in it yet.`,
@@ -85,8 +85,8 @@ export function createServer() {
     'find_tokens',
     {
       title: 'Find design tokens',
-      description: 'Semantic tokens whose name or usage rule matches every word of the query (e.g. "muted text", "surface", "motion duration"). Each result has its CSS custom property, usage rule, light and dark values, the surfaces a foreground colour may sit on, and whether it is deprecated. An empty query lists every token name.',
-      inputSchema: { query: z.string().describe('Words to match against token names and usage rules. Empty lists every token name.') },
+      description: 'Semantic tokens matching every word of the query (e.g. "muted text"): CSS property, usage rule, light and dark values, allowed surfaces, deprecation.',
+      inputSchema: { query: z.string().describe('Words to match. Empty lists every token name.') },
       annotations: readOnly,
     },
     async ({ query }) => {
@@ -110,16 +110,20 @@ export function createServer() {
     'get_component',
     {
       title: 'Get a component',
-      description: 'A component\'s rules: when to use it, the markup to copy, do and don\'t, accessibility, and the tokens it uses, plus its Hugo partial and Markdown form where it has them. Without a name, lists every component.',
-      inputSchema: { name: z.string().optional().describe('Component name from the list, e.g. "project-card" or "figure".') },
+      description: 'A component\'s rules, markup, accessibility, behaviour and tokens. Without a name, lists every component with its layouts.',
+      inputSchema: {
+        name: z.string().optional().describe('e.g. "project-card".'),
+        form: z.enum(['html', 'jsx', 'hugo']).optional().describe('The markup the project uses; hugo adds its partial. Without it: HTML and the partial.'),
+      },
       annotations: readOnly,
     },
-    async ({ name }) => {
+    async ({ name, form }) => {
       if (!name) return text(Object.values(d.components).map((c) => `${c.name} [${c.layouts}]: ${c.title}. ${c.summary}`).join('\n'));
       const c = d.components[name];
       if (!c) return text(`No component "${name}". Call get_component without a name for the list.`);
+      if (form === 'jsx') return text(docAsJsx(c.md).trim());
       const rows = d.hugoRows.filter((r) => r.includes(`\`${name}.md\``) || r.includes(`\`${name}.html\``));
-      const hugo = rows.length
+      const hugo = rows.length && form !== 'html'
         ? `\n\n## In a Hugo site (docs/hugo.md)\n\n${rows.join('\n')}\n\nCall partials as partial "motifspec/<name>.html" <context>. get_doc("hugo") has the full guide.`
         : '';
       return text(`${c.md.trim()}${hugo}`);
@@ -130,7 +134,7 @@ export function createServer() {
     'get_doc',
     {
       title: 'Get a guide',
-      description: '"hugo": using MotifSpec in a Hugo site (setup, page shell, every partial and its context, front matter, Markdown render hooks). "portfolio", "dashboard", "documentation", "a-la-carte": a layout\'s shell, page templates, components, decoration, headings and stack. "templates" is the portfolio layout\'s former name.',
+      description: '"hugo": MotifSpec in a Hugo site (setup, partials, front matter, render hooks). A layout name: its shell, page templates, components and stack. "templates" is portfolio\'s old name.',
       inputSchema: { name: z.enum(['hugo', ...LAYOUTS, 'templates']) },
       annotations: readOnly,
     },
@@ -141,13 +145,13 @@ export function createServer() {
     'check',
     {
       title: 'Check markup or CSS',
-      description: 'Runs MotifSpec\'s rule checker (the same one projects run in CI) on text you wrote: raw colours and sizes, style attributes, primitive, unknown or deprecated tokens, undefined cx- classes and icons, and "·" separators. With a layout, it also warns about components from another layout. CSS is checked as an à la carte project\'s own stylesheet, which may not target or define cx- classes. Returns each problem with its line, rule and fix, or confirms there are none.',
+      description: 'MotifSpec\'s checker, as projects run it in CI, on what you wrote: raw values, style attributes, bad tokens, unknown classes and icons, separators, and (with layout) components from other layouts. Each problem has its line, rule and fix.',
       inputSchema: {
-        text: z.string().describe('The file content to check.'),
-        kind: z.enum(['html', 'md', 'css']).default('html').describe('html for templates and components (also JSX, Vue, Svelte, Astro), md for Markdown content, css for an à la carte project\'s own stylesheet.'),
-        file: z.string().optional().describe('A file name to show in the results.'),
-        layout: z.enum(LAYOUTS).optional().describe('The project\'s layout. Recommended: without it, components from other layouts aren\'t flagged.'),
-        components: z.array(z.string()).optional().describe('For a-la-carte: the component doc names the project uses, e.g. ["table-of-contents"].'),
+        text: z.string(),
+        kind: z.enum(['html', 'md', 'css']).default('html').describe('html includes JSX, Vue, Svelte and Astro. css is an à la carte project\'s own stylesheet.'),
+        file: z.string().optional(),
+        layout: z.enum(LAYOUTS).optional(),
+        components: z.array(z.string()).optional().describe('À la carte only: the component names it uses.'),
       },
       annotations: readOnly,
     },
