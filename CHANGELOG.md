@@ -2,6 +2,15 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.17.2] - 2026-11-04
+
+### Changed
+- The specimen plate's caption is shorter: the plate number and what it shows (`Plate 0 | Contour survey`). Its doc now says to keep captions to that.
+- The showcase says what MotifSpec is: a design system proof of concept, shown in an example brand that a real one can replace.
+  - The hero no longer repeats the version, token count, contrast result and font size in an accession label; the eyebrow and Checks already show them.
+  - Section introductions and captions are shorter.
+  - The motion principle matches the README again: the contour survey settles once and answers the pointer, rather than drifting behind every page.
+
 ## [1.17.1] - 2026-10-30
 
 ### Fixed
