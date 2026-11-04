@@ -1,6 +1,7 @@
 ---
 name: component-name
 status: draft          # draft | stable | deprecated
+layouts: [shared]      # [shared], or the layouts it belongs to: portfolio, dashboard, documentation
 tokens:                # semantic tokens this component uses
   - color.accent
   - space.md

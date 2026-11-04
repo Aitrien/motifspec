@@ -7,6 +7,7 @@ MotifSpec is a design system that other projects install at a pinned version, so
 
 ## Where a change goes
 
+- A layout: `docs/layouts/<name>.md`, with its shell, page templates, components, decoration, headings and stack table. A component says which layouts it belongs to in its doc's `layouts:` front matter.
 - A token: `tokens/*.json`, with a `$description` that says when to use it. A foreground colour declares the surfaces it may sit on in `codex.pairsWith`.
 - A component is three files kept in step: its CSS in `css/components.css` (tokens only), its rules and markup in `docs/components/<name>.md` (from `_template.md`), and its Hugo partial in `layouts/_partials/motifspec/` (listed in `docs/hugo.md`). The doc is the contract.
 - The MCP server: `mcp/`, served from AWS. The release workflow deploys its code; `infra/mcp.yml` (the AWS stack) is applied by hand in CloudFormation, so a change there needs Liam to update the stack.

@@ -2,6 +2,18 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [Unreleased]
+
+### Added
+- Layouts: `docs/layouts/` has one file each for the portfolio, dashboard and documentation layouts, and for à la carte (a project that fits none of them). Each gives the shell, page templates, components, decoration, heading rules and a table for choosing a stack. Dashboard and documentation are marked in progress, with what exists now and what doesn't.
+- Every component doc says which layouts it belongs to (`layouts:` in its front matter), and the build fails if one doesn't. The README has a Layouts section, and its first rule for AI assistants is to choose the layout and keep the project's stack.
+- The MCP server's `get_doc` serves the four layouts, and `get_component` lists each component with its layouts. Its instructions say to choose the layout first.
+
+### Changed
+- `docs/templates.md` is now `docs/layouts/portfolio.md`. `get_doc("templates")` still returns it.
+- Rules that only suit a portfolio say so: catalogue numbers, the six page templates and the backdrop on every page are in the portfolio layout. Heading anchors are for reading text; dashboard sections have an id and no anchor. The seventh principle is now "One accent; decoration as the layout allows".
+- The rule that JavaScript is enhancement says what it means in an app that needs script to render, and a new rule says MotifSpec's own files are served by the project, never a CDN, while an app's data is the project's business.
+
 ## [1.17.3] - 2026-11-04
 
 ### Fixed

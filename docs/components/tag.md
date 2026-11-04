@@ -1,6 +1,7 @@
 ---
 name: tag
 status: stable
+layouts: [shared]
 tokens:
   - border.focus.offset
   - border.focus.width

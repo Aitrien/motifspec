@@ -1,6 +1,7 @@
 ---
 name: table-of-contents
 status: stable
+layouts: [portfolio, documentation]
 tokens:
   - border.focus.offset
   - border.focus.width

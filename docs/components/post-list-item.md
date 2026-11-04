@@ -1,6 +1,7 @@
 ---
 name: post-list-item
 status: stable
+layouts: [portfolio]
 tokens:
   - border.focus.offset
   - border.focus.width

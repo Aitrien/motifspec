@@ -10,10 +10,24 @@ Liam Marshall's design system: the single source of truth for aitrien.com and ev
 4. **HTML first, script second.** Content, navigation and code work without JavaScript. Scripts add the theme toggle, copy buttons and TOC tracking.
 5. **Square, hairline, labelled.** Structure is drawn with 1px rules, square corners and mono labels, like a field ledger. Buttons, nav items and icon-only controls are the one exception: they are pills, so anything you can press is recognisable at a glance.
 6. **Motion confirms a change.** Only state changes animate, plus the contour survey: it settles once on arrival and answers the pointer, and the specimen plate's drift can be paused. Text never moves, and reduced motion means none.
-7. **One accent, one ornament.** Sap green marks action. Yarndings and the contour survey (the backdrop, or the specimen plate) are the only decoration, once per view.
+7. **One accent; decoration as the layout allows.** Sap green marks action. Yarndings and the contour survey (the backdrop, or the specimen plate) are the only decoration, once per view, where the layout allows them.
+
+## Layouts
+
+A layout is a kind of site: its shell, page templates, components, decoration and heading rules. Pick the one that fits before choosing components.
+
+| Layout | For | File |
+|---|---|---|
+| Portfolio | Case studies, writing and an about page | `docs/layouts/portfolio.md` |
+| Dashboard | Tools and admin screens (in progress) | `docs/layouts/dashboard.md` |
+| Documentation | Guides, reference and a changelog (in progress) | `docs/layouts/documentation.md` |
+| À la carte | A project that fits none of them: chosen components, its own frame | `docs/layouts/a-la-carte.md` |
+
+Each component doc says which layouts it belongs to in its front matter (`layouts:`). Shared components belong to every layout.
 
 ## Rules for AI assistants
 
+- Choose the layout first (`docs/layouts/`), and use the project's stack if it has one; otherwise see the layout's stack table. Use shared components and the components of that layout only.
 - Use semantic tokens only: `var(--cx-color-text-primary)`, never `--cx-primitive-*`, never a raw hex, px, rem or ms value.
 - Read a token's `$description` before using it. It is the usage rule, including when *not* to use it.
 - Put text on a surface only if the text token lists that surface in `codex.pairsWith`. If the pair isn't declared, pick a token that declares it.
@@ -24,10 +38,11 @@ Liam Marshall's design system: the single source of truth for aitrien.com and ev
 - Icons come only from `icons/manifest.json`, each for its listed role, as `<svg class="cx-icon"><use href="#cx-icon-{key}"></use></svg>` beside text that says the same thing. Never the icon font, never a CDN.
 - Separate inline metadata with `<span class="cx-sep" aria-hidden="true">|</span>`. Never use "·" as a separator.
 - Lay out with flex-wrap, auto-fill grids and `min()`. Width media queries can't read custom properties: when a layout must switch between alternate content at a width, write `@media (width < token(size.breakpoint.md))` in `css/components.css` and the build fills in the value. Nothing else may be written as `token(...)`.
-- JavaScript is enhancement. Anything a reader needs must work without it; controls that need script ship `hidden` and are revealed by it.
+- JavaScript is enhancement. In a site that renders without script, anything a reader needs must work without it; controls that need script ship `hidden` and are revealed by it. In an app that needs script to render at all, MotifSpec's components add no script of their own: native elements (`<details>`, `<meter>`, `<dialog>`, radio buttons) do the work.
+- Serve MotifSpec's own files (CSS, fonts, icons, scripts) from the project, never from a CDN. Where an app gets its data is the project's decision, not a MotifSpec rule.
 - Use plain, functional labels: Work, Writing, About.
 - Write sample and placeholder content from scratch. Never copy wording from reference or competitor sites; quote only with a named person and a traceable source in the blockquote footer.
-- Give every section `<h2>` an id and a `cx-anchor` link (see `docs/components/heading-anchor.md`).
+- Give every section `<h2>` in reading text an id and a `cx-anchor` link (see `docs/components/heading-anchor.md`). Dashboard sections have an id and no anchor.
 
 ## What's here
 
@@ -40,7 +55,7 @@ css/components.css  Reference implementation of every component (tokens only)
 syntax/chroma.json  Hugo Chroma class → token mapping
 icons/              Approved Material Symbols (manifest.json, source SVGs, Apache-2.0 LICENSE)
 docs/components/    One rule file per component (front-matter token lists generated from the CSS)
-docs/templates.md   Content hierarchy for the six page templates
+docs/layouts/       One file per layout: shell, page templates, components, decoration, headings, stack
 docs/hugo.md        The Hugo partials and render hooks, their contexts and the front matter they read
 layouts/            Hugo partials (_partials/motifspec/) and Markdown render hooks (_markup/), mounted by the module
 docs/syntax-highlighting.md
@@ -122,7 +137,7 @@ The MCP server at `https://mcp.motifspec.com/mcp` serves the latest release to a
 | `get_rules` | The rules above, and what the checker enforces |
 | `find_tokens` | Semantic tokens matching a query: CSS property, usage rule, light and dark values, the surfaces a colour may sit on |
 | `get_component` | A component's doc (markup, do and don't, accessibility), with its Hugo partial and Markdown form; without a name, the list |
-| `get_doc` | `docs/hugo.md` or `docs/templates.md` |
+| `get_doc` | `docs/hugo.md`, or a layout from `docs/layouts/` (`portfolio`, `dashboard`, `documentation`, `a-la-carte`) |
 | `check` | The checker's problems in a piece of markup, Markdown or CSS |
 
 To connect it:

@@ -1,6 +1,7 @@
 ---
 name: accession-label
 status: stable
+layouts: [portfolio]
 tokens:
   - border.width.hairline
   - color.border.default

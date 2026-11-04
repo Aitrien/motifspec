@@ -1,6 +1,7 @@
 ---
 name: site-footer
 status: stable
+layouts: [shared]
 tokens:
   - border.width.hairline
   - color.border.subtle
