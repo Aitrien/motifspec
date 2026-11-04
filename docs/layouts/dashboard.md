@@ -6,8 +6,8 @@ For tools and admin screens: an overview of systems, lists of things to act on, 
 
 In progress. The dashboard's own components arrive in later releases, so this file says what exists now and what doesn't.
 
-- **Available now:** every shared component, including buttons, callouts, data tables, code blocks, tags, tooltips and icons.
-- **Not available yet:** the app shell, side navigation, panels, stat tiles, meters, sparklines and charts, resource cards, the facts list, the event feed, the segmented control, compact buttons, form controls and the dialog.
+- **Available now:** every shared component, including buttons and compact buttons, callouts, data tables with state and action cells, status labels in five tones, disclosures, keyboard keys, code blocks, tags, tooltips, and icons for navigation and tools (`icon.md`).
+- **Not available yet:** the app shell, side navigation, panels, stat tiles, meters, sparklines and charts, resource cards, the facts list, the event feed, the segmented control, form controls and the dialog.
 
 Don't write classes for parts that aren't available. The checker fails on any `cx-` class MotifSpec doesn't define. Build what you can from the shared components, and say which parts MotifSpec doesn't have yet.
 

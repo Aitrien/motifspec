@@ -123,3 +123,12 @@ Copy the snippet as it is: the build fails if this doc and `js/theme-init.js` di
 - The toggle's `aria-label` is its action ("Switch to light theme"); the visible tooltip repeats it and is `aria-hidden`. Escape hides the tooltip without moving the pointer (see `tooltip.md`).
 - `aria-current` carries the current state for assistive tech; the outline is the visual cue.
 - Pairs: `color.text.secondary` and `color.text.primary` on `color.surface.base` (7:1); `color.border.strong` on `color.surface.base` (current outline, 3:1). On a backdrop page the frost is measured as `color.surface.base`; the contour lines beneath it are not part of the check.
+
+## Behaviour
+
+`dist/codex.js` adds this; an app that renders the header itself does the same.
+
+- **Theme toggle:** ships `hidden` and is shown by script. A click switches between light and dark: it sets `data-theme` on `<html>`, or removes it when the choice matches the system again, so the page follows the system from then on. The choice is stored as `cx-theme` in `localStorage` (`light` or `dark`; removed for system), and `dist/theme-init.js` applies it before first paint. The toggle's `aria-label` and tooltip always name the action ("Switch to dark theme").
+- **System changes:** while following the system, a change to the system theme updates the toggle's label.
+- **Header height:** `--_header-height` on `<html>` is kept equal to the header's height, for scroll padding and the docked table of contents. When the nav wraps below the wordmark, the header gets `data-wrapped`.
+- **On a backdrop page:** the header sticks once script runs, and `data-scrolled="true"` fades its surface in as soon as the page leaves the top. Without script it scrolls away with the page.

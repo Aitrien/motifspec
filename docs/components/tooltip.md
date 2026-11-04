@@ -66,3 +66,8 @@ It opens below the control, aligned to its right edge. Add `cx-tooltip--start` t
 - It shows on `:focus-visible` as well as `:hover`, so keyboard users see it too.
 - Escape hides it without moving the pointer or focus (WCAG 1.4.13).
 - Pair: `color.text.inverse` on `color.surface.inverse` (7:1 in both themes).
+
+## Behaviour
+
+- Showing is CSS: the tooltip appears while its control is hovered or has `:focus-visible`.
+- `dist/codex.js` adds dismissal: Escape adds `is-tooltip-dismissed` to every tooltip's control, hiding it without moving the pointer or focus. The class is removed when the pointer leaves the control or focus moves away. An app that renders tooltips itself does the same.

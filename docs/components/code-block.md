@@ -108,3 +108,12 @@ Hugo render hook (`layouts/_default/_markup/render-codeblock.html`):
 - The copy button says "Copied" on success. If the clipboard is refused, the code is selected and the button says to press Ctrl+C.
 - Highlighted lines use an inset rule as well as a background, so the cue survives forced colours.
 - Pairs: every `color.syntax.*` role on `color.surface.sunken` and `color.syntax.line-highlight` (4.5:1, both themes).
+
+## Behaviour
+
+`dist/codex.js` adds this; an app that renders code blocks itself does the same.
+
+- The copy button ships `hidden` and is shown by script.
+- A click copies the code's text (each line's `.cl` span when Chroma wrote them, otherwise the whole `<code>`) with the Clipboard API. The label becomes "Copied", the icon `check`, and `data-state="copied"`.
+- If the clipboard is unavailable or refused, the code is selected instead, the label becomes "Selected, press Ctrl+C" and `data-state="selected"`.
+- After `motion.duration.plate`, the button returns to "Copy" with the `content-copy` icon.

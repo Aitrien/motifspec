@@ -36,6 +36,7 @@ tokens:
   - space.inline.sm
   - space.inline.xs
   - space.inset.lg
+  - space.inset.md
 ---
 
 # Button and link
@@ -67,6 +68,12 @@ Buttons start actions or journeys; standalone links and back links move between 
 <a class="cx-back" href="/writing/"><svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-back"></use></svg>All writing</a>
 ```
 
+Add `cx-button--sm` for a compact button in a table row or a toolbar, where full-size buttons would make every row tall:
+
+```html preview
+<button class="cx-button cx-button--sm" type="button">Restart<span class="cx-visually-hidden"> Jellyfin</span></button>
+```
+
 ## Do
 
 - Use `<a>` when it goes somewhere and `<button>` when it does something.
@@ -79,7 +86,8 @@ Buttons start actions or journeys; standalone links and back links move between 
 - Don't use buttons for decoration or as tags.
 - Don't round anything else: cards, tags, labels, tooltips and inputs stay square.
 - Don't make disabled buttons look clickable. They are dashed and muted, and should say why they're unavailable.
-- Don't add icons beyond the direction arrow.
+- Don't add icons beyond the direction arrow, except the roles `icon.md` lists for tools, such as restart or logs.
+- Don't use `cx-button--sm` for a page's main actions; it is for repeated actions in rows and toolbars.
 
 ## Accessibility
 

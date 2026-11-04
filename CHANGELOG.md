@@ -13,8 +13,16 @@ Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entri
 - An à la carte project may have a stylesheet of its own for its frame. The checker holds it to semantic tokens and fails any selector that targets a `cx-` class (`cx-override`). It fails an unknown layout or component name too.
 - The MCP server's `check` takes `layout` and `components`, reports warnings separately from problems, and checks CSS as an à la carte project's own stylesheet.
 
+- Status (`status.md`, shared): `cx-status` in five tones, `--success`, `--warning`, `--danger`, `--info` and `--muted` (a ring instead of a dot), for any list of states. The portfolio's `--live`, `--building` and `--archived` are named variants of them. Each status colour now declares `color.surface.hover`, so a status in a table row that's hovered is checked too (99 contrast pairs).
+- Compact buttons (`cx-button--sm`) for table rows and toolbars, and data tables with a state cell (`td.is-state`) and an actions cell (`td.is-actions` with `cx-table__actions`).
+- Disclosure (`disclosure.md`, shared): a styled native `<details>` with a turning chevron.
+- Keyboard key (`keyboard-key.md`, shared): `cx-kbd`, the prose keycap outside prose.
+- Thirteen icons for navigation and tools: `search`, `menu`, `close`, `edit`, `dashboard`, `notifications`, `dns`, `storage`, `lan`, `apps`, `settings`, `restart` and `logs`. `icon.md` allows icons before side navigation items and on toolbar controls in the dashboard and documentation layouts.
+- Behaviour sections in the docs of components with script (site header's theme toggle, code block's copy button, table of contents, tooltip) and in the disclosure's, so an app that renders them itself can match.
+
 ### Changed
 - `docs/templates.md` is now `docs/layouts/portfolio.md`. `get_doc("templates")` still returns it.
+- `cx-status` sets its own mono label type, so it can stand on its own in a table or a feed; inside accession labels and meta lines it looks the same as before.
 - Rules that only suit a portfolio say so: catalogue numbers, the six page templates and the backdrop on every page are in the portfolio layout. Heading anchors are for reading text; dashboard sections have an id and no anchor. The seventh principle is now "One accent; decoration as the layout allows".
 - The rule that JavaScript is enhancement says what it means in an app that needs script to render, and a new rule says MotifSpec's own files are served by the project, never a CDN, while an app's data is the project's business.
 

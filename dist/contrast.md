@@ -1,6 +1,6 @@
 # Contrast report (generated)
 
-95 declared pairs, each measured in both themes. Target is the pair's `min`.
+99 declared pairs, each measured in both themes. Target is the pair's `min`.
 
 | Foreground | Background | Min | Light | Dark | Result |
 |---|---|---|---|---|---|
@@ -46,18 +46,22 @@
 | `color.status.success.text` | `color.status.success.surface` | 4.5 | 6.46 | 10.91 | pass |
 | `color.status.success.text` | `color.surface.base` | 4.5 | 6.41 | 9.18 | pass |
 | `color.status.success.text` | `color.surface.raised` | 4.5 | 6.77 | 8.12 | pass |
+| `color.status.success.text` | `color.surface.hover` | 4.5 | 5.99 | 7.37 | pass |
 | `color.status.success.border` | `color.status.success.surface` | 3 | 4.49 | 7.81 | pass |
 | `color.status.warning.text` | `color.status.warning.surface` | 4.5 | 6.79 | 10.70 | pass |
 | `color.status.warning.text` | `color.surface.base` | 4.5 | 6.82 | 8.90 | pass |
 | `color.status.warning.text` | `color.surface.raised` | 4.5 | 7.20 | 7.88 | pass |
+| `color.status.warning.text` | `color.surface.hover` | 4.5 | 6.37 | 7.15 | pass |
 | `color.status.warning.border` | `color.status.warning.surface` | 3 | 4.73 | 7.56 | pass |
 | `color.status.danger.text` | `color.status.danger.surface` | 4.5 | 7.21 | 10.56 | pass |
 | `color.status.danger.text` | `color.surface.base` | 4.5 | 7.27 | 8.62 | pass |
 | `color.status.danger.text` | `color.surface.raised` | 4.5 | 7.67 | 7.63 | pass |
+| `color.status.danger.text` | `color.surface.hover` | 4.5 | 6.79 | 6.92 | pass |
 | `color.status.danger.border` | `color.status.danger.surface` | 3 | 5.04 | 7.39 | pass |
 | `color.status.info.text` | `color.status.info.surface` | 4.5 | 6.72 | 10.74 | pass |
 | `color.status.info.text` | `color.surface.base` | 4.5 | 6.76 | 8.95 | pass |
 | `color.status.info.text` | `color.surface.raised` | 4.5 | 7.13 | 7.92 | pass |
+| `color.status.info.text` | `color.surface.hover` | 4.5 | 6.31 | 7.18 | pass |
 | `color.status.info.border` | `color.status.info.surface` | 3 | 4.70 | 7.64 | pass |
 | `color.syntax.comment` | `color.surface.sunken` | 4.5 | 6.29 | 7.62 | pass |
 | `color.syntax.comment` | `color.syntax.line-highlight` | 4.5 | 5.55 | 6.34 | pass |

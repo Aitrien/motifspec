@@ -36,3 +36,7 @@ One sentence: what it is for.
 ## Accessibility
 
 - Keyboard behaviour, roles, contrast pairs.
+
+## Behaviour
+
+Only for a component with behaviour: what changes on interaction, what script (if any) does it, and what an app that renders the component itself (React, say) must do to match.
