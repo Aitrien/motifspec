@@ -145,6 +145,20 @@ test('a project declares its layout in its Hugo config, and the CLI exits 0 on w
   assert.deepEqual(checkProject(root), []);
   writeFileSync(join(root, 'hugo.toml'), '[params.motifspec]\n  layout = "kiosk"\n');
   assert.deepEqual(checkProject(root).map((p) => p.rule), ['unknown-layout']);
+  // Every way Hugo TOML can say it: an indented table, dotted keys, an inline table, multi-line arrays with comments.
+  for (const toml of [
+    'title = "x"\n[params]\n  role = "x"\n  [params.motifspec]\n    layout = "dashboard"\n[module]\n  x = 1\n',
+    '[params]\n  motifspec.layout = "dashboard"\n',
+    'params.motifspec.layout = "dashboard"\n[module]\n',
+    '[params]\n  motifspec = { layout = "dashboard" }\n',
+  ]) {
+    writeFileSync(join(root, 'hugo.toml'), toml);
+    assert.equal(declaredLayout(root).layout, 'dashboard', toml);
+  }
+  writeFileSync(join(root, 'hugo.toml'), '[params]\n  [params.motifspec]\n    layout = "a-la-carte"\n    components = [\n      "project-card", # the case studies\n      "tag",\n    ]\n');
+  assert.deepEqual(declaredLayout(root).components, ['project-card', 'tag']);
+  writeFileSync(join(root, 'hugo.toml'), '[params]\n  motifspec = { layout = "a-la-carte", components = ["project-card"] }\n');
+  assert.deepEqual(declaredLayout(root), { layout: 'a-la-carte', components: ['project-card'], from: 'hugo.toml' });
 });
 
 test('clients that are strict about the transport connect too', async () => {

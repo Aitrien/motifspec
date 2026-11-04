@@ -2,6 +2,11 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.18.1] - 2026-11-04
+
+### Fixed
+- The checker read a Hugo site's `[params.motifspec]` only when the table started at the beginning of a line. An indented table, such as one under `[params]` in a config that indents its tables, was ignored, so the site was checked as portfolio whatever it declared. It now reads the table indented or not, and also dotted keys (`motifspec.layout = "dashboard"` under `[params]`, or `params.motifspec.layout` at the top) and inline tables (`motifspec = { layout = "dashboard" }`).
+
 ## [1.18.0] - 2026-11-04
 
 ### Added
