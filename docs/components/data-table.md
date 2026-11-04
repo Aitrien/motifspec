@@ -70,4 +70,5 @@ A framed table for comparing values: mono headers, hairline rows, right-aligned 
 
 - The wrapper is a focusable region named by the caption, so keyboard users can scroll it.
 - Header cells use `scope`.
+- Visually hidden text in a cell, such as a hidden column heading or the rest of a button's name, stays inside the scroll box, so a wide table never widens the page on a phone.
 - Pairs: `color.text.secondary` headers on `color.surface.sunken` (7:1); `color.text.primary` cells on `color.surface.raised` and `color.surface.hover` (7:1).
