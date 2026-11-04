@@ -156,8 +156,11 @@ const DOC_SELECTORS = {
   'data-table': ['.cx-table'],
   'ornament': ['.cx-band', '.cx-divider', '.cx-end-mark', '.cx-ornament'],
   'specimen-plate': ['.cx-plate', '.cx-plate-frame', '.cx-plate__pause'],
+  'status': ['.cx-status'],
+  'disclosure': ['.cx-disclosure'],
+  'keyboard-key': ['.cx-kbd'],
 };
-const FOCUSABLE = new Set(['specimen-plate', 'heading-anchor', 'site-header', 'project-card', 'post-list-item', 'tag', 'button-and-link', 'pagination', 'table-of-contents', 'code-block', 'data-table', 'prose']);
+const FOCUSABLE = new Set(['disclosure', 'specimen-plate', 'heading-anchor', 'site-header', 'project-card', 'post-list-item', 'tag', 'button-and-link', 'pagination', 'table-of-contents', 'code-block', 'data-table', 'prose']);
 const byVar = new Map([...tokens.values()].map((t) => [cssVar(t.path), t.path]));
 const rules = [...(componentsCss + '\n' + chromaCss).replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({ sel: m[1].trim(), body: m[2] }));
 const usesOf = (prefixes) => {

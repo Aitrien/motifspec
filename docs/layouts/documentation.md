@@ -6,7 +6,7 @@ For product and system documentation: guides, reference pages and a changelog. m
 
 In progress. The documentation shell and its own components arrive in a later release, so this file says what exists now and what doesn't.
 
-- **Available now:** every shared component, plus the table of contents, heading anchors and the ornaments.
+- **Available now:** every shared component, including disclosures and keyboard keys, plus the table of contents, heading anchors and the ornaments.
 - **Not available yet:** the documentation shell, the top bar with search and version, the docs sidebar, page actions (Copy page), the page footer (edit link, last updated), the component preview, the token table, steps and tabs.
 
 Don't write classes for parts that aren't available. The checker fails on any `cx-` class MotifSpec doesn't define. Build what you can from the shared components, and say which parts MotifSpec doesn't have yet.

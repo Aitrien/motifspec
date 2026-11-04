@@ -82,3 +82,11 @@ A numbered list of an article's sections, beside the text on wide screens and ab
 - The active entry is announced through `aria-current`, not colour alone (it also gets the accent rule).
 - Entries are at least 24px tall.
 - Pairs: `color.text.secondary` on `color.surface.base` (7:1); active rule `color.accent.border` (3:1).
+
+## Behaviour
+
+`dist/codex.js` adds this; an app that renders the table of contents itself does the same.
+
+- **Docking:** when the article is wide enough for the table of contents to sit beside the text, it gets `is-docked` and sticks below the header (`--_header-height`). It's checked again on resize.
+- **Current section:** as the reader scrolls, the link to the section that enters the top 30% of the view gets `aria-current="true"` and the others `"false"` (an IntersectionObserver with a bottom margin of -70%).
+- Without script, the table of contents is a plain open list, and its `<details>` opens and closes natively.

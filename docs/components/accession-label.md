@@ -3,11 +3,14 @@ name: accession-label
 status: stable
 layouts: [portfolio]
 tokens:
+  - border.width.emphasis
   - border.width.hairline
   - color.border.default
   - color.border.subtle
   - color.link.rest
   - color.ornament.muted
+  - color.status.danger.text
+  - color.status.info.text
   - color.status.success.text
   - color.status.warning.text
   - color.surface.raised
@@ -88,7 +91,7 @@ Store the number in front matter (`accession: LM-W-004`) rather than deriving it
 - Put the number first, then the date, then everything else.
 - Use ISO dates (`2026-03-14`) in tabular figures.
 - Separate items inside a field with `cx-sep` (a hidden "|"). The compact form adds its own "|" between items.
-- Use `cx-status--live`, `--building` or `--archived`; each pairs a dot with a word.
+- Use `cx-status--live`, `--building` or `--archived` (`status.md`); each pairs a dot with a word.
 - On a case study, pair a lead label (`cx-label--lead`) above the title with a card (`cx-label--card`) after the article, holding the same fields. Below `size.breakpoint.md` the lead label shows only the number, date and status, because role and stack are marked `cx-label__detail`, and the card shows the full label at the end. From `size.breakpoint.md` up the lead label is complete and the card is hidden. Only one of the two is ever complete on screen.
 - Let the fields wrap. Each field grows to fill its row and carries a `color.border.subtle` rule on its right and below, so a label that wraps onto several rows reads as a ruled grid, with every row closed by a full-width rule; the frame stays `color.border.default`.
 

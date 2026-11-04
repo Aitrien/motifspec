@@ -14,13 +14,13 @@ A Material Symbols glyph from the MotifSpec sprite, used to reinforce a control'
 
 ## When to use
 
-- Only for the roles listed in `icons/manifest.json`: direction arrows on buttons, links and pagination; the theme toggle; the copy button and its confirmation; callout titles; RSS; external links; back to top; the disclosure chevron.
+- Only for the roles listed in `icons/manifest.json`: direction arrows on buttons, links and pagination; the theme toggle; the copy button and its confirmation; callout titles; RSS; external links; back to top; the disclosure chevron; search, menu, close and edit; and, in the dashboard and documentation layouts, the items of a side navigation and the controls of a toolbar.
 - Beside text that already says the same thing, so the icon is a second cue.
 
 ## When not to use
 
 - As decoration, bullets or section markers. Decoration is the ornament set (Yarndings), not icons.
-- In headings, tags, nav labels or body copy.
+- In headings, tags or body copy, or in nav labels other than a side navigation's items in the dashboard and documentation layouts. A portfolio's header nav has none.
 - For anything not in the manifest. A new icon is a new manifest entry and a minor version.
 - As the only label of a control, unless the control has an accessible name (`aria-label`).
 

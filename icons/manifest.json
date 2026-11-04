@@ -70,6 +70,58 @@
     "play": {
       "symbol": "play_arrow",
       "use": "Resume control for ambient motion while it is paused."
+    },
+    "search": {
+      "symbol": "search",
+      "use": "The search field and the control that opens search."
+    },
+    "menu": {
+      "symbol": "menu",
+      "use": "The Menu control that opens the navigation on a phone, in the dashboard and documentation layouts."
+    },
+    "close": {
+      "symbol": "close",
+      "use": "Closing a dialog, the search panel or an opened menu."
+    },
+    "edit": {
+      "symbol": "edit",
+      "use": "\"Edit this page\" links in the documentation layout, and edit actions in a dashboard."
+    },
+    "dashboard": {
+      "symbol": "dashboard",
+      "use": "Before the overview item in a dashboard's side navigation."
+    },
+    "notifications": {
+      "symbol": "notifications",
+      "use": "Before alerts in a dashboard's side navigation."
+    },
+    "dns": {
+      "symbol": "dns",
+      "use": "Before servers, nodes and hosts in a dashboard's side navigation."
+    },
+    "storage": {
+      "symbol": "storage",
+      "use": "Before storage, pools and disks in a dashboard's side navigation."
+    },
+    "lan": {
+      "symbol": "lan",
+      "use": "Before networks in a dashboard's side navigation."
+    },
+    "apps": {
+      "symbol": "apps",
+      "use": "Before applications and services in a dashboard's side navigation."
+    },
+    "settings": {
+      "symbol": "settings",
+      "use": "Before settings in a side navigation, and settings controls in a toolbar."
+    },
+    "restart": {
+      "symbol": "restart_alt",
+      "use": "Restart actions, such as restarting a service."
+    },
+    "logs": {
+      "symbol": "terminal",
+      "use": "Logs and consoles: a link or action that opens them."
     }
   }
 }

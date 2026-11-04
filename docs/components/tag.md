@@ -38,7 +38,7 @@ A small mono label for a topic or technology, optionally linking to its index.
 
 ## When not to use
 
-- For status; use `cx-status` in an accession label.
+- For status; use `status.md`.
 - For actions; use `button-and-link`.
 - For more than three tags on a card or five on a post.
 

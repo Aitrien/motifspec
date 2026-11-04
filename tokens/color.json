@@ -1320,6 +1320,10 @@
               {
                 "token": "color.surface.raised",
                 "min": 4.5
+              },
+              {
+                "token": "color.surface.hover",
+                "min": 4.5
               }
             ]
           }
@@ -1368,6 +1372,10 @@
               },
               {
                 "token": "color.surface.raised",
+                "min": 4.5
+              },
+              {
+                "token": "color.surface.hover",
                 "min": 4.5
               }
             ]
@@ -1418,6 +1426,10 @@
               {
                 "token": "color.surface.raised",
                 "min": 4.5
+              },
+              {
+                "token": "color.surface.hover",
+                "min": 4.5
               }
             ]
           }
@@ -1466,6 +1478,10 @@
               },
               {
                 "token": "color.surface.raised",
+                "min": 4.5
+              },
+              {
+                "token": "color.surface.hover",
                 "min": 4.5
               }
             ]

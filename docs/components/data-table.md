@@ -23,6 +23,7 @@ tokens:
   - font.weight.ui
   - size.container.breakout
   - size.measure.prose
+  - space.inline.xs
   - space.inset.md
   - space.inset.sm
   - space.stack.lg
@@ -56,6 +57,25 @@ A framed table for comparing values: mono headers, hairline rows, right-aligned 
 </div>
 ```
 
+A table of things to act on gives each row a state cell (`td.is-state`, with a status from `status.md`) and an actions cell (`td.is-actions`) of compact buttons. Each button's hidden text finishes its name, so a screen reader hears "Restart Jellyfin", not "Restart" six times:
+
+```html preview
+<div class="cx-table" role="region" aria-labelledby="tbl-services" tabindex="0">
+  <table>
+    <caption id="tbl-services">Services</caption>
+    <thead><tr><th scope="col">Service</th><th scope="col">State</th><th scope="col" class="is-num">Uptime</th><th scope="col"><span class="cx-visually-hidden">Actions</span></th></tr></thead>
+    <tbody>
+      <tr>
+        <th scope="row">Jellyfin</th>
+        <td class="is-state"><span class="cx-status cx-status--success">Running</span></td>
+        <td class="is-num">12 d</td>
+        <td class="is-actions"><div class="cx-table__actions"><button class="cx-button cx-button--sm" type="button">Restart<span class="cx-visually-hidden"> Jellyfin</span></button><button class="cx-button cx-button--sm" type="button">Logs<span class="cx-visually-hidden"> for Jellyfin</span></button></div></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```
+
 ## Do
 
 - Give every table a `<caption>`.
@@ -65,7 +85,7 @@ A framed table for comparing values: mono headers, hairline rows, right-aligned 
 ## Don't
 
 - Don't zebra-stripe; rows are separated by hairlines and highlight on hover.
-- Don't put interactive controls in cells.
+- Don't put interactive controls in cells other than the actions cell, and keep those to two or three per row.
 
 ## Accessibility
 
