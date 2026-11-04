@@ -19,3 +19,7 @@ Run `npm run build`, `npm run audit`, `npm run release:check`, `npm run pack:che
 ## Releasing
 
 Anything consumers should get needs a version bump in `package.json` and a `CHANGELOG.md` entry; merging the PR releases it. Changes to tooling or repo docs alone don't bump. Never create or move a tag.
+
+## Commits and pull requests
+
+Keep the `Co-Authored-By` line, but don't add a Claude session link to commit messages or pull request descriptions.
