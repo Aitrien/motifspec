@@ -49,6 +49,7 @@ Yarndings 12 knitting-chart glyphs: the footer band, the prose divider, the arti
 
 `font.family.ornament` → `$extensions["codex.glyphs"]` lists all 80 approved glyphs by name, with the key that types each one and its group:
 
+<!-- caption: Ornament catalogue -->
 | Group | Character | Examples (key) |
 |---|---|---|
 | botanical | Plants and flowers; the default choice | leaf `h`, sprout `f`, flower `g`, potted `c`, bloom `b`, blossom `m`, petals `P`, clover `E` |

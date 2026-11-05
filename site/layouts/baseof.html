@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="{{ site.Language.LanguageCode }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  {{ partial "motifspec/head.html" . }}
+  <title>{{ if .IsHome }}{{ site.Title }}: {{ site.Params.role }}{{ else }}{{ .Title }} | {{ site.Title }}{{ end }}</title>
+  <meta name="description" content="{{ .Description | default site.Params.description }}">
+  {{- with .OutputFormats.Get "markdown" }}
+  <link rel="alternate" type="text/markdown" href="{{ .RelPermalink }}">
+  {{- end }}
+</head>
+<body class="cx-backdrop-page cx-backdrop-page--side">
+  {{ partial "motifspec/body-start.html" . }}
+  {{ partial "motifspec/site-header.html" . }}
+  <div class="cx-container cx-docs">
+    {{ partial "motifspec/docs-nav.html" . }}
+    <main id="main" class="cx-docs__main" tabindex="-1" data-pagefind-body>{{ block "main" . }}{{ end }}</main>
+  </div>
+  {{ partial "footer.html" . }}
+  {{ partial "motifspec/body-end.html" . }}
+</body>
+</html>

@@ -2,6 +2,19 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.20.0] - 2026-11-05
+
+### Added
+- `article.html` takes `"toc" "never"`, for a page such as a changelog whose headings repeat.
+- `page-footer.html` reads a page's `source` param, the repository path of the file a content adapter made the page from, so Edit this page works for pages with no file of their own.
+
+### Changed
+- On a documentation site, `article.html` leaves out the end mark: the layout's only ornament is the footer band, as `docs/layouts/documentation.md` says.
+- The README's setup is grouped as Getting started (Hugo, npm, an AI assistant), Checking a project and The MCP server, the sections motifspec.com renders as pages. Every table in the README, `CONVENTIONS.md` and the docs has a caption, in an HTML comment before it that GitHub doesn't show.
+
+### Fixed
+- The render hooks for tables, blockquotes, images and links, and `article.html`, no longer fail on a page that has no content file, such as one made by a content adapter.
+
 ## [1.19.0] - 2026-11-04
 
 ### Added

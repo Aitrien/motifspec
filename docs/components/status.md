@@ -44,6 +44,7 @@ A short mono label with a dot that names a state: online, degraded, down, live, 
 <span class="cx-status cx-status--muted">Scheduled</span>
 ```
 
+<!-- caption: Status tones -->
 | Tone | For | Example words |
 |---|---|---|
 | `--success` | Working, passing, done | Online, Running, Passed, Done |

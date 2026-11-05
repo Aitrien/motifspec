@@ -24,6 +24,7 @@ Value shapes follow DTCG 2025.10: colours are `{ "colorSpace": "srgb", "componen
 
 ## Two tiers
 
+<!-- caption: Token tiers -->
 | Tier | Purpose | Example | Consumers use it? |
 |---|---|---|---|
 | **Primitive** | The raw palette and scales | `primitive.color.sap.600`, `primitive.space.4` | No. Only semantic tokens reference these |
@@ -41,6 +42,7 @@ Primitives live under a root `primitive` group in each file and are marked `"$ex
 
 Categories and their files:
 
+<!-- caption: Token files -->
 | File | Category prefix | Covers |
 |---|---|---|
 | `tokens/color.json` | `color` | palette primitives, surface, text, link, border, accent, focus, ornament, status, syntax, data, the backdrop's tint, grain, saturation and calm side, the hover wash |
@@ -53,6 +55,7 @@ Categories and their files:
 
 ## Extensions
 
+<!-- caption: Token extensions -->
 | Key | On | Meaning |
 |---|---|---|
 | `codex.tier` | primitives | Always `"primitive"`. |
@@ -64,6 +67,7 @@ Categories and their files:
 
 ## Generated names
 
+<!-- caption: Generated names -->
 | Platform | Pattern | Example |
 |---|---|---|
 | CSS custom property | `--cx-` + path joined by `-` | `--cx-color-text-muted` |
@@ -75,6 +79,7 @@ Generated CSS has a single `:root` block. Semantic colours are `light-dark(light
 
 ## Versioning (semver)
 
+<!-- caption: Version bumps -->
 | Change | Bump |
 |---|---|
 | Rename or remove a semantic token | **major** |

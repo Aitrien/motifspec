@@ -70,6 +70,7 @@ A framed image or diagram with a numbered plate label and a caption.
 
 ### Diagram parts
 
+<!-- caption: Diagram parts -->
 | Class | Draws |
 |---|---|
 | `cx-diagram` | The `<svg>`. Sets the body font. |

@@ -1,10 +1,11 @@
 {{- /* data-table.md: a focusable region named by its caption ({caption="…"} after the table; " | " becomes a
        separator), the first cell of each row as a row header, numeric or right-aligned columns marked is-num,
        and breakout above four columns. */ -}}
-{{- $file := printf "content/%s" .Page.File.Path -}}
+{{- $file := "" }}{{ with .Page.File }}{{ $file = printf "content/%s" .Path }}{{ else }}{{ $file = .Page.Path }}{{ end -}}
 {{- $caption := .Attributes.caption -}}
 {{- if not $caption }}{{ errorf "%s: table %d has no caption. Add {caption=\"…\"} on the line after it (data-table.md)." $file (add .Ordinal 1) }}{{ end -}}
-{{- $id := printf "tbl-%s-%d" (.Page.File.ContentBaseName | urlize) .Ordinal -}}
+{{- $base := "" }}{{ with .Page.File }}{{ $base = .ContentBaseName }}{{ else }}{{ $base = path.Base .Page.Path }}{{ end -}}
+{{- $id := printf "tbl-%s-%d" ($base | urlize) .Ordinal -}}
 {{- $cols := 0 }}{{ range first 1 .THead }}{{ $cols = len . }}{{ end -}}
 {{- $num := slice -}}
 {{- range $c := seq 0 (sub $cols 1) -}}

@@ -2,7 +2,7 @@
        Alerts become callout.md: > [!NOTE], [!TIP], [!WARNING], [!CAUTION] (danger). The title names the kind,
        the icon repeats it. At most two per article, no code blocks inside.
        Quotations follow prose.md: end with a line "— Name | Source title" and it becomes the attributed footer. */ -}}
-{{- $file := printf "content/%s" .Page.File.Path -}}
+{{- $file := "" }}{{ with .Page.File }}{{ $file = printf "content/%s" .Path }}{{ else }}{{ $file = .Page.Path }}{{ end -}}
 {{- if eq .Type "alert" -}}
   {{- $kinds := dict
       "note" (dict "class" "cx-callout" "icon" "note" "title" "Note")

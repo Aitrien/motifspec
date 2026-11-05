@@ -1,0 +1,50 @@
+{{- /* Markdown written for GitHub, made ready for this site. Context: dict "text" "self" (this page's path, so it
+       doesn't link to itself).
+       - "<!-- caption: Name -->" before a table becomes {caption="Name"} after it (data-table.md needs a caption;
+         the comment keeps it out of view on GitHub).
+       - A file named in backticks becomes a link to its page: `backdrop.md`, `docs/components/backdrop.md`,
+         `docs/layouts/portfolio.md`, `docs/hugo.md`, `CHANGELOG.md` and the others below. Not inside code blocks.
+       - The README's own section links (#layouts) go to the pages made from those sections. */ -}}
+{{- $self := .self -}}
+{{- $map := dict
+    "`docs/hugo.md`" "/reference/hugo/"
+    "`docs/syntax-highlighting.md`" "/reference/syntax-highlighting/"
+    "`syntax-highlighting.md`" "/reference/syntax-highlighting/"
+    "`CHANGELOG.md`" "/reference/changelog/"
+    "`CONVENTIONS.md`" "/reference/conventions/"
+    "`docs/layouts/`" "/layouts/"
+    "`docs/components/*.md`" "/components/"
+    "(#layouts)" "(/guide/choosing-a-layout/)"
+    "(#rules-for-ai-assistants)" "(/guide/rules/)"
+    "(#the-mcp-server)" "(/reference/mcp-server/)"
+    "(#getting-started)" "(/guide/getting-started/)"
+    "(#checking-a-project)" "(/guide/checking/)"
+-}}
+{{- range resources.Match "src/docs/components/*.md" -}}
+  {{- $n := path.BaseName .Name -}}
+  {{- if ne $n "_template" -}}
+    {{- $map = merge $map (dict (printf "`%s.md`" $n) (printf "/components/%s/" $n) (printf "`docs/components/%s.md`" $n) (printf "/components/%s/" $n)) -}}
+  {{- end -}}
+{{- end -}}
+{{- range resources.Match "src/docs/layouts/*.md" -}}
+  {{- $n := path.BaseName .Name -}}
+  {{- $map = merge $map (dict (printf "`docs/layouts/%s.md`" $n) (printf "/layouts/%s/" $n)) -}}
+{{- end -}}
+{{- $text := replaceRE `(?m)^<!-- caption: (.+?) -->\n((?:\|[^\n]*\n?)+)` "$2{caption=\"$1\"}\n" (printf "%s\n" .text) -}}
+{{- /* Hugo would run shortcode syntax shown as an example ({{< callout >}}); write it as Hugo's escaped form. */ -}}
+{{- $text = replaceRE `\{\{([<%])(.*?)([>%])\}\}` "{{$1/*$2*/$3}}" $text -}}
+{{- $out := slice -}}
+{{- $fence := false -}}
+{{- range split $text "\n" -}}
+  {{- $line := . -}}
+  {{- if hasPrefix $line "```" }}{{ $fence = not $fence }}{{ end -}}
+  {{- if and (not $fence) (or (strings.Contains $line "`") (strings.Contains $line "(#")) -}}
+    {{- range $from, $to := $map -}}
+      {{- if and (strings.Contains $line $from) (ne $to $self) -}}
+        {{- if hasPrefix $from "(" }}{{ $line = replace $line $from $to }}{{ else }}{{ $line = replace $line $from (printf "[%s](%s)" $from $to) }}{{ end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $out = $out | append $line -}}
+{{- end -}}
+{{- return (delimit $out "\n") -}}

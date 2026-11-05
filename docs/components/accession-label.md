@@ -52,6 +52,7 @@ The system's signature: a herbarium-style label that gives an entry its catalogu
 
 `LM-{collection}-{sequence}`, with the sequence zero-padded to three digits and never reused.
 
+<!-- caption: Catalogue numbers -->
 | Collection | Code | Example |
 |---|---|---|
 | Work (projects, case studies) | `W` | `LM-W-004` |

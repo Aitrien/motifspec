@@ -1,0 +1,11 @@
+{{ define "main" }}
+<div class="cx-page-head">
+  <h1>{{ .Title }}</h1>
+  {{- with .Description }}<p class="cx-lede">{{ . }}</p>{{ end }}
+  {{- partial "page-meta.html" . }}
+  {{ partial "motifspec/page-actions.html" . }}
+</div>
+{{ partial "motifspec/article.html" (dict "page" . "toc" (cond (eq .Params.toc false) "never" "auto")) }}
+{{ partial "motifspec/page-footer.html" . }}
+{{ partial "motifspec/pagination-docs.html" . }}
+{{ end }}

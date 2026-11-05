@@ -1,0 +1,6 @@
+{{- /* A list of pages with their one-line descriptions. Context: the pages. */ -}}
+<ul>
+  {{- range . }}
+  <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ with .Description }}: {{ . }}{{ end }}</li>
+  {{- end }}
+</ul>

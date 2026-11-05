@@ -10,6 +10,7 @@ The site header, the main region and the site footer, on a backdrop page. In Hug
 
 Every template sits on the backdrop (`backdrop.md`): its contours show behind the footer, and on the home page behind the header and the statement too. Every template keeps the full site header (Work, Writing, About, the theme toggle) and the footer.
 
+<!-- caption: Page templates -->
 | Template | Order | Dominant | Secondary |
 |---|---|---|---|
 | **Home** | Header → statement (eyebrow, display h1, lede, primary + secondary button) on the frost, inside the top fade → selected work (2–3 project cards) → recent writing (5 post rows) → capabilities table → footer | Statement and selected work | Writing rows, capabilities, the backdrop |
@@ -46,6 +47,7 @@ The fields each template reads are in `docs/hugo.md` (Front matter the partials 
 
 ## Choosing a stack
 
+<!-- caption: Choosing a stack -->
 | The project | Use |
 |---|---|
 | Already has a stack | Keep it. MotifSpec adapts to the project, not the reverse. |

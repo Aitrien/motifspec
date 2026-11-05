@@ -1,0 +1,15 @@
+{{- /* The page dict a content adapter adds. Context: dict "path" "title" "lede" "body" "source" (the repository path
+       of the file it comes from, for Edit this page and Last updated) "weight", and optional "params". */ -}}
+{{- $params := merge (dict "source" .source) (.params | default dict) -}}
+{{- $page := dict
+    "path" .path
+    "title" .title
+    "weight" .weight
+    "params" $params
+    "content" (dict "mediaType" "text/markdown" "value" (partial "src/prepare.html" (dict "text" .body "self" (printf "/%s/" (strings.TrimPrefix "/" .path)))))
+-}}
+{{- /* The lede as plain text, for the page head and the meta description: links keep their text, code and bold
+       lose their marks. (markdownify isn't available while content adapters run.) */ -}}
+{{- with .lede }}{{ $page = merge $page (dict "description" (replaceRE `\[([^\]]*)\]\([^)]*\)` "$1" . | replaceRE "`|\\*\\*" "" | strings.TrimSpace)) }}{{ end -}}
+{{- with index (site.Data.generated.lastmod | default dict) .source }}{{ $page = merge $page (dict "dates" (dict "lastmod" (time.AsTime .))) }}{{ end -}}
+{{- return $page -}}

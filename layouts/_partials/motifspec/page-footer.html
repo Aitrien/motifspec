@@ -1,13 +1,19 @@
 {{- /* page-footer.md: when the page last changed (its Lastmod; with enableGitInfo, from Git) and a link to edit its
        source. The edit link needs params.motifspec.editURL, the repository's edit address ending in "/", such as
        "https://github.com/owner/repo/edit/main/". When the site lives in a folder of the repository, also set
-       params.motifspec.siteDir to that folder, so files mounted from outside it get the right path.
-       Context: a page. */ -}}
+       params.motifspec.siteDir to that folder, so files mounted from outside it get the right path. A page with no
+       file of its own, such as one a content adapter makes from another file, names that file's path in the
+       repository as its `source` param. Context: a page. */ -}}
 {{- $p := . -}}
 {{- $edit := "" -}}
-{{- with and site.Params.motifspec.editURL $p.File -}}
-  {{- $root := strings.TrimSuffix (printf "/%s" (site.Params.motifspec.siteDir | default "" | strings.Trim "/")) hugo.WorkingDir -}}
-  {{- $edit = printf "%s%s" site.Params.motifspec.editURL (strings.TrimPrefix (printf "%s/" $root) $p.File.Filename) -}}
+{{- with site.Params.motifspec.editURL -}}
+  {{- $base := . -}}
+  {{- with $p.Params.source -}}
+    {{- $edit = printf "%s%s" $base (strings.TrimPrefix "/" .) -}}
+  {{- else with $p.File -}}
+    {{- $root := strings.TrimSuffix (printf "/%s" (site.Params.motifspec.siteDir | default "" | strings.Trim "/")) hugo.WorkingDir -}}
+    {{- $edit = printf "%s%s" $base (strings.TrimPrefix (printf "%s/" $root) .Filename) -}}
+  {{- end -}}
 {{- end -}}
 {{- if or (not $p.Lastmod.IsZero) $edit }}
 <footer class="cx-page-footer" data-pagefind-ignore>

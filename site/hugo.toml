@@ -1,0 +1,81 @@
+# motifspec.com: MotifSpec's documentation, built from this repository with the documentation layout. Every page is
+# made from a file the repository already keeps (the component and layout docs, docs/hugo.md, the README's guide
+# sections, CONVENTIONS.md and CHANGELOG.md) by the content adapters in content/*/_content.gotmpl, so no fact is
+# written twice. npm run docs builds it with the version from package.json; npm run docs:check checks it.
+baseURL = "https://motifspec.com/"
+title = "MotifSpec"
+languageCode = "en-NZ"
+disableKinds = ["taxonomy", "term", "rss"]
+enableRobotsTXT = true
+
+[params]
+  role = "Brand guidelines"
+  description = "MotifSpec, a design system for sites, docs and dashboards: tokens, components, layouts and a checker, served to AI assistants over MCP."
+
+[params.motifspec]
+  layout = "documentation"
+  search = true
+  changelog = "/reference/changelog/"
+  editURL = "https://github.com/Aitrien/motifspec/edit/main/"
+  siteDir = "site"
+  # version: set from package.json by npm run docs (HUGO_PARAMS_MOTIFSPEC_VERSION).
+
+[outputs]
+  home = ["html", "markdown"]
+  section = ["html", "markdown"]
+  page = ["html", "markdown"]
+
+[markup.highlight]
+  noClasses = false
+[markup.goldmark.parser.attribute]
+  block = true
+[markup.goldmark.renderer]
+  unsafe = true
+
+[[menus.main]]
+  name = "Guide"
+  url = "/guide/"
+  identifier = "guide"
+  weight = 1
+[[menus.main]]
+  name = "Components"
+  url = "/components/"
+  identifier = "components"
+  weight = 2
+[[menus.main]]
+  name = "Reference"
+  url = "/reference/"
+  identifier = "reference"
+  weight = 3
+[[menus.main]]
+  name = "GitHub"
+  url = "https://github.com/Aitrien/motifspec"
+  weight = 4
+
+[module]
+  # The module is this repository's working tree, so the site always shows what the same commit ships.
+  replacements = "github.com/aitrien/motifspec -> ../.."
+  [[module.imports]]
+    path = "github.com/aitrien/motifspec"
+    # The module's own mounts, then the source files the pages are made from.
+    [[module.imports.mounts]]
+      source = "dist"
+      target = "assets/motifspec"
+    [[module.imports.mounts]]
+      source = "fonts"
+      target = "static/fonts"
+    [[module.imports.mounts]]
+      source = "layouts"
+      target = "layouts"
+    [[module.imports.mounts]]
+      source = "docs"
+      target = "assets/src/docs"
+    [[module.imports.mounts]]
+      source = "README.md"
+      target = "assets/src/README.md"
+    [[module.imports.mounts]]
+      source = "CONVENTIONS.md"
+      target = "assets/src/CONVENTIONS.md"
+    [[module.imports.mounts]]
+      source = "CHANGELOG.md"
+      target = "assets/src/CHANGELOG.md"

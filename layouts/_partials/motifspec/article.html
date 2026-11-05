@@ -1,18 +1,23 @@
 {{- /* The cx-article layout: TOC before the main column in the DOM, then prose ending in the flower end mark.
-       Context: dict "page" "toc" (always | auto). auto shows the TOC when the content has three or more h2s
-       (table-of-contents.md); a case study passes always. */ -}}
+       Context: dict "page" "toc" (always | auto | never). auto shows the TOC when the content has three or more h2s
+       (table-of-contents.md); a case study passes always. A documentation site (params.motifspec.layout
+       "documentation") has no end mark: its only ornament is the footer band (docs/layouts/documentation.md). */ -}}
 {{- $p := .page -}}
+{{- $where := "" -}}
+{{- with $p.File }}{{ $where = printf "content/%s" .Path }}{{ else }}{{ $where = $p.Path }}{{ end -}}
+{{- $docs := eq site.Params.motifspec.layout "documentation" -}}
 {{- $h2s := partial "motifspec/h2s.html" $p -}}
-{{- $toc := or (eq .toc "always") (ge (len $h2s) 3) -}}
-{{- if and (eq .toc "always") (lt (len $h2s) 1) }}{{ errorf "content/%s: toc \"always\" needs h2 sections to list (table-of-contents.md)." $p.File.Path }}{{ end -}}
+{{- $toc := and (ne .toc "never") (or (eq .toc "always") (ge (len $h2s) 3)) -}}
+{{- if and (eq .toc "always") (lt (len $h2s) 1) }}{{ errorf "%s: toc \"always\" needs h2 sections to list (table-of-contents.md)." $where }}{{ end -}}
 {{- /* ornament.md: the flower ("g") goes after the last sentence, so the content must end with a paragraph. */ -}}
 {{- $content := $p.Content | strings.TrimSpace -}}
-{{- if gt (len (findRE `class="cx-callout[ "]` $content)) 2 }}{{ errorf "content/%s: more than two callouts in one article; they lose force when repeated (callout.md)." $p.File.Path }}{{ end -}}
+{{- if gt (len (findRE `class="cx-callout[ "]` $content)) 2 }}{{ errorf "%s: more than two callouts in one article; they lose force when repeated (callout.md)." $where }}{{ end -}}
 {{- $endMark := `<span class="cx-end-mark" aria-hidden="true" data-pagefind-ignore>g</span></p>` -}}
-{{- if strings.HasSuffix $content "</p>" -}}
+{{- if $docs -}}
+{{- else if strings.HasSuffix $content "</p>" -}}
   {{- $content = printf "%s%s" (strings.TrimSuffix "</p>" $content) $endMark -}}
 {{- else -}}
-  {{- warnf "content/%s: the article should end with a paragraph so the end mark follows the last sentence." $p.File.Path -}}
+  {{- warnf "%s: the article should end with a paragraph so the end mark follows the last sentence." $where -}}
 {{- end }}
 <div class="cx-article">
   {{- if $toc }}
