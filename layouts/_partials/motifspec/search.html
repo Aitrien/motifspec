@@ -1,0 +1,18 @@
+{{- /* search.md: the search trigger and its dialog, over a Pagefind index at /pagefind/ (built after Hugo with
+       `npx pagefind --site public`). site-header.html calls it when params.motifspec.search is true; the trigger is
+       revealed by dist/codex.js, so without script there is nothing to press. Context: a page. */ -}}
+<button class="cx-search-trigger" type="button" data-search-open aria-haspopup="dialog" aria-controls="cx-search" hidden>
+  <svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-search"></use></svg>
+  <span class="cx-search-trigger__label">Search</span>
+  <span class="cx-search-trigger__keys" aria-hidden="true"><kbd class="cx-kbd">Ctrl</kbd><kbd class="cx-kbd">K</kbd></span>
+</button>
+<dialog class="cx-search" id="cx-search" aria-labelledby="cx-search-label" data-search="{{ "pagefind/pagefind.js" | relURL }}">
+  <form class="cx-search__form" role="search" method="dialog">
+    <svg class="cx-icon" aria-hidden="true" focusable="false"><use href="#cx-icon-search"></use></svg>
+    <label class="cx-visually-hidden" id="cx-search-label" for="cx-search-input">Search {{ site.Title }}</label>
+    <input class="cx-search__input" id="cx-search-input" type="search" autocomplete="off" spellcheck="false" placeholder="Search" aria-describedby="cx-search-status">
+    <button class="cx-search__close" type="button" aria-label="Close search" data-search-close><svg class="cx-icon" aria-hidden="true" focusable="false"><use href="#cx-icon-close"></use></svg></button>
+  </form>
+  <p class="cx-search__status" id="cx-search-status" role="status"></p>
+  <ol class="cx-search__results" aria-label="Results"></ol>
+</dialog>

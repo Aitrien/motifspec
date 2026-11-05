@@ -10,7 +10,7 @@
   {{- $edit = printf "%s%s" site.Params.motifspec.editURL (strings.TrimPrefix (printf "%s/" $root) $p.File.Filename) -}}
 {{- end -}}
 {{- if or (not $p.Lastmod.IsZero) $edit }}
-<footer class="cx-page-footer">
+<footer class="cx-page-footer" data-pagefind-ignore>
   {{- if not $p.Lastmod.IsZero }}
   <p class="cx-meta">Last updated <time datetime="{{ $p.Lastmod.Format "2006-01-02" }}">{{ $p.Lastmod.Format "2 January 2006" }}</time></p>
   {{- end }}

@@ -178,6 +178,10 @@
 
   /* color.wash */
   --cx-color-wash-hover: var(--cx-primitive-color-amount-1);
+  --cx-color-wash-scrim: var(--cx-primitive-color-amount-3);
+
+  /* color.scrim */
+  --cx-color-scrim: light-dark(var(--cx-primitive-color-ash-1000), var(--cx-primitive-color-ash-1000));
 
   /* primitive.motion.duration */
   --cx-primitive-motion-duration-0: 0ms;

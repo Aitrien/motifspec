@@ -1,7 +1,7 @@
 {{- /* page-actions.md: Copy page and View as Markdown, for a page that has the markdown output format (docs/hugo.md).
        Writes nothing for a page without it. Context: a page. */ -}}
 {{- with .OutputFormats.Get "markdown" }}
-<div class="cx-page-actions">
+<div class="cx-page-actions" data-pagefind-ignore>
   <button class="cx-button cx-button--sm" type="button" data-copy-page="{{ .RelPermalink }}" hidden><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-content-copy"></use></svg><span class="cx-page-actions__label">Copy page</span></button>
   <a class="cx-button cx-button--sm" href="{{ .RelPermalink }}" type="text/markdown">View as Markdown</a>
 </div>

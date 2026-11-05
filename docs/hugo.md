@@ -45,7 +45,7 @@ Pin a release with `hugo mod get github.com/aitrien/motifspec@vX.Y.Z`. The modul
 |---|---|
 | `motifspec/head.html` | The stored-theme snippet, font preloads, `codex.css` and `codex.js`, in that order. |
 | `motifspec/body-start.html` | Call with the page. On the home page, the head of the backdrop; then the icon sprite and the skip link to `#main`. |
-| `motifspec/site-header.html` | `site-header.md`: wordmark from `site.Title` and `site.Params.role`, nav from `site.Menus.main` and the theme toggle. A menu entry is current when its `identifier` is the page's section. |
+| `motifspec/site-header.html` | `site-header.md`: wordmark from `site.Title` and `site.Params.role`, nav from `site.Menus.main` and the theme toggle. A menu entry is current when its `identifier` is the page's section; one whose URL starts with `http` gets the outward arrow. With `params.motifspec.search = true`, search comes first (`search.md`); with `params.motifspec.version` (and `changelog`, a URL), the version comes before the theme toggle. |
 | `motifspec/body-end.html` | The foot of the backdrop, behind the footer, and `plate.js`, which settles the home page's contours and lets the pointer warm them. |
 
 The footer stays in the site: its columns are the site's own links and colophon. Use the markup in `site-footer.md`.
@@ -60,7 +60,7 @@ A site using the documentation layout (`docs/layouts/documentation.md`) puts the
   {{ partial "motifspec/site-header.html" . }}
   <div class="cx-container cx-docs">
     {{ partial "motifspec/docs-nav.html" . }}
-    <main id="main" class="cx-docs__main" tabindex="-1">{{ block "main" . }}{{ end }}</main>
+    <main id="main" class="cx-docs__main" tabindex="-1" data-pagefind-body>{{ block "main" . }}{{ end }}</main>
   </div>
   {{/* the site's footer (site-footer.md) */}}
   {{ partial "motifspec/body-end.html" . }}
@@ -90,6 +90,16 @@ enableGitInfo = true  # Lastmod from Git, for "Last updated"
 
 The templates are `layouts/page.markdown.md`, `section.markdown.md` and `home.markdown.md`; a site's own file at the same path wins.
 
+### Search
+
+Search (`search.md`) reads a Pagefind index of the built site. Turn it on in the header with `params.motifspec.search = true`, and run Pagefind after Hugo, at an exact version, so the index and its script are written into the site:
+
+```sh
+hugo --gc --minify && npx pagefind@1.5.0 --site public
+```
+
+`data-pagefind-body` on the docs shell's `<main>` (above) tells Pagefind to index only the page's own content, so the header, navigation and site footer stay out of the results; the partials mark the table of contents, page actions, page footer and pagination `data-pagefind-ignore`. Pagefind then indexes only pages that have it, so give it to every page that should be found. Search needs script; without it the trigger stays hidden, and the navigation reaches every page.
+
 ## Component partials
 
 Every partial below is called as `partial "motifspec/<name>.html" <context>`.
@@ -113,6 +123,7 @@ Every partial below is called as `partial "motifspec/<name>.html" <context>`.
 | `page-actions.html` | `page-actions.md` | A page. Copy page and View as Markdown, when the page has the markdown output format; nothing otherwise. |
 | `page-footer.html` | `page-footer.md` | A page. Last updated (its `Lastmod`) and Edit this page, from `params.motifspec.editURL` and, for a site in a folder of its repository, `params.motifspec.siteDir`. |
 | `pagination-docs.html` | `pagination.md`, `page-footer.md` | A page. Previous and next in the order `docs-nav.html` lists the pages. |
+| `search.html` | `search.md` | A page. The search trigger and dialog; `site-header.html` calls it when `params.motifspec.search` is true. |
 | `back-link.html` | `button-and-link.md` | `dict "href" "…" "label" "All work"`. |
 | `section-heading.html` | `heading-anchor.md` | `dict "id" "work" "title" "Selected work"`, inside a `<section id="work" aria-labelledby="work-title">`. |
 | `tokens.html` | | Call with `partialCached "motifspec/tokens.html" "tokens"`. A map from token name to its entry in `dist/tokens.json`, for templates that need a token's value at build time. |

@@ -79,7 +79,7 @@ The site header (`site-header.md`) and footer (`site-footer.md`) go around it as
       </div>
     </details>
   </nav>
-  <main id="main" class="cx-docs__main" tabindex="-1">
+  <main id="main" class="cx-docs__main" tabindex="-1" data-pagefind-body>
     <div class="cx-page-head">
       <h1>Getting started</h1>
       <p class="cx-lede">Install the module, import it, and check your site.</p>
@@ -93,7 +93,7 @@ The site header (`site-header.md`) and footer (`site-footer.md`) go around it as
 </div>
 ```
 
-In Hugo, `partial "motifspec/docs-nav.html" .` writes the navigation from the site's sections (`docs/hugo.md`).
+In Hugo, `partial "motifspec/docs-nav.html" .` writes the navigation from the site's sections (`docs/hugo.md`). `data-pagefind-body` limits search (`search.md`) to the page's own content.
 
 ## Do
 

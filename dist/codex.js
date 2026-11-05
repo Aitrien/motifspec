@@ -106,6 +106,76 @@
       });
     });
 
+    // Search: a dialog over a Pagefind index. The trigger is shown once this script runs; Pagefind's script loads on the
+    // first open. Ctrl+K or Cmd+K, or "/" outside a text field, opens it; Escape closes it (native to <dialog>).
+    document.querySelectorAll('.cx-search[data-search]').forEach(function (dialog) {
+      var input = dialog.querySelector('.cx-search__input');
+      var list = dialog.querySelector('.cx-search__results');
+      var status = dialog.querySelector('.cx-search__status');
+      var triggers = document.querySelectorAll('[data-search-open][aria-controls="' + dialog.id + '"]');
+      var pagefind = null, failed = false, seq = 0;
+      var load = function () {
+        if (!pagefind) pagefind = import(dialog.dataset.search).then(function (pf) { return pf.options({ excerptLength: 24 }).then(function () { return pf; }); });
+        return pagefind;
+      };
+      // Pagefind marks matches with <mark> in an escaped excerpt; keep the text and the marks, nothing else.
+      var excerpt = function (html) {
+        var out = document.createDocumentFragment();
+        new DOMParser().parseFromString('<p>' + html + '</p>', 'text/html').body.firstChild.childNodes.forEach(function (n) {
+          if (n.nodeName === 'MARK') { var m = document.createElement('mark'); m.textContent = n.textContent; out.appendChild(m); }
+          else out.appendChild(document.createTextNode(n.textContent));
+        });
+        return out;
+      };
+      var render = function (items, query) {
+        list.replaceChildren();
+        items.forEach(function (r) {
+          var li = document.createElement('li');
+          var a = document.createElement('a'); a.className = 'cx-search__result'; a.href = r.url;
+          var t = document.createElement('span'); t.className = 'cx-search__title'; t.textContent = (r.meta && r.meta.title) || r.url;
+          var e = document.createElement('span'); e.className = 'cx-search__excerpt'; e.appendChild(excerpt(r.excerpt || ''));
+          a.append(t, e); li.appendChild(a); list.appendChild(li);
+        });
+        status.textContent = !query ? '' : items.length ? items.length + (items.length === 1 ? ' result' : ' results') : 'No results for \u201c' + query + '\u201d';
+      };
+      var search = function () {
+        var q = input.value.trim(), n = ++seq;
+        if (!q) { render([], ''); return; }
+        if (failed) return;
+        load().then(function (pf) { return pf.debouncedSearch(q, {}, 150); }).then(function (s) {
+          if (!s || n !== seq) return null;
+          return Promise.all(s.results.slice(0, 8).map(function (r) { return r.data(); }));
+        }).then(function (items) { if (items && n === seq) render(items, q); }, function () {
+          failed = true; list.replaceChildren(); status.textContent = 'Search isn\u2019t available right now.';
+        });
+      };
+      var back = null;
+      var open = function () { if (!dialog.open) { back = document.activeElement; dialog.showModal(); input.select(); load().catch(function () {}); } };
+      dialog.addEventListener('close', function () { if (back && back.isConnected && back.focus) back.focus(); back = null; });
+      triggers.forEach(function (t) { t.hidden = false; t.addEventListener('click', open); });
+      dialog.querySelectorAll('[data-search-close]').forEach(function (b) { b.addEventListener('click', function () { dialog.close(); }); });
+      dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); });
+      input.addEventListener('input', search);
+      // Escape closes, even from the field (a search field would otherwise spend the first Escape clearing itself).
+      // Arrow keys move between the field and the results; Enter follows a result as any link does.
+      dialog.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') { e.preventDefault(); dialog.close(); return; }
+        if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+        var links = Array.prototype.slice.call(list.querySelectorAll('a'));
+        if (!links.length) return;
+        var at = links.indexOf(document.activeElement);
+        var next = e.key === 'ArrowDown' ? (at < 0 ? 0 : Math.min(at + 1, links.length - 1)) : at - 1;
+        e.preventDefault();
+        if (next < 0) input.focus(); else links[next].focus();
+      });
+      document.addEventListener('keydown', function (e) {
+        var typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName) || document.activeElement.isContentEditable;
+        if (((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') || (e.key === '/' && !typing && !e.ctrlKey && !e.metaKey && !e.altKey)) {
+          e.preventDefault(); open();
+        }
+      });
+    });
+
     // Copy page: copies the page's Markdown (its index.md) as plain text. ClipboardItem takes a promise, so the copy
     // still counts as part of the click while the file loads; without it, the text is fetched first.
     document.querySelectorAll('[data-copy-page]').forEach(function (btn) {

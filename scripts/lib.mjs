@@ -270,4 +270,5 @@ export const DOC_SELECTORS = {
   'docs-shell': ['.cx-docs', '.cx-docs-nav'],
   'page-actions': ['.cx-page-actions'],
   'page-footer': ['.cx-page-footer'],
+  'search': ['.cx-search', '.cx-search-trigger'],
 };
