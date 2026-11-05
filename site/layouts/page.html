@@ -5,6 +5,12 @@
   {{- partial "page-meta.html" . }}
   {{ partial "motifspec/page-actions.html" . }}
 </div>
+{{- with .Params.deprecated }}
+<div class="cx-callout cx-callout--warning" role="note">
+  <p class="cx-callout__title"><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-warning"></use></svg>Deprecated</p>
+  <p>{{ . | markdownify }}</p>
+</div>
+{{- end }}
 {{ partial "motifspec/article.html" (dict "page" . "toc" (cond (eq .Params.toc false) "never" "auto")) }}
 {{ partial "motifspec/page-footer.html" . }}
 {{ partial "motifspec/pagination-docs.html" . }}

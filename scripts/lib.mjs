@@ -274,4 +274,5 @@ export const DOC_SELECTORS = {
   'component-preview': ['.cx-preview', '.cx-preview-body'],
   'steps': ['.cx-steps'],
   'tabs': ['.cx-tabs'],
+  'token-table': ['.cx-token-table', '.cx-swatch', '.cx-palette', '.cx-token-sample', '.cx-token-bar', '.cx-pair-sample'],
 };

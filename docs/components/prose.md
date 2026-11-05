@@ -50,6 +50,7 @@ tokens:
   - size.measure.code
   - size.measure.prose
   - size.ornament.sm
+  - size.target.touch
   - space.inline.md
   - space.inline.sm
   - space.inline.xs

@@ -1,6 +1,7 @@
 {{- /* One page per component, from docs/components/. The navigation lists shared components first, then each
        layout's, alphabetically within each group (weight); the section page groups them under headings. */ -}}
 {{- $groups := slice "shared" "portfolio" "documentation" "dashboard" -}}
+{{- $hugo := (resources.Get "src/docs/hugo.md").Content -}}
 {{- $docs := slice -}}
 {{- range resources.Match "src/docs/components/*.md" }}{{ if ne (path.BaseName .Name) "_template" }}{{ $docs = $docs | append . }}{{ end }}{{ end -}}
 {{- range $i, $r := sort $docs "Name" -}}
@@ -8,5 +9,14 @@
   {{- $d := partial "src/doc.html" $r.Content -}}
   {{- $layouts := $d.front.layouts | default (slice "shared") -}}
   {{- $g := 9 }}{{ range $k, $name := $groups }}{{ if and (eq $g 9) (in $layouts $name) }}{{ $g = $k }}{{ end }}{{ end -}}
-  {{- $.AddPage (partial "src/page.html" (dict "path" $n "title" $d.title "lede" $d.lede "body" $d.body "source" (printf "docs/components/%s.md" $n) "weight" (add (mul $g 100) $i) "params" (dict "layouts" $layouts "status" $d.front.status "tokens" $d.front.tokens "name" $n))) -}}
+  {{- /* The Hugo partials whose row in docs/hugo.md names this doc, and the tokens its CSS uses (from its front
+         matter, which the build writes), as a last section. */ -}}
+  {{- $partials := slice -}}
+  {{- range split $hugo "\n" }}{{ if and (hasPrefix . "| `") (strings.Contains . (printf "`%s.md`" $n)) }}{{ with findRESubmatch "^\\| `([^`]+)`" . 1 }}{{ $partials = $partials | append (index (index . 0) 1) }}{{ end }}{{ end }}{{ end -}}
+  {{- $more := slice -}}
+  {{- with $partials }}{{ $more = $more | append (printf "**Hugo:** %s, in `layouts/_partials/motifspec/` (`docs/hugo.md`)." (delimit (apply . "printf" "`%s`" ".") ", ")) }}{{ end -}}
+  {{- with $d.front.tokens }}{{ $more = $more | append (printf "**Tokens:** %s ([Tokens](/reference/tokens/))." (delimit (apply . "printf" "`%s`" ".") ", ")) }}{{ end -}}
+  {{- $body := $d.body -}}
+  {{- with $more }}{{ $body = printf "%s\n\n## Partials and tokens\n\n%s" $body (delimit . "\n\n") }}{{ end -}}
+  {{- $.AddPage (partial "src/page.html" (dict "path" $n "title" $d.title "lede" $d.lede "body" $body "source" (printf "docs/components/%s.md" $n) "weight" (add (mul $g 100) $i) "params" (dict "layouts" $layouts "status" $d.front.status "deprecated" $d.front.deprecated "name" $n))) -}}
 {{- end -}}

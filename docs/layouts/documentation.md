@@ -6,7 +6,7 @@ For product and system documentation: guides, reference pages and a changelog. m
 
 Complete since 1.19.0: the docs shell with its page navigation (`docs-shell.md`), search (`search.md`) and the version and repository link in the header (`site-header.md`), page actions (`page-actions.md`), the page footer with previous and next (`page-footer.md`), a Markdown copy of each page, and the component preview (`component-preview.md`), with every shared component, including steps, tabs, disclosures and keyboard keys, plus the table of contents, heading anchors and the ornaments.
 
-Not yet: tables generated from MotifSpec's own data (tokens, icons, checker rules) come with motifspec.com, the layout's first site. Don't write classes for anything MotifSpec doesn't define; the checker fails on them.
+Since 1.20.0, the token table (`token-table.md`) for reference pages generated from a design system's tokens. Don't write classes for anything MotifSpec doesn't define; the checker fails on them.
 
 ## Shell
 

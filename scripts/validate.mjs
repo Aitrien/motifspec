@@ -18,6 +18,8 @@ for (const file of readdirSync(docsDir).filter((f) => f.endsWith('.md') && !f.st
   const name = fm[1].match(/^name: (.+)$/m)?.[1];
   if (name !== file.replace(/\.md$/, '')) errors.push(`docs/components/${file}: name "${name}" does not match file name`);
   if (!/^status: (draft|stable|deprecated)\b/m.test(fm[1])) errors.push(`docs/components/${file}: status must be draft, stable or deprecated`);
+  // A deprecated component says what replaces it and the major version that removes it, for the docs site's note.
+  if (/^status: deprecated\b/m.test(fm[1]) && !/^deprecated: \S/m.test(fm[1])) errors.push(`docs/components/${file}: a deprecated component needs "deprecated: <what replaces it; removed in X.0.0>"`);
   const layouts = fm[1].match(/^layouts: \[(.*)\]\s*(?:#.*)?$/m)?.[1].split(',').map((l) => l.trim()).filter(Boolean);
   if (!layouts?.length) errors.push(`docs/components/${file}: needs "layouts: [shared]" or the layouts it belongs to (docs/layouts/)`);
   else if (layouts.includes('shared') ? layouts.length > 1 : layouts.some((l) => !LAYOUTS.includes(l))) errors.push(`docs/components/${file}: layouts must be [shared] or any of ${LAYOUTS.join(', ')}`);
