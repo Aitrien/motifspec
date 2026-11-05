@@ -1114,19 +1114,24 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
   border: var(--cx-border-width-hairline) solid var(--cx-color-border-default);
   background: var(--_swatch, var(--cx-color-surface-sunken));
 }
+/* A tile: the colour as the background, with its name and value written on it in the ink the generator picks for
+   contrast (--_ink: the darkest or lightest neutral, whichever reads better on that colour). */
+.cx-swatch--tile {
+  display: inline-flex; flex-direction: column; justify-content: space-between; gap: var(--cx-space-stack-xs); vertical-align: top;
+  width: auto; min-width: calc(var(--cx-size-target-touch) * 2.4); height: auto; min-height: var(--cx-size-target-touch);
+  margin: 0; padding: var(--cx-space-inset-xs) var(--cx-space-inset-sm);
+  border-color: var(--cx-color-border-subtle); color: var(--_ink, var(--cx-color-text-primary));
+  font-family: var(--cx-font-family-mono); font-size: var(--cx-font-size-label); line-height: var(--cx-font-line-height-ui);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.cx-swatch--tile b { font-weight: var(--cx-font-weight-strong); }
 .cx-palette, .cx-prose .cx-palette {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--cx-size-target-touch) * 1.6), 1fr));
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--cx-size-target-touch) * 2.4), 1fr));
   gap: var(--cx-space-inline-xs); margin: 0; padding: 0; list-style: none;
 }
 .cx-palette > li::marker { content: none; }
 .cx-prose .cx-palette > li { margin: 0; padding: 0; }
-.cx-palette__step {
-  display: flex; flex-direction: column; gap: var(--cx-space-stack-xs);
-  font-family: var(--cx-font-family-mono); font-size: var(--cx-font-size-label); line-height: var(--cx-font-line-height-ui); font-variant-numeric: tabular-nums;
-}
-.cx-palette__step .cx-swatch { width: auto; height: var(--cx-size-target-touch); margin: 0; border-color: var(--cx-color-border-subtle); }
-.cx-palette__step b { color: var(--cx-color-text-primary); font-weight: var(--cx-font-weight-ui); }
-.cx-palette__step span:last-child { color: var(--cx-color-text-muted); }
+.cx-palette .cx-swatch--tile { display: flex; width: 100%; min-height: calc(var(--cx-size-target-touch) * 1.6); }
 /* In a token table (cx-table cx-token-table) a token's name stays on one line; the table scrolls sideways instead. */
 .cx-token-table th[scope="row"] code { white-space: nowrap; }
 .cx-token-sample {
