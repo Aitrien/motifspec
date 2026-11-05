@@ -74,7 +74,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   for (const [path, md] of Object.entries(referencePages())) {
     for (const m of md.matchAll(/\sstyle="([^"]*)"/g)) {
       for (const decl of m[1].split(';').map((d) => d.trim()).filter(Boolean)) {
-        if (!/^--_(swatch|fg|bg|size|family|width): (var\(--cx-[a-z0-9-]+\)|\d+(\.\d+)?%)$/.test(decl)) problems.push(`site generated/${path}: style "${decl}" sets something other than a token-table value`);
+        if (!/^--_(swatch|ink|fg|bg|size|family|width): (var\(--cx-[a-z0-9-]+\)|\d+(\.\d+)?%)$/.test(decl)) problems.push(`site generated/${path}: style "${decl}" sets something other than a token-table value`);
       }
     }
   }
