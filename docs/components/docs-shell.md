@@ -40,7 +40,7 @@ The frame of a documentation page: grouped page navigation on the left, the page
 
 ## When to use
 
-- On every page of a documentation site (`docs/layouts/documentation.md`), the docs home included.
+- On every page of a documentation site except the landing page (`docs/layouts/documentation.md`), which is full width.
 - When readers move between many pages in a set order: guides, reference, a changelog.
 
 ## When not to use

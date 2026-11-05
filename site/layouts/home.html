@@ -1,9 +1,37 @@
+{{- /* The landing page (docs/layouts/documentation.md, Landing): the statement on the frost with the call to action
+       to Getting started, why MotifSpec exists (this page's content), then the way into each section. */ -}}
 {{ define "main" }}
-<div class="cx-page-head">
-  <h1>{{ .Title }}</h1>
-  {{- with .Description }}<p class="cx-lede">{{ . }}</p>{{ end }}
+<div class="cx-container">
+  <section class="cx-page-head" aria-labelledby="statement-title">
+    <p class="cx-eyebrow">{{ site.Title }} <span class="cx-sep" aria-hidden="true">|</span> {{ site.Params.role }}</p>
+    <h1 class="cx-display" id="statement-title">{{ .Params.statement }}</h1>
+    <p class="cx-lede">{{ .Description }}</p>
+    <div class="cx-actions">
+      {{- with site.GetPage "/guide/getting-started" }}
+      <a class="cx-button cx-button--primary" href="{{ .RelPermalink }}">Get started <svg class="cx-icon cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg></a>
+      {{- end }}
+      {{- with site.GetPage "/components" }}
+      <a class="cx-button" href="{{ .RelPermalink }}">Browse components</a>
+      {{- end }}
+    </div>
+  </section>
+
+  <section class="cx-section" id="why" aria-labelledby="why-title">
+    <div class="cx-section__head">
+      {{ partial "motifspec/section-heading.html" (dict "id" "why" "title" "Why a standardised design system") }}
+    </div>
+    <div class="cx-prose">
+      {{ .Content }}
+    </div>
+  </section>
+
+  <section class="cx-section" id="sections" aria-labelledby="sections-title">
+    <div class="cx-section__head">
+      {{ partial "motifspec/section-heading.html" (dict "id" "sections" "title" "Where to go") }}
+    </div>
+    <div class="cx-prose">
+      {{ partial "page-list.html" .Sections.ByWeight }}
+    </div>
+  </section>
 </div>
-<div class="cx-article"><div class="cx-article__main cx-prose">
-  {{ partial "page-list.html" .Sections.ByWeight }}
-</div></div>
 {{ end }}

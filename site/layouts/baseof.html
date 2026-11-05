@@ -10,13 +10,19 @@
   <link rel="alternate" type="text/markdown" href="{{ .RelPermalink }}">
   {{- end }}
 </head>
-<body class="cx-backdrop-page cx-backdrop-page--side">
+{{- /* The landing page (home) is full width on the head of the backdrop; every other page is in the docs shell on
+       its side (docs/layouts/documentation.md). */}}
+<body class="cx-backdrop-page{{ if not .IsHome }} cx-backdrop-page--side{{ end }}">
   {{ partial "motifspec/body-start.html" . }}
   {{ partial "motifspec/site-header.html" . }}
+  {{- if .IsHome }}
+  <main id="main" tabindex="-1" data-pagefind-body>{{ block "main" . }}{{ end }}</main>
+  {{- else }}
   <div class="cx-container cx-docs">
     {{ partial "motifspec/docs-nav.html" . }}
     <main id="main" class="cx-docs__main" tabindex="-1" data-pagefind-body>{{ block "main" . }}{{ end }}</main>
   </div>
+  {{- end }}
   {{ partial "footer.html" . }}
   {{ partial "motifspec/body-end.html" . }}
 </body>

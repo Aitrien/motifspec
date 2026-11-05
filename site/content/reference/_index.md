@@ -1,5 +1,5 @@
 ---
 title: Reference
 weight: 5
-description: The Hugo partials, the MCP server, the token conventions and every release.
+description: Every token, contrast pair and checker rule, the MCP server, the Hugo partials, the conventions and every release.
 ---
