@@ -214,8 +214,7 @@ export function declaredLayout(root) {
       const json = JSON.parse(text);
       found = (isParams ? json : json.params)?.motifspec;
     } else if (f.endsWith('.toml')) {
-      const table = text.match(new RegExp(`^\\[${isParams ? '' : 'params\\.'}motifspec\\]\\s*$([\\s\\S]*?)(?=^\\[|(?![\\s\\S]))`, 'm'))?.[1];
-      if (table) found = { layout: table.match(/^\s*layout\s*=\s*["']([^"']+)["']/m)?.[1], components: list(table.match(/^\s*components\s*=\s*\[([\s\S]*?)\]/m)?.[1]) };
+      found = tomlMotifspec(text, isParams ? '' : 'params');
     } else {
       const block = text.match(isParams ? /^motifspec:\s*\n((?:[ \t]+.*\n?)*)/m : /^[ \t]+motifspec:\s*\n((?:[ \t]+.*\n?)*)/m)?.[1];
       if (block) {
@@ -227,6 +226,44 @@ export function declaredLayout(root) {
     if (found?.layout || found?.components) return { layout: found.layout, components: found.components, from: f };
   }
   return {};
+}
+
+/**
+ * [params.motifspec] from Hugo TOML, however it's written: as its own table (indented or not), as dotted keys
+ * (motifspec.layout = "…" under [params], or params.motifspec.layout at the top), or as an inline table
+ * (motifspec = { layout = "…" }). `parent` is "params" for a site config, "" for a params file.
+ */
+function tomlMotifspec(text, parent) {
+  const sections = new Map([['', '']]);
+  let current = '';
+  for (const line of text.split('\n')) {
+    const header = line.match(/^\s*\[\s*([^\[\]]+?)\s*\]\s*(?:#.*)?$/);
+    if (header) { current = header[1]; sections.set(current, sections.get(current) ?? ''); continue; }
+    sections.set(current, sections.get(current) + line + '\n');
+  }
+  const own = parent ? `${parent}.motifspec` : 'motifspec';
+  const value = (body, key) => body.match(new RegExp(`^\\s*${key.replace(/\./g, '\\.')}\\s*=\\s*["']([^"']+)["']`, 'm'))?.[1];
+  const array = (body, key) => body.match(new RegExp(`^\\s*${key.replace(/\./g, '\\.')}\\s*=\\s*\\[([\\s\\S]*?)\\]`, 'm'))?.[1];
+  const list = (v) => v?.split(',').map((x) => x.replace(/#.*$/gm, '').trim().replace(/^["']|["']$/g, '')).filter(Boolean);
+  // Its own table.
+  if (sections.has(own)) {
+    const body = sections.get(own);
+    return { layout: value(body, 'layout'), components: list(array(body, 'components')) };
+  }
+  // Dotted keys or an inline table, in the parent table or (for a site config) at the top level.
+  for (const [section, prefix] of [[parent, 'motifspec.'], ...(parent ? [['', `${parent}.motifspec.`]] : [])]) {
+    const body = sections.get(section);
+    if (!body) continue;
+    const inline = body.match(new RegExp(`^\\s*${prefix.replace(/\./g, '\\.').replace(/\\\.$/, '')}\\s*=\\s*\\{([\\s\\S]*?)\\}`, 'm'))?.[1];
+    if (inline) {
+      const lines = inline.replace(/,\s*(?=[a-z]+\s*=)/g, '\n');
+      return { layout: value(lines, 'layout'), components: list(array(lines, 'components')) };
+    }
+    const layout = value(body, `${prefix}layout`);
+    const components = list(array(body, `${prefix}components`));
+    if (layout || components) return { layout, components };
+  }
+  return undefined;
 }
 
 /**
