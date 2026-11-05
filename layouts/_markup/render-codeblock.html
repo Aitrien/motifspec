@@ -9,6 +9,7 @@
 {{- range split .Inner "\n" }}{{ if gt (strings.RuneCount .) $measure }}{{ $long = true }}{{ end }}{{ end -}}
 {{- $result := transform.HighlightCodeBlock . -}}
 {{- $preview := and .Attributes.preview (eq $lang "html") -}}
+{{- if and $preview (strings.Contains .Inner "{{") }}{{ errorf "%s: an example with Hugo template syntax can't be previewed. Fence it as go-html-template, or show the HTML it writes." .Page.Path }}{{ end -}}
 {{- if $preview }}
 {{- $css := resources.Get "motifspec/codex.css" | resources.Copy "cx/codex.css" | minify | fingerprint -}}
 {{- $js := resources.Get "motifspec/codex.js" | resources.Copy "cx/codex.js" | minify | fingerprint -}}

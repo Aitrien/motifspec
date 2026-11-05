@@ -124,6 +124,7 @@ Every partial below is called as `partial "motifspec/<name>.html" <context>`.
 | `accession/id.html` | `accession-label.md` | A page. The compact number, date and reading time line. |
 | `accession/status.html` | `accession-label.md` | `live`, `building` or `archived`. |
 | `figure.html` | `figure.md` | `dict "image" <resource> "alt" "…" "caption" <HTML> "plate" 1`, plus `"eager" true` for the largest image above the fold and `"prose" true` to keep it to the text measure. |
+| `specimen-plate.html` | `specimen-plate.md` | `dict "src" "illustrations/x.svg" "caption" "…"`, plus `"label"` for one a reader needs, `"poster"` for a video and `"wide" true` for 16:10. Inlines an `.svg` or `.html` asset (`"motifspec/plate.html"` is the contour survey) or plays an `.mp4` or `.webm`, in the frame with its pause control and "Plate 0" caption. |
 | `table-of-contents.html` | `table-of-contents.md` | A page. `article.html` already calls it. |
 | `tags.html` | `tag.md` | `dict "page" . "max" 3`. |
 | `tag-filter.html` | `tag.md` | `dict "section" "work" "current" nil` on a section page, or `dict "section" "" "current" .` on a term page. |

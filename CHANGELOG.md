@@ -2,6 +2,18 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.21.0] - 2026-11-05
+
+### Added
+- `specimen-plate.html`: a Hugo partial that frames any illustration as a specimen plate, with its pause control and "Plate 0" caption. It inlines an `.svg` or `.html` asset (`motifspec/plate.html` is the contour survey) or plays an `.mp4` or `.webm` video, takes a text alternative (`label`) for an illustration a reader needs, a `poster` for a video, and `wide` for a 16:10 plate (`cx-plate--wide`).
+- `dist/codex.js` runs the pause control for any plate marked `data-plate-motion`: it reveals the control, pauses or plays CSS animations and SMIL in an inline SVG and video with it, sets `data-paused` on the frame, and sends a `cx-plate-pause` event for a scripted drawing. Under reduced motion nothing plays and the control stays hidden.
+
+### Changed
+- The specimen plate is now a frame for any moving illustration (an animated SVG, a short silent video or a scripted drawing), in a page's head beside or below the statement, with the contour survey as the one MotifSpec ships. It belongs to every layout (`layouts: [shared]`), not only the portfolio. Its drawing classes (`cx-plate__grid`, `cx-plate__line`, `cx-plate__line--index`) suit any line drawing.
+
+### Fixed
+- The specimen plate's and backdrop's examples on motifspec.com showed Hugo template code (`{{ (resources.Get "motifspec/plate.html").Content | safeHTML }}`) in their live previews. The plate's example is now HTML, the backdrop's is fenced as a Hugo template without a preview, and the code block hook fails the build on a previewed example with template syntax.
+
 ## [1.20.1] - 2026-11-05
 
 ### Changed

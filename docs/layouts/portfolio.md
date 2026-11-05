@@ -22,7 +22,7 @@ Every template sits on the backdrop (`backdrop.md`): its contours show behind th
 
 ## Components
 
-Every shared component, plus the components whose doc lists `portfolio` under `layouts:`: accession label, backdrop, heading anchor, ornament, post list item, project card, specimen plate and table of contents.
+Every shared component, plus the components whose doc lists `portfolio` under `layouts:`: accession label, backdrop, heading anchor, ornament, post list item, project card and table of contents.
 
 ## Catalogue numbers
 
