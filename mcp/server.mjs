@@ -40,7 +40,7 @@ export function load() {
   data = {
     version: pkg.version,
     rules: section(readme, 'Rules for AI assistants'),
-    checks: section(readme, 'Commands').split('\n').filter((l) => l.startsWith('- ')).join('\n'),
+    checks: section(readme, 'Checking a project').split('\n').filter((l) => l.startsWith('- ')).join('\n'),
     tokens: JSON.parse(read('dist', 'tokens.json')).tokens.filter((t) => t.tier !== 'primitive'),
     components,
     // "templates" was docs/templates.md until 1.18.0; it is now the portfolio layout, and the old name still works.

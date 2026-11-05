@@ -1,0 +1,18 @@
+{{- /* Splits a Markdown source file into what a page needs: its YAML front matter, its "# " title, its first
+       paragraph as the lede (when it is a plain sentence, not a list, table or heading) and the rest as the body.
+       Context: the file's text. */ -}}
+{{- $text := . -}}
+{{- $front := dict -}}
+{{- with findRESubmatch `(?s)\A---\n(.*?)\n---\n` $text 1 -}}
+  {{- $front = index (index . 0) 1 | transform.Unmarshal -}}
+  {{- $text = strings.TrimPrefix (index (index . 0) 0) $text -}}
+{{- end -}}
+{{- $title := "" -}}
+{{- with findRESubmatch `(?m)^# (.+)$` $text 1 }}{{ $title = index (index . 0) 1 }}{{ end -}}
+{{- $text = replaceRE `(?m)\A\s*# .+\n` "" $text 1 | strings.TrimSpace -}}
+{{- $lede := "" -}}
+{{- with findRESubmatch "\\A([^#|\\-*<`{\\n][^\\n]*(?:\\n[^\\n]+)*)(?:\\n\\n|\\z)" $text 1 -}}
+  {{- $lede = index (index . 0) 1 -}}
+  {{- $text = strings.TrimPrefix (index (index . 0) 0) $text | strings.TrimSpace -}}
+{{- end -}}
+{{- return (dict "front" $front "title" $title "lede" $lede "body" $text) -}}

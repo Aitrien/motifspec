@@ -1,0 +1,9 @@
+{{ define "main" }}
+<div class="cx-page-head">
+  <h1>{{ .Title }}</h1>
+  {{- with .Description }}<p class="cx-lede">{{ . }}</p>{{ end }}
+</div>
+<div class="cx-article"><div class="cx-article__main cx-prose">
+  {{ partial "page-list.html" .Sections.ByWeight }}
+</div></div>
+{{ end }}

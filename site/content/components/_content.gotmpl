@@ -1,0 +1,12 @@
+{{- /* One page per component, from docs/components/. The navigation lists shared components first, then each
+       layout's, alphabetically within each group (weight); the section page groups them under headings. */ -}}
+{{- $groups := slice "shared" "portfolio" "documentation" "dashboard" -}}
+{{- $docs := slice -}}
+{{- range resources.Match "src/docs/components/*.md" }}{{ if ne (path.BaseName .Name) "_template" }}{{ $docs = $docs | append . }}{{ end }}{{ end -}}
+{{- range $i, $r := sort $docs "Name" -}}
+  {{- $n := path.BaseName $r.Name -}}
+  {{- $d := partial "src/doc.html" $r.Content -}}
+  {{- $layouts := $d.front.layouts | default (slice "shared") -}}
+  {{- $g := 9 }}{{ range $k, $name := $groups }}{{ if and (eq $g 9) (in $layouts $name) }}{{ $g = $k }}{{ end }}{{ end -}}
+  {{- $.AddPage (partial "src/page.html" (dict "path" $n "title" $d.title "lede" $d.lede "body" $d.body "source" (printf "docs/components/%s.md" $n) "weight" (add (mul $g 100) $i) "params" (dict "layouts" $layouts "status" $d.front.status "tokens" $d.front.tokens "name" $n))) -}}
+{{- end -}}

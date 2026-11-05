@@ -17,6 +17,7 @@ Planned: a side navigation column (wordmark, grouped links, the theme toggle and
 
 ## Page templates
 
+<!-- caption: Page templates -->
 | Template | Order | Dominant | Secondary |
 |---|---|---|---|
 | **Overview** | Page head (title, when the readings were last updated, page-wide controls) → alerts as callouts → headline figures → the main column and a side column of sections | Alerts and headline figures | Detail sections |
@@ -51,6 +52,7 @@ MotifSpec doesn't fetch data; where an app gets its readings is the project's de
 
 ## Choosing a stack
 
+<!-- caption: Choosing a stack -->
 | The project | Use |
 |---|---|
 | Already has a stack | Keep it. MotifSpec adapts to the project, not the reverse. |

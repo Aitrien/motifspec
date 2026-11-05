@@ -1,0 +1,4 @@
+{{- /* A component page's layouts, as tags linking to them. */ -}}
+{{- with .Params.layouts }}
+<p class="cx-meta">Layouts {{ range $i, $l := . }}{{ if $i }}<span class="cx-sep" aria-hidden="true">|</span> {{ end }}{{ if eq $l "shared" }}Shared{{ else }}{{ with site.GetPage (printf "/layouts/%s" $l) }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}{{ end }} {{ end }}</p>
+{{- end -}}

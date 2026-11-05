@@ -33,3 +33,28 @@ jobs:
         run: npm run test:mcp
       - name: MCP server bundle
         run: npm run mcp:bundle && MCP_HANDLER=build/mcp/index.mjs npm run test:mcp
+
+  docs:
+    # motifspec.com, built from site/ against this commit's module: every page must build with no warnings, and the
+    # checker must pass on the site's own templates and content.
+    runs-on: ubuntu-latest
+    env:
+      HUGO_VERSION: 0.151.0
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # every file's history, for "Last updated"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Hugo extended
+        run: |
+          wget -qO "${{ runner.temp }}/hugo.deb" \
+            "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
+          sudo dpkg -i "${{ runner.temp }}/hugo.deb"
+      - name: Install dev dependencies (Pagefind)
+        run: npm ci
+      - name: Build the site
+        run: npm run docs
+      - name: Check the site
+        run: npm run docs:check

@@ -29,6 +29,7 @@ One `<h1>` per page. Use heading anchors only on headings that start sections of
 
 ## Choosing a stack
 
+<!-- caption: Choosing a stack -->
 | The project | Use |
 |---|---|
 | Already has a stack | Keep it. MotifSpec adapts to the project, not the reverse. |

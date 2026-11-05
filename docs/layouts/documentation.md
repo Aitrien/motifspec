@@ -14,6 +14,7 @@ The site header and footer, and between them the docs shell (`docs-shell.md`): g
 
 ## Page templates
 
+<!-- caption: Page templates -->
 | Template | Order | Dominant | Secondary |
 |---|---|---|---|
 | **Docs home** | Header → statement (display h1, lede) → entry points to each section → what's new → footer | The statement and entry points | What's new |
@@ -38,6 +39,7 @@ Every shared component, plus the components whose doc lists `documentation` unde
 
 ## Choosing a stack
 
+<!-- caption: Choosing a stack -->
 | The project | Use |
 |---|---|
 | Already has a stack | Keep it. MotifSpec adapts to the project, not the reverse. |

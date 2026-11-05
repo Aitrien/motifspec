@@ -1,0 +1,16 @@
+{{- /* Reference pages, from docs/, the README, CONVENTIONS.md and CHANGELOG.md. */ -}}
+{{- $readme := (resources.Get "src/README.md").Content -}}
+{{- $conv := (resources.Get "src/CONVENTIONS.md").Content -}}
+{{- $w := 0 -}}
+{{- range slice (dict "path" "hugo" "file" "docs/hugo.md" "title" "Hugo partials and render hooks") (dict "path" "syntax-highlighting" "file" "docs/syntax-highlighting.md") -}}
+  {{- $d := partial "src/doc.html" (resources.Get (printf "src/%s" .file)).Content -}}
+  {{- $w = add $w 1 -}}
+  {{- $.AddPage (partial "src/page.html" (dict "path" .path "title" (.title | default $d.title) "lede" $d.lede "body" $d.body "source" .file "weight" $w)) -}}
+{{- end -}}
+{{- $.AddPage (partial "src/page.html" (dict "path" "mcp-server" "title" "MCP server" "lede" "The tools the MCP server at https://mcp.motifspec.com/mcp offers an AI assistant. Getting started says how to connect it." "body" (partial "src/section.html" (dict "text" $readme "heading" "The MCP server")) "source" "README.md" "weight" 3)) -}}
+{{- /* CONVENTIONS.md, without its Versioning section (the Releasing and versions guide page). */ -}}
+{{- $c := partial "src/doc.html" $conv -}}
+{{- $body := replaceRE `(?s)\n## Versioning \(semver\)\n.*?(\n## |\z)` "$1" $c.body -}}
+{{- $.AddPage (partial "src/page.html" (dict "path" "conventions" "title" "Conventions" "lede" $c.lede "body" $body "source" "CONVENTIONS.md" "weight" 4)) -}}
+{{- $log := partial "src/doc.html" (resources.Get "src/CHANGELOG.md").Content -}}
+{{- $.AddPage (partial "src/page.html" (dict "path" "changelog" "title" "Changelog" "lede" $log.lede "body" $log.body "source" "CHANGELOG.md" "weight" 9 "params" (dict "toc" false))) -}}

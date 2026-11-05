@@ -1,0 +1,4 @@
+{{- /* Foundations pages, from the README. */ -}}
+{{- $readme := (resources.Get "src/README.md").Content -}}
+{{- $.AddPage (partial "src/page.html" (dict "path" "principles" "title" "Principles" "lede" "Seven rules every token, component and layout follows." "body" (partial "src/section.html" (dict "text" $readme "heading" "Principles")) "source" "README.md" "weight" 1)) -}}
+{{- $.AddPage (partial "src/page.html" (dict "path" "identity" "title" "The identity in brief" "lede" "The concept behind MotifSpec's look, and what carries it." "body" (partial "src/section.html" (dict "text" $readme "heading" "The identity in brief")) "source" "README.md" "weight" 2)) -}}

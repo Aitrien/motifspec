@@ -41,6 +41,7 @@ Pin a release with `hugo mod get github.com/aitrien/motifspec@vX.Y.Z`. The modul
 </html>
 ```
 
+<!-- caption: Page shell partials -->
 | Partial | What it writes |
 |---|---|
 | `motifspec/head.html` | The stored-theme snippet, font preloads, `codex.css` and `codex.js`, in that order. |
@@ -113,9 +114,10 @@ hugo --gc --minify && npx pagefind@1.5.0 --site public
 
 Every partial below is called as `partial "motifspec/<name>.html" <context>`.
 
+<!-- caption: Component partials -->
 | Partial | Doc | Context |
 |---|---|---|
-| `article.html` | `prose.md`, `table-of-contents.md`, `ornament.md` | `dict "page" . "toc" "always"` or `"auto"` (auto shows the TOC at three or more h2s). Ends the prose with the end mark, so the content must end with a paragraph. |
+| `article.html` | `prose.md`, `table-of-contents.md`, `ornament.md` | `dict "page" . "toc" "always"`, `"auto"` (the TOC at three or more h2s) or `"never"` (for a page such as a changelog, whose headings repeat). Ends the prose with the end mark, so the content must end with a paragraph; on a documentation site, no end mark (`docs/layouts/documentation.md`, Decoration). |
 | `project-card.html` | `project-card.md` | `dict "page" . "level" 2` (the heading level that fits the page outline; default 3). |
 | `post-list-item.html` | `post-list-item.md` | `dict "page" . "level" 3`. Writes an `<li>`, so put it in `<ol class="cx-posts">`. |
 | `accession/label.html` | `accession-label.md` | `dict "page" . "variant" "lead"` above the title, or `"card"` after the article (shown on a phone). |
@@ -130,7 +132,7 @@ Every partial below is called as `partial "motifspec/<name>.html" <context>`.
 | `pagination-pages.html` | `pagination.md` | `dict "pager" $pager "label" "Writing pages"`. Pages of a paginated list; nothing when it fits on one page. |
 | `docs-nav.html` | `docs-shell.md` | A page. The documentation layout's navigation: top-level pages, then a group per top-level section in weight order. `docs_nav: false` in front matter leaves a page or section out. |
 | `page-actions.html` | `page-actions.md` | A page. Copy page and View as Markdown, when the page has the markdown output format; nothing otherwise. |
-| `page-footer.html` | `page-footer.md` | A page. Last updated (its `Lastmod`) and Edit this page, from `params.motifspec.editURL` and, for a site in a folder of its repository, `params.motifspec.siteDir`. |
+| `page-footer.html` | `page-footer.md` | A page. Last updated (its `Lastmod`) and Edit this page, from `params.motifspec.editURL` and, for a site in a folder of its repository, `params.motifspec.siteDir`; a page with no file of its own uses its `source` param, the repository path of the file it was made from. |
 | `pagination-docs.html` | `pagination.md`, `page-footer.md` | A page. Previous and next in the order `docs-nav.html` lists the pages. |
 | `search.html` | `search.md` | A page. The search trigger and dialog; `site-header.html` calls it when `params.motifspec.search` is true. |
 | `back-link.html` | `button-and-link.md` | `dict "href" "…" "label" "All work"`. |
@@ -152,6 +154,7 @@ tags: [react, webgl, a11y]
 hero: { src: hero.png, alt: "…", caption: "…" }
 ```
 
+<!-- caption: Front matter -->
 | Field | Used by | Notes |
 |---|---|---|
 | `summary` | cards, rows | The lede and the card or row summary. |
@@ -166,6 +169,7 @@ hero: { src: hero.png, alt: "…", caption: "…" }
 
 These apply to all Markdown content once the module is imported.
 
+<!-- caption: Render hooks -->
 | Hook | Markdown | Doc |
 |---|---|---|
 | `render-heading.html` | Headings get ids; h2s get a `#` anchor. | `heading-anchor.md` |

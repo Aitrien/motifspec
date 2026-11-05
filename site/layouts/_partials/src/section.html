@@ -1,0 +1,19 @@
+{{- /* One "## heading" section of a Markdown file, without its heading, with its "###" headings raised to "##".
+       Context: dict "text" (the file) "heading". Fails the build if the heading is missing, so a renamed section
+       can't drop a page silently. */ -}}
+{{- $lines := split .text "\n" -}}
+{{- $out := slice -}}
+{{- $in := false -}}
+{{- $fence := false -}}
+{{- $found := false -}}
+{{- range $lines -}}
+  {{- if hasPrefix . "```" }}{{ $fence = not $fence }}{{ end -}}
+  {{- if and (not $fence) (hasPrefix . "## ") -}}
+    {{- $in = eq . (printf "## %s" $.heading) -}}
+    {{- if $in }}{{ $found = true }}{{ end -}}
+  {{- else if $in -}}
+    {{- if and (not $fence) (hasPrefix . "### ") }}{{ $out = $out | append (strings.TrimPrefix "#" .) }}{{ else }}{{ $out = $out | append . }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+{{- if not $found }}{{ errorf "site: no \"## %s\" section to make a page from." .heading }}{{ end -}}
+{{- return (delimit $out "\n" | strings.TrimSpace) -}}

@@ -1,0 +1,20 @@
+{{ define "main" }}
+<div class="cx-page-head">
+  <h1>{{ .Title }}</h1>
+  {{- with .Description }}<p class="cx-lede">{{ . }}</p>{{ end }}
+</div>
+<div class="cx-article"><div class="cx-article__main cx-prose">
+{{- if eq .Section "components" }}
+  {{- range slice (slice "shared" "Shared") (slice "portfolio" "Portfolio") (slice "documentation" "Documentation") (slice "dashboard" "Dashboard") }}
+  {{- $key := index . 0 }}{{ $label := index . 1 }}{{ $pages := slice }}
+  {{- range $.Pages.ByWeight }}{{ if eq (index .Params.layouts 0) $key }}{{ $pages = $pages | append . }}{{ end }}{{ end }}
+  {{- with $pages }}
+  <h2 id="{{ $key }}">{{ $label }}</h2>
+  {{ partial "page-list.html" . }}
+  {{- end }}
+  {{- end }}
+{{- else }}
+  {{ partial "page-list.html" .Pages.ByWeight }}
+{{- end }}
+</div></div>
+{{ end }}

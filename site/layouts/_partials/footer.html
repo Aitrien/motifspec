@@ -1,0 +1,15 @@
+<footer class="cx-footer">
+  <span class="cx-band" aria-hidden="true"></span>
+  <div class="cx-container">
+    <div class="cx-footer__grid">
+      <div><h2>Docs</h2><ul>{{ range site.Home.Sections.ByWeight }}<li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>{{ end }}</ul></div>
+      <div><h2>Elsewhere</h2><ul>
+        <li><a href="https://github.com/Aitrien/motifspec">GitHub<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg></a></li>
+        <li><a href="https://www.npmjs.com/package/@aitrien/motifspec">npm<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg></a></li>
+        <li><a href="https://aitrien.com">aitrien.com<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg></a></li>
+      </ul></div>
+      <div><h2>Colophon</h2><p>Set in National Park and JetBrains Mono, with ornaments from Yarndings 12. Built with Hugo from the MotifSpec repository.</p></div>
+    </div>
+  </div>
+  <div class="cx-container"><div class="cx-footer__base"><span>© {{ now.Year }} Liam Marshall</span><a href="#top">Back to top<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-upward"></use></svg></a></div></div>
+</footer>

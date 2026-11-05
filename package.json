@@ -65,7 +65,9 @@
     "release:check": "node scripts/release.mjs",
     "pack:check": "node scripts/pack-check.mjs",
     "test:mcp": "node --test mcp/test.mjs",
-    "mcp:bundle": "node mcp/build.mjs"
+    "mcp:bundle": "node mcp/build.mjs",
+    "docs": "node scripts/docs.mjs",
+    "docs:check": "node scripts/check.mjs site"
   },
   "engines": {
     "node": ">=20"
@@ -73,6 +75,7 @@
   "devDependencies": {
     "@modelcontextprotocol/sdk": "1.32.2",
     "esbuild": "0.28.2",
+    "pagefind": "1.5.0",
     "zod": "4.6.7"
   }
 }

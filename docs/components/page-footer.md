@@ -46,7 +46,7 @@ After a documentation page's article: when the page last changed and a link to e
 </nav>
 ```
 
-In Hugo, `partial "motifspec/page-footer.html" .` writes the footer and `partial "motifspec/pagination-docs.html" .` the previous and next links, in the order `docs-nav.html` lists the pages (`docs/hugo.md`).
+In Hugo, `partial "motifspec/page-footer.html" .` writes the footer (a page made by a content adapter from another file names that file's repository path as its `source` param, for the edit link) and `partial "motifspec/pagination-docs.html" .` the previous and next links, in the order `docs-nav.html` lists the pages (`docs/hugo.md`).
 
 ## Do
 

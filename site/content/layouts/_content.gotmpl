@@ -1,0 +1,7 @@
+{{- /* One page per layout, from docs/layouts/. */ -}}
+{{- $order := dict "portfolio" 1 "documentation" 2 "dashboard" 3 "a-la-carte" 4 -}}
+{{- range resources.Match "src/docs/layouts/*.md" -}}
+  {{- $n := path.BaseName .Name -}}
+  {{- $d := partial "src/doc.html" .Content -}}
+  {{- $.AddPage (partial "src/page.html" (dict "path" $n "title" (strings.TrimSuffix " layout" $d.title) "lede" $d.lede "body" $d.body "source" (printf "docs/layouts/%s.md" $n) "weight" (index $order $n | default 9))) -}}
+{{- end -}}

@@ -192,7 +192,7 @@ try {
   };
   const rows = chroma.rules.map((r) => `| ${r.role} | ${r.classes.map((c) => `\`.${c}\``).join(' ')} | ${[r.color && `\`${r.color}\``, r.background && `background \`${r.background}\``, r.weight && `weight \`${r.weight}\``].filter(Boolean).join(' + ')} | ${r.color ? lightDark(r.color) : r.background ? lightDark(r.background) : '—'} | ${r.color ? `${ratioOn(r.color, 'light')} / ${ratioOn(r.color, 'dark')}` : '—'} |`);
   const table = ['| Role | Chroma classes | Token | Light / dark | Contrast on code surface (light / dark) |', '|---|---|---|---|---|', ...rows].join('\n');
-  writeFileSync(synDoc, doc.replace(/<!-- TABLE:START -->[\s\S]*<!-- TABLE:END -->/, `<!-- TABLE:START -->\n${table}\n<!-- TABLE:END -->`));
+  writeFileSync(synDoc, doc.replace(/<!-- TABLE:START -->[\s\S]*<!-- TABLE:END -->/, `<!-- TABLE:START -->\n<!-- caption: Chroma mapping -->\n${table}\n<!-- TABLE:END -->`));
 } catch (e) { if (e.code !== 'ENOENT') throw e; }
 
 // ------------------------------------------------------------------ showcase
