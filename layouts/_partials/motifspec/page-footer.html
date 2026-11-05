@@ -1,24 +1,39 @@
-{{- /* page-footer.md: when the page last changed (its Lastmod; with enableGitInfo, from Git) and a link to edit its
-       source. The edit link needs params.motifspec.editURL, the repository's edit address ending in "/", such as
-       "https://github.com/owner/repo/edit/main/". When the site lives in a folder of the repository, also set
-       params.motifspec.siteDir to that folder, so files mounted from outside it get the right path. A page with no
-       file of its own, such as one a content adapter makes from another file, names that file's path in the
-       repository as its `source` param. Context: a page. */ -}}
+{{- /* page-footer.md: when the page last changed (its Lastmod; with enableGitInfo, from Git), what its generated parts
+       come from, and a link to its source. Context: a page.
+       - The link needs the repository's address for viewing files, params.motifspec.sourceURL, such as
+         "https://github.com/owner/repo/blob/main/" ("View source"), or for editing them, params.motifspec.editURL,
+         such as "https://github.com/owner/repo/edit/main/" ("Edit this page"). With both, View source is shown.
+       - The path is the page's file. When the site lives in a folder of the repository, set params.motifspec.siteDir to
+         that folder. A page with no file of its own, such as one a content adapter makes from another file, names that
+         file's repository path as its `source` param, and `sourceAnchor` for the heading it starts at, if it is one
+         section of the file (View source only; an editor can't open at a heading).
+       - A page whose tables or lists are generated names the files they come from as its `data` param (a list of
+         repository paths), shown after the date and linked with sourceURL. */ -}}
 {{- $p := . -}}
-{{- $edit := "" -}}
-{{- with site.Params.motifspec.editURL -}}
-  {{- $base := . -}}
-  {{- with $p.Params.source -}}
-    {{- $edit = printf "%s%s" $base (strings.TrimPrefix "/" .) -}}
-  {{- else with $p.File -}}
-    {{- $root := strings.TrimSuffix (printf "/%s" (site.Params.motifspec.siteDir | default "" | strings.Trim "/")) hugo.WorkingDir -}}
-    {{- $edit = printf "%s%s" $base (strings.TrimPrefix (printf "%s/" $root) .Filename) -}}
-  {{- end -}}
+{{- $path := "" -}}
+{{- with $p.Params.source -}}
+  {{- $path = strings.TrimPrefix "/" . -}}
+{{- else with $p.File -}}
+  {{- $root := strings.TrimSuffix (printf "/%s" (site.Params.motifspec.siteDir | default "" | strings.Trim "/")) hugo.WorkingDir -}}
+  {{- $path = strings.TrimPrefix (printf "%s/" $root) .Filename -}}
 {{- end -}}
-{{- if or (not $p.Lastmod.IsZero) $edit }}
+{{- $view := "" -}}
+{{- $edit := "" -}}
+{{- with and $path site.Params.motifspec.sourceURL -}}
+  {{- $view = printf "%s%s%s" . $path (cond (ne ($p.Params.sourceAnchor | default "") "") (printf "#%s" $p.Params.sourceAnchor) "") -}}
+{{- else with and $path site.Params.motifspec.editURL -}}
+  {{- $edit = printf "%s%s" . $path -}}
+{{- end -}}
+{{- if or (not $p.Lastmod.IsZero) $view $edit }}
 <footer class="cx-page-footer" data-pagefind-ignore>
-  {{- if not $p.Lastmod.IsZero }}
-  <p class="cx-meta">Last updated <time datetime="{{ $p.Lastmod.Format "2006-01-02" }}">{{ $p.Lastmod.Format "2 January 2006" }}</time></p>
+  {{- if or (not $p.Lastmod.IsZero) $p.Params.data }}
+  <p class="cx-meta">
+    {{- if not $p.Lastmod.IsZero }}Last updated <time datetime="{{ $p.Lastmod.Format "2006-01-02" }}">{{ $p.Lastmod.Format "2 January 2006" }}</time>{{ end }}
+    {{- with $p.Params.data }}{{ if not $p.Lastmod.IsZero }} <span class="cx-sep" aria-hidden="true">|</span> {{ end }}<span>Generated from {{ range $i, $d := . }}{{ if $i }}{{ if eq $i (sub (len $p.Params.data) 1) }} and {{ else }}, {{ end }}{{ end }}{{ with site.Params.motifspec.sourceURL }}<a href="{{ . }}{{ $d }}">{{ $d }}</a>{{ else }}{{ $d }}{{ end }}{{ end }}</span>{{ end -}}
+  </p>
+  {{- end }}
+  {{- with $view }}
+  <a class="cx-link" href="{{ . }}">View source<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg></a>
   {{- end }}
   {{- with $edit }}
   <a class="cx-link" href="{{ . }}"><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-edit"></use></svg>Edit this page<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg></a>

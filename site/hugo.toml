@@ -16,7 +16,7 @@ enableRobotsTXT = true
   layout = "documentation"
   search = true
   changelog = "/reference/changelog/"
-  editURL = "https://github.com/Aitrien/motifspec/edit/main/"
+  sourceURL = "https://github.com/Aitrien/motifspec/blob/main/"
   siteDir = "site"
   # version: set from package.json by npm run docs (HUGO_PARAMS_MOTIFSPEC_VERSION).
 
