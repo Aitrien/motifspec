@@ -160,6 +160,7 @@ icons/              Approved Material Symbols (manifest.json, source SVGs, Apach
 docs/components/    One rule file per component (front-matter token lists generated from the CSS)
 docs/layouts/       One file per layout: shell, page templates, components, decoration, headings, stack
 docs/hugo.md        The Hugo partials and render hooks, their contexts and the front matter they read
+docs/foundations/, docs/reference/  The wording of motifspec.com's pages about the tokens, icons and checker rules; their tables are generated
 layouts/            Hugo partials (_partials/motifspec/) and Markdown render hooks (_markup/), mounted by the module
 docs/syntax-highlighting.md
 fonts/              Self-hosted WOFF2 (Latin subsets) and their OFL licences

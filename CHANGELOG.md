@@ -2,6 +2,15 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.20.1] - 2026-11-05
+
+### Changed
+- The page footer links to a page's source with **View source**, given `params.motifspec.sourceURL` (the repository's address for viewing files). `editURL` still gives Edit this page. A page made from one section of a file opens at that heading (its `sourceAnchor` param), where an editor would open at the top of the file. A page's `data` param, the files its generated tables come from, shows as "Generated from" after the date, and `page-footer.md` lists the params.
+- motifspec.com's pages about the tokens, icons and checker rules keep their wording in Markdown in `docs/foundations/` and `docs/reference/`, with a visible line such as "*Generated from `tokens/color.json`: the palette.*" where each table goes. View source opens that file, and the footer names the data. The build fails if a line names the wrong files or an element no page shows.
+
+### Fixed
+- On motifspec.com, Edit this page opened the whole README for pages made from one of its sections, and a data file for pages whose wording was in the generator. View source now opens the section, or the file with all of the page's wording.
+
 ## [1.20.0] - 2026-11-05
 
 ### Added

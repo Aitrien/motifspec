@@ -12,5 +12,5 @@
   {{- $body := partial "src/section.html" (dict "text" $p.text "heading" $p.heading) -}}
   {{- $lede := $p.lede -}}
   {{- if not $lede }}{{ $d := partial "src/doc.html" $body }}{{ $lede = $d.lede }}{{ $body = $d.body }}{{ end -}}
-  {{- $.AddPage (partial "src/page.html" (dict "path" $p.path "title" $p.title "lede" $lede "body" $body "source" $p.file "weight" (add $i 1))) -}}
+  {{- $.AddPage (partial "src/page.html" (dict "path" $p.path "title" $p.title "lede" $lede "body" $body "source" $p.file "section" $p.heading "weight" (add $i 1))) -}}
 {{- end -}}
