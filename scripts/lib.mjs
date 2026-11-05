@@ -238,3 +238,36 @@ export function docAsJsx(md) {
       : `\`\`\`jsx\n${jsx}\n\`\`\``;
   });
 }
+
+// ------------------------------------------------------------------ which classes each component owns
+// The root selectors of each component doc's own CSS: the build reads the tokens each doc uses from them, and the
+// checker the layouts a class belongs to. A component owns a root and its __elements and --modifiers. Every doc in
+// docs/components/ needs an entry.
+export const DOC_SELECTORS = {
+  'site-header': ['.cx-header', '.cx-wordmark', '.cx-nav', '.cx-theme-toggle', '.cx-skip-link', '.cx-container'],
+  'backdrop': ['.cx-backdrop', '.cx-backdrop-page'],
+  'site-footer': ['.cx-footer', '.cx-band', '.cx-version'],
+  'accession-label': ['.cx-label', '.cx-id', '.cx-status'],
+  'project-card': ['.cx-cards', '.cx-card'],
+  'post-list-item': ['.cx-posts', '.cx-post'],
+  'icon': ['.cx-icon'],
+  'heading-anchor': ['.cx-anchor'],
+  'tooltip': ['.cx-tooltip'],
+  'prose': ['.cx-sep', '.cx-prose', '.cx-lede', '.cx-end-mark', '.cx-code-inline', '.cx-page-head', '.cx-h1', '.cx-display', '.cx-meta', '.cx-eyebrow'],
+  'code-block': ['.cx-code', '.chroma'],
+  'figure': ['.cx-figure', '.cx-diagram'],
+  'callout': ['.cx-callout'],
+  'tag': ['.cx-tags', '.cx-tag'],
+  'button-and-link': ['.cx-actions', '.cx-button', '.cx-link', '.cx-back'],
+  'pagination': ['.cx-pagination'],
+  'table-of-contents': ['.cx-toc', '.cx-article'],
+  'data-table': ['.cx-table'],
+  'ornament': ['.cx-band', '.cx-divider', '.cx-end-mark', '.cx-ornament'],
+  'specimen-plate': ['.cx-plate', '.cx-plate-frame', '.cx-plate__pause'],
+  'status': ['.cx-status'],
+  'disclosure': ['.cx-disclosure'],
+  'keyboard-key': ['.cx-kbd'],
+  'docs-shell': ['.cx-docs', '.cx-docs-nav'],
+  'page-actions': ['.cx-page-actions'],
+  'page-footer': ['.cx-page-footer'],
+};

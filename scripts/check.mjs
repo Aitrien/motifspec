@@ -18,7 +18,7 @@
 import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'node:fs';
 import { extname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ROOT } from './lib.mjs';
+import { ROOT, DOC_SELECTORS } from './lib.mjs';
 
 export const RULES = {
   stylesheet: 'Styles come only from MotifSpec. Remove the stylesheet; use components and tokens, or propose an addition to MotifSpec.',
@@ -57,36 +57,33 @@ function load() {
     icons: new Set(Object.keys(JSON.parse(read('icons', 'manifest.json')).icons)),
     tokens: new Map(tokens.map((t) => [t.css, t])),
     breakpoints: new Set(Object.entries(sizes.primitive.size.breakpoint).filter(([k]) => !k.startsWith('$')).map(([, t]) => `${t.$value.value}${t.$value.unit}`)),
-    ...componentLayouts(),
   };
+  Object.assign(data, componentLayouts(data.classes));
   return data;
 }
 
 /**
- * Which layouts each class and Hugo partial belongs to, from the component docs: a doc's layouts (its front matter)
- * apply to every cx- class in its HTML examples, and to the partials docs/hugo.md lists for it. A class in any shared
- * doc is shared; a partial is restricted by every doc its row names.
+ * Which layouts each class and Hugo partial belongs to. A class belongs to the docs that own it (DOC_SELECTORS in
+ * lib.mjs: a root class and its __elements and --modifiers), so a doc that only shows another component's classes in
+ * its example doesn't claim them. A class owned by any shared doc, or by no doc, is shared. A partial is restricted by
+ * every doc its row in docs/hugo.md names.
  */
-function componentLayouts() {
+function componentLayouts(classes) {
   const dir = join(ROOT, 'docs', 'components');
   const docs = new Map(); // doc name -> layouts, or null when shared
-  const classDocs = new Map(); // class -> doc names that use it
   for (const f of readdirSync(dir).filter((x) => x.endsWith('.md') && !x.startsWith('_'))) {
-    const md = readFileSync(join(dir, f), 'utf8');
-    const name = f.replace(/\.md$/, '');
-    const layouts = md.match(/^layouts: \[(.*)\]/m)?.[1].split(',').map((l) => l.trim()) ?? ['shared'];
-    docs.set(name, layouts.includes('shared') ? null : layouts);
-    for (const block of md.matchAll(/```html[^\n]*\n([\s\S]*?)```/g)) {
-      for (const m of block[1].matchAll(CLASS_ATTR)) {
-        for (const c of m[1].split(/\s+/)) if (c.startsWith('cx-')) classDocs.set(c, new Set([...(classDocs.get(c) ?? []), name]));
-      }
-    }
+    const layouts = readFileSync(join(dir, f), 'utf8').match(/^layouts: \[(.*)\]/m)?.[1].split(',').map((l) => l.trim()) ?? ['shared'];
+    docs.set(f.replace(/\.md$/, ''), layouts.includes('shared') ? null : layouts);
   }
-  const restrictedClasses = new Map(); // class -> restricted doc names (only classes no shared doc uses)
-  for (const [c, names] of classDocs) if ([...names].every((n) => docs.get(n))) restrictedClasses.set(c, [...names]);
+  const roots = Object.entries(DOC_SELECTORS).flatMap(([name, sels]) => sels.filter((s) => s.startsWith('.cx-')).map((s) => [s.slice(1), name]));
+  const restrictedClasses = new Map(); // class -> restricted doc names that own it (only classes no shared doc owns)
+  for (const c of classes) {
+    const owners = roots.filter(([r]) => c === r || c.startsWith(`${r}__`) || c.startsWith(`${r}--`)).map(([, n]) => n);
+    if (owners.length && owners.every((n) => docs.get(n))) restrictedClasses.set(c, [...new Set(owners)]);
+  }
   const partials = new Map(); // partial file -> restricted doc names it renders
   for (const row of read('docs', 'hugo.md').split('\n').filter((l) => /^\| `[a-z0-9/_-]+\.html` \|/.test(l))) {
-    const [file, related] = row.split('|').slice(1, 3).map((c) => c.trim());
+    const [file, related] = row.split('|').slice(1, 3).map((col) => col.trim());
     const names = [...related.matchAll(/`([a-z0-9-]+)\.md`/g)].map((m) => m[1]).filter((n) => docs.get(n));
     if (names.length) partials.set(file.replace(/`/g, ''), names);
   }

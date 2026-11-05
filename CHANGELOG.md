@@ -7,7 +7,12 @@ Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entri
 ### Added
 - Docs shell (`docs-shell.md`, documentation layout): grouped page navigation beside the page, with "On this page" on the right when there is room. On a phone the navigation sits behind a Menu control that ships closed and opens without script. With `dist/codex.js` it docks beside the page and scrolls on its own. The Hugo partial `docs-nav.html` writes it from the site's sections, and `docs/hugo.md` shows a documentation page.
 
+- Page actions (`page-actions.md`, documentation layout): Copy page, which copies the page's Markdown, and View as Markdown. The copy button is shown by script; the link always works.
+- A Markdown copy of each page: the module defines a `markdown` output format (`index.md` beside `index.html`) with templates for pages, sections and the home page. Sites turn it on with `outputs`.
+- Page footer (`page-footer.md`, documentation layout): Last updated, and Edit this page from `params.motifspec.editURL`. Hugo partials `page-actions.html`, `page-footer.html`, and `pagination-docs.html` for previous and next in the docs navigation's order.
+
 ### Changed
+- The checker decides a class's layouts from the component that owns it (its root class, `__elements` and `--modifiers`), not from every doc whose example shows it. Shared classes such as `cx-page-head`, `cx-lede` and `cx-meta`, which the new documentation docs show in their examples, stay shared. The map of each doc's own selectors moved from `scripts/build.mjs` to `scripts/lib.mjs`, where both use it.
 - Component examples are fenced as ```` ```html {preview=true} ```` instead of ```` ```html preview ````. Hugo drops a bare word after the language but passes attributes to the render hook, which the component preview needs. GitHub still shows them as HTML. The build, the checker, the JSX conversion and the MCP server read the new form.
 
 ## [1.18.1] - 2026-11-04

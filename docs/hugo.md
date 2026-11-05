@@ -69,6 +69,27 @@ A site using the documentation layout (`docs/layouts/documentation.md`) puts the
 
 The body has no `cx-backdrop-page` class on article pages; the docs home keeps it (`docs/layouts/documentation.md`, Decoration).
 
+An article page's `main` block, in order: the page head with `page-actions.html` after the lede, `article.html`, `page-footer.html`, then `pagination-docs.html`.
+
+### A Markdown copy of each page
+
+The module defines a `markdown` output format that writes `index.md` beside each page's `index.html`: the title, the description and the page's Markdown source. Copy page and View as Markdown use it, and so can an AI assistant. A site turns it on for the kinds of page it wants:
+
+```toml {file="hugo.toml"}
+enableGitInfo = true  # Lastmod from Git, for "Last updated"
+
+[outputs]
+  home = ["html", "markdown"]
+  page = ["html", "markdown"]
+  section = ["html", "markdown"]
+
+[params.motifspec]
+  layout = "documentation"
+  editURL = "https://github.com/owner/repo/edit/main/"
+```
+
+The templates are `layouts/page.markdown.md`, `section.markdown.md` and `home.markdown.md`; a site's own file at the same path wins.
+
 ## Component partials
 
 Every partial below is called as `partial "motifspec/<name>.html" <context>`.
@@ -89,6 +110,9 @@ Every partial below is called as `partial "motifspec/<name>.html" <context>`.
 | `pagination-entries.html` | `pagination.md` | `dict "page" . "label" "Post navigation" "noun" "Post"`. Previous and next in the page's section, oldest first. |
 | `pagination-pages.html` | `pagination.md` | `dict "pager" $pager "label" "Writing pages"`. Pages of a paginated list; nothing when it fits on one page. |
 | `docs-nav.html` | `docs-shell.md` | A page. The documentation layout's navigation: top-level pages, then a group per top-level section in weight order. `docs_nav: false` in front matter leaves a page or section out. |
+| `page-actions.html` | `page-actions.md` | A page. Copy page and View as Markdown, when the page has the markdown output format; nothing otherwise. |
+| `page-footer.html` | `page-footer.md` | A page. Last updated (its `Lastmod`) and Edit this page, from `params.motifspec.editURL` and, for a site in a folder of its repository, `params.motifspec.siteDir`. |
+| `pagination-docs.html` | `pagination.md`, `page-footer.md` | A page. Previous and next in the order `docs-nav.html` lists the pages. |
 | `back-link.html` | `button-and-link.md` | `dict "href" "…" "label" "All work"`. |
 | `section-heading.html` | `heading-anchor.md` | `dict "id" "work" "title" "Selected work"`, inside a `<section id="work" aria-labelledby="work-title">`. |
 | `tokens.html` | | Call with `partialCached "motifspec/tokens.html" "tokens"`. A map from token name to its entry in `dist/tokens.json`, for templates that need a token's value at build time. |

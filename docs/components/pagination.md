@@ -38,6 +38,7 @@ A three-cell bar: previous with its title, current position, and next with its t
 
 - At the end of a post or case study, to the previous and next entries in the collection.
 - Below a paginated index ("Page 2 / 5"), with the page titles replaced by "Newer" and "Older".
+- Between documentation pages, in the order of the docs navigation (`page-footer.md`, `pagination-docs.html`).
 
 ## When not to use
 
