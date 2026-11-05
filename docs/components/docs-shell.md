@@ -100,6 +100,7 @@ In Hugo, `partial "motifspec/docs-nav.html" .` writes the navigation from the si
 - Group pages by what the reader is trying to do, in the order they'll need them: a guide before reference.
 - Keep group names to one or two words, and page titles short enough for one line in the column.
 - Mark the current page with `aria-current="page"`.
+- Say "(deprecated)" after the title of a page about something deprecated; `docs-nav.html` does when the page sets `deprecated`.
 - Leave every group open unless the navigation is long; a reader scans more easily than they click.
 
 ## Don't

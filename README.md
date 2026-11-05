@@ -163,7 +163,7 @@ docs/hugo.md        The Hugo partials and render hooks, their contexts and the f
 layouts/            Hugo partials (_partials/motifspec/) and Markdown render hooks (_markup/), mounted by the module
 docs/syntax-highlighting.md
 fonts/              Self-hosted WOFF2 (Latin subsets) and their OFL licences
-scripts/            validate, build, audit, check (the rule checker projects run), pack-check and release
+scripts/            validate, build, audit, check (the rule checker projects run), pack-check, release, and docs with docs-reference (motifspec.com and its generated pages)
 js/codex.js         Theme toggle, copy buttons, tooltip dismissal, TOC docking and active section (shared by sites and the showcase)
 js/theme-init.js    One-line <head> snippet that applies a stored theme before first paint
 js/plate.js         Contour survey generator for the backdrop and the specimen plate: draws the static contours at build time and animates them in the browser

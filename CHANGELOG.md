@@ -5,6 +5,8 @@ Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entri
 ## [1.20.0] - 2026-11-05
 
 ### Added
+- Token table (`token-table.md`, documentation layout): colour swatches, a primitive palette, type samples, spacing bars and contrast samples in data tables, for reference pages generated from the tokens. motifspec.com's Colour, Type, Space and size, Motion, Icons, Ornaments, Tokens, Contrast pairs and Checker rules pages use it.
+- A deprecated component's doc has a `deprecated:` line saying what replaces it and when it goes; the validator requires it. `docs-nav.html` says "(deprecated)" after the title of a page that sets `deprecated`.
 - `article.html` takes `"toc" "never"`, for a page such as a changelog whose headings repeat.
 - `page-footer.html` reads a page's `source` param, the repository path of the file a content adapter made the page from, so Edit this page works for pages with no file of their own.
 

@@ -1,0 +1,20 @@
+{{ define "main" }}
+<div class="cx-page-head">
+  <h1>{{ .Title }}</h1>
+  {{- with .Description }}<p class="cx-lede">{{ . }}</p>{{ end }}
+</div>
+{{- $pages := where (where site.Pages "Kind" "in" (slice "page" "section")) "RelPermalink" "ne" .RelPermalink }}
+<div class="cx-article"><div class="cx-article__main cx-prose">
+{{- $letters := slice }}{{ range $pages }}{{ $letters = $letters | append (replace (upper (substr .LinkTitle 0 1)) "À" "A") }}{{ end }}
+{{- range $letters | uniq | sort }}
+  {{- $l := . }}
+  <h2 id="{{ lower $l }}">{{ $l }}</h2>
+  <ul>
+    {{- range $pages.ByTitle }}{{ if eq (replace (upper (substr .LinkTitle 0 1)) "À" "A") $l }}
+    <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ with .Parent }}{{ if not .IsHome }} <span class="cx-sep" aria-hidden="true">|</span> {{ .LinkTitle }}{{ end }}{{ end }}</li>
+    {{- end }}{{ end }}
+  </ul>
+{{- end }}
+</div></div>
+{{ partial "motifspec/pagination-docs.html" . }}
+{{ end }}
