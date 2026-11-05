@@ -1930,6 +1930,19 @@
       "hover": {
         "$value": "{primitive.color.amount.1}",
         "$description": "Share of color.text.primary mixed into a transparent hover background, in percent: header controls on the frosted backdrop, where a solid color.surface.hover would match the frost. Not for controls on a plain surface."
+      },
+      "scrim": {
+        "$value": "{primitive.color.amount.3}",
+        "$description": "Share of color.scrim in the scrim behind a modal dialog such as search, in percent: the page recedes but stays recognisable. Only in ::backdrop."
+      }
+    },
+    "scrim": {
+      "$value": "{primitive.color.ash.1000}",
+      "$description": "The colour behind a modal dialog such as search, mixed in at color.wash.scrim, so the page recedes in both themes. Only in ::backdrop.",
+      "$extensions": {
+        "codex.modes": {
+          "dark": "{primitive.color.ash.1000}"
+        }
       }
     }
   }

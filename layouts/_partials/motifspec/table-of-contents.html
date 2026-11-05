@@ -1,7 +1,7 @@
 {{- /* table-of-contents.md: numbered h2 entries with one nested level of h3. Ships <details open>, so it works
        without script; codex.js docks it and marks the current section. Context: a page. */ -}}
 {{- $h2s := partial "motifspec/h2s.html" . -}}
-<nav class="cx-toc" aria-labelledby="toc-title">
+<nav class="cx-toc" aria-labelledby="toc-title" data-pagefind-ignore>
   <details open>
     <summary id="toc-title">On this page<svg class="cx-icon cx-icon--sm cx-toc__chevron" aria-hidden="true" focusable="false"><use href="#cx-icon-expand"></use></svg></summary>
     <ol>

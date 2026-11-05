@@ -9,6 +9,7 @@ tokens:
   - size.icon.lg
   - size.icon.md
   - size.icon.sm
+  - space.inline.xs
 ---
 
 # Icon

@@ -81,6 +81,27 @@ The bar at the top of every page: wordmark, primary nav and the theme toggle. On
 </header>
 ```
 
+### In a documentation site
+
+A documentation site's header can also carry search (first, before the nav; `search.md`), a link out to the source repository in the nav, with the outward arrow, and the version before the theme toggle, linking to the changelog:
+
+```html
+<div class="cx-header__end">
+  <button class="cx-search-trigger" type="button" data-search-open aria-haspopup="dialog" aria-controls="cx-search" hidden>…</button>
+  <nav class="cx-nav" aria-label="Main">
+    <ul>
+      <li><a href="/guide/" aria-current="page">Guide</a></li>
+      <li><a href="/reference/">Reference</a></li>
+      <li><a href="https://github.com/owner/repo">GitHub<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg></a></li>
+    </ul>
+  </nav>
+  <a class="cx-header__version" href="/reference/changelog/">v1.19.0<span class="cx-visually-hidden">, changelog</span></a>
+  <button class="cx-theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch to dark theme">…</button>
+</div>
+```
+
+A portfolio's header has none of these.
+
 ### Scripts
 
 The toggle needs two scripts, both shipped in `dist/`. The first is a one-line snippet (`dist/theme-init.js`) inlined in `<head>` before the stylesheet, so a stored choice is on `<html>` before the first paint and the page never flashes the wrong theme. The second is `dist/codex.js`, loaded with `defer`, which reveals the toggle and wires it up (it also sets the header's scroll state on backdrop pages, and runs copy buttons, tooltip dismissal and the table of contents).

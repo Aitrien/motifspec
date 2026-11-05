@@ -1671,6 +1671,26 @@ export const tokens = [
     "description": "Share of color.text.primary mixed into a transparent hover background, in percent: header controls on the frosted backdrop, where a solid color.surface.hover would match the frost. Not for controls on a plain surface."
   },
   {
+    "name": "color.wash.scrim",
+    "css": "--cx-color-wash-scrim",
+    "tier": "semantic",
+    "type": "number",
+    "references": "primitive.color.amount.3",
+    "value": "40%",
+    "description": "Share of color.scrim in the scrim behind a modal dialog such as search, in percent: the page recedes but stays recognisable. Only in ::backdrop."
+  },
+  {
+    "name": "color.scrim",
+    "css": "--cx-color-scrim",
+    "tier": "semantic",
+    "type": "color",
+    "references": "primitive.color.ash.1000",
+    "referencesDark": "primitive.color.ash.1000",
+    "value": "#0e100f",
+    "valueDark": "#0e100f",
+    "description": "The colour behind a modal dialog such as search, mixed in at color.wash.scrim, so the page recedes in both themes. Only in ::backdrop."
+  },
+  {
     "name": "primitive.motion.duration.0",
     "css": "--cx-primitive-motion-duration-0",
     "tier": "primitive",

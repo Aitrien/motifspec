@@ -11,6 +11,11 @@ Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entri
 - A Markdown copy of each page: the module defines a `markdown` output format (`index.md` beside `index.html`) with templates for pages, sections and the home page. Sites turn it on with `outputs`.
 - Page footer (`page-footer.md`, documentation layout): Last updated, and Edit this page from `params.motifspec.editURL`. Hugo partials `page-actions.html`, `page-footer.html`, and `pagination-docs.html` for previous and next in the docs navigation's order.
 
+- Search (`search.md`, shared): a trigger in the header and a modal dialog of results as you type, from a Pagefind index built with the site. Ctrl+K, Cmd+K or "/" opens it, arrow keys move through the results, and Escape closes it. MotifSpec draws it with Pagefind's API, not Pagefind's own interface, and it makes no requests to other hosts. The trigger ships hidden and the script shows it.
+- The site header can carry search (`params.motifspec.search`), the version linked to the changelog (`params.motifspec.version` and `changelog`), and external links in its nav with the outward arrow.
+- `color.scrim` and `color.wash.scrim`: the colour behind a modal dialog and how much of it is mixed in, dark in both themes.
+- The Markdown render hooks and partials mark what isn't page content `data-pagefind-ignore` (heading anchors, code block bars, the end mark, the table of contents, page actions, page footer and docs pagination), so search excerpts are the page's own text. It changes nothing without Pagefind.
+
 ### Changed
 - The checker decides a class's layouts from the component that owns it (its root class, `__elements` and `--modifiers`), not from every doc whose example shows it. Shared classes such as `cx-page-head`, `cx-lede` and `cx-meta`, which the new documentation docs show in their examples, stay shared. The map of each doc's own selectors moved from `scripts/build.mjs` to `scripts/lib.mjs`, where both use it.
 - Component examples are fenced as ```` ```html {preview=true} ```` instead of ```` ```html preview ````. Hugo drops a bare word after the language but passes attributes to the render hook, which the component preview needs. GitHub still shows them as HTML. The build, the checker, the JSX conversion and the MCP server read the new form.

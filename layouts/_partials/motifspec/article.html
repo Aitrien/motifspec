@@ -8,7 +8,7 @@
 {{- /* ornament.md: the flower ("g") goes after the last sentence, so the content must end with a paragraph. */ -}}
 {{- $content := $p.Content | strings.TrimSpace -}}
 {{- if gt (len (findRE `class="cx-callout[ "]` $content)) 2 }}{{ errorf "content/%s: more than two callouts in one article; they lose force when repeated (callout.md)." $p.File.Path }}{{ end -}}
-{{- $endMark := `<span class="cx-end-mark" aria-hidden="true">g</span></p>` -}}
+{{- $endMark := `<span class="cx-end-mark" aria-hidden="true" data-pagefind-ignore>g</span></p>` -}}
 {{- if strings.HasSuffix $content "</p>" -}}
   {{- $content = printf "%s%s" (strings.TrimSuffix "</p>" $content) $endMark -}}
 {{- else -}}
