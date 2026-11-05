@@ -1,0 +1,37 @@
+{{- /* pagination.md for the documentation layout: previous and next in the order of the docs navigation
+       (docs-nav.html): top-level pages, then each top-level section's pages. The middle cell names the page's group.
+       Context: a page. */ -}}
+{{- $p := . -}}
+{{- $order := slice -}}
+{{- range (where (where site.Home.RegularPages "Params.docs_nav" "ne" false) "Kind" "page").ByWeight }}{{ $order = $order | append . }}{{ end -}}
+{{- range where site.Home.Sections.ByWeight "Params.docs_nav" "ne" false }}{{ range where .Pages.ByWeight "Params.docs_nav" "ne" false }}{{ $order = $order | append . }}{{ end }}{{ end -}}
+{{- $at := -1 }}{{ range $i, $e := $order }}{{ if eq $e.RelPermalink $p.RelPermalink }}{{ $at = $i }}{{ end }}{{ end -}}
+{{- if ge $at 0 }}
+{{- $prev := cond (gt $at 0) (index $order (sub $at 1)) nil -}}
+{{- $next := cond (lt (add $at 1) (len $order)) (index $order (add $at 1)) nil -}}
+<nav class="cx-pagination" aria-label="Documentation pages">
+  {{- with $prev }}
+  <a class="cx-pagination__link" href="{{ .RelPermalink }}" rel="prev">
+    <span class="cx-pagination__dir"><svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-back"></use></svg>Previous</span>
+    <span class="cx-pagination__title">{{ .LinkTitle }}</span>
+  </a>
+  {{- else }}
+  <span class="cx-pagination__link" rel="prev" aria-disabled="true">
+    <span class="cx-pagination__dir"><svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-back"></use></svg>Previous</span>
+    <span class="cx-pagination__title">First page</span>
+  </span>
+  {{- end }}
+  <p class="cx-pagination__status">{{ with $p.Parent }}{{ if not .IsHome }}{{ .LinkTitle }}{{ end }}{{ end }}<strong>{{ add $at 1 }} / {{ len $order }}</strong></p>
+  {{- with $next }}
+  <a class="cx-pagination__link" href="{{ .RelPermalink }}" rel="next">
+    <span class="cx-pagination__dir">Next<svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg></span>
+    <span class="cx-pagination__title">{{ .LinkTitle }}</span>
+  </a>
+  {{- else }}
+  <span class="cx-pagination__link" rel="next" aria-disabled="true">
+    <span class="cx-pagination__dir">Next<svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg></span>
+    <span class="cx-pagination__title">Last page</span>
+  </span>
+  {{- end }}
+</nav>
+{{- end -}}

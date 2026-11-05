@@ -120,6 +120,10 @@ test('check warns about components from another layout, and holds à la carte CS
   assert.match(dash, /^No problems: checked against MotifSpec [\d.]+, dashboard layout\./);
   assert.match(dash, /warning\(s\):\n.*\[wrong-layout\] "cx-label \(accession-label\.md: portfolio; this project is dashboard\)"/);
   assert.match(await call('check', { text: label, layout: 'portfolio' }), /^No problems[^\n]*\.$/);
+  // A doc's example may show other components' classes; only the classes a component owns (DOC_SELECTORS) are its own.
+  const page = '<div class="cx-page-head"><h1>Overview</h1><p class="cx-lede">x</p><p class="cx-meta">y</p></div>';
+  assert.doesNotMatch(await call('check', { text: page, layout: 'portfolio' }), /warning/);
+  assert.match(await call('check', { text: '<nav class="cx-docs-nav"></nav>', layout: 'portfolio' }), /\[wrong-layout\] "cx-docs-nav \(docs-shell\.md: documentation/);
   const toc = '<nav class="cx-toc"></nav>';
   assert.match(await call('check', { text: toc, layout: 'a-la-carte' }), /\[unlisted-component\] "cx-toc/);
   assert.doesNotMatch(await call('check', { text: toc, layout: 'a-la-carte', components: ['table-of-contents'] }), /warning/);

@@ -593,6 +593,18 @@ p, li, dd, figcaption { text-wrap: pretty; }
   .cx-docs-nav__menu[open] > .cx-docs-nav__groups { padding-top: var(--cx-space-stack-md); }
 }
 
+/* ------------------------------------------------------------ page actions and page footer (documentation layout) */
+/* Copy page and View as Markdown, under a docs page's title. */
+.cx-page-actions { display: flex; flex-wrap: wrap; gap: var(--cx-space-inline-xs); }
+.cx-page-actions .cx-icon { flex: none; }
+/* After the article: when the page last changed and where to edit it, then previous and next. */
+.cx-page-footer {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--cx-space-stack-sm) var(--cx-space-inline-lg);
+  margin-block: var(--cx-space-section-sm) var(--cx-space-stack-lg); padding-top: var(--cx-space-stack-md);
+  border-top: var(--cx-border-width-hairline) solid var(--cx-color-border-subtle);
+}
+.cx-page-footer .cx-meta { margin: 0; }
+
 /* ------------------------------------------------------------ site header and nav */
 .cx-header {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;

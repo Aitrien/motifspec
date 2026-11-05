@@ -2,9 +2,7 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import vm from 'node:vm';
-import {
-  ROOT, loadTokens, validate, resolve, resolveIn, isAlias, aliasTarget, cssVar, contrastReport, hexOf,
-} from './lib.mjs';
+import { ROOT, loadTokens, validate, resolve, resolveIn, isAlias, aliasTarget, cssVar, contrastReport, hexOf, DOC_SELECTORS } from './lib.mjs';
 
 const { tokens, errors } = loadTokens();
 const ruleErrors = [...errors, ...validate(tokens)];
@@ -135,32 +133,6 @@ writeFileSync(join(DIST, 'fonts.css'), fontsCss);
 writeFileSync(join(DIST, 'codex.css'), [fontsCss, tokensCss, componentsCss, chromaCss].join('\n'));
 
 // ------------------------------------------------------------------ docs/components/*.md: tokens front matter from the CSS
-const DOC_SELECTORS = {
-  'site-header': ['.cx-header', '.cx-wordmark', '.cx-nav', '.cx-theme-toggle', '.cx-skip-link', '.cx-container'],
-  'backdrop': ['.cx-backdrop', '.cx-backdrop-page'],
-  'site-footer': ['.cx-footer', '.cx-band', '.cx-version'],
-  'accession-label': ['.cx-label', '.cx-id', '.cx-status'],
-  'project-card': ['.cx-cards', '.cx-card'],
-  'post-list-item': ['.cx-posts', '.cx-post'],
-  'icon': ['.cx-icon'],
-  'heading-anchor': ['.cx-anchor'],
-  'tooltip': ['.cx-tooltip'],
-  'prose': ['.cx-sep', '.cx-prose', '.cx-lede', '.cx-end-mark', '.cx-code-inline', '.cx-page-head', '.cx-h1', '.cx-display', '.cx-meta', '.cx-eyebrow'],
-  'code-block': ['.cx-code', '.chroma'],
-  'figure': ['.cx-figure', '.cx-diagram'],
-  'callout': ['.cx-callout'],
-  'tag': ['.cx-tags', '.cx-tag'],
-  'button-and-link': ['.cx-actions', '.cx-button', '.cx-link', '.cx-back'],
-  'pagination': ['.cx-pagination'],
-  'table-of-contents': ['.cx-toc', '.cx-article'],
-  'data-table': ['.cx-table'],
-  'ornament': ['.cx-band', '.cx-divider', '.cx-end-mark', '.cx-ornament'],
-  'specimen-plate': ['.cx-plate', '.cx-plate-frame', '.cx-plate__pause'],
-  'status': ['.cx-status'],
-  'disclosure': ['.cx-disclosure'],
-  'keyboard-key': ['.cx-kbd'],
-  'docs-shell': ['.cx-docs', '.cx-docs-nav'],
-};
 const FOCUSABLE = new Set(['disclosure', 'docs-shell', 'specimen-plate', 'heading-anchor', 'site-header', 'project-card', 'post-list-item', 'tag', 'button-and-link', 'pagination', 'table-of-contents', 'code-block', 'data-table', 'prose']);
 const byVar = new Map([...tokens.values()].map((t) => [cssVar(t.path), t.path]));
 const rules = [...(componentsCss + '\n' + chromaCss).replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({ sel: m[1].trim(), body: m[2] }));

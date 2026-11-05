@@ -6,8 +6,8 @@ For product and system documentation: guides, reference pages and a changelog. m
 
 In progress. The documentation shell and its own components arrive in a later release, so this file says what exists now and what doesn't.
 
-- **Available now:** the docs shell with its page navigation (`docs-shell.md`), every shared component including disclosures and keyboard keys, plus the table of contents, heading anchors and the ornaments.
-- **Not available yet:** search and the version and repository link in the header, page actions (Copy page), the page footer (edit link, last updated, previous and next), the component preview, steps and tabs.
+- **Available now:** the docs shell with its page navigation (`docs-shell.md`), page actions (`page-actions.md`), the page footer with previous and next (`page-footer.md`), a Markdown copy of each page, every shared component including disclosures and keyboard keys, plus the table of contents, heading anchors and the ornaments.
+- **Not available yet:** search and the version and repository link in the header, the component preview, steps and tabs.
 
 Don't write classes for parts that aren't available. The checker fails on any `cx-` class MotifSpec doesn't define. Build what you can from the shared components, and say which parts MotifSpec doesn't have yet.
 

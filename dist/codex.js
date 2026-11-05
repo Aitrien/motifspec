@@ -106,6 +106,30 @@
       });
     });
 
+    // Copy page: copies the page's Markdown (its index.md) as plain text. ClipboardItem takes a promise, so the copy
+    // still counts as part of the click while the file loads; without it, the text is fetched first.
+    document.querySelectorAll('[data-copy-page]').forEach(function (btn) {
+      var label = btn.querySelector('.cx-page-actions__label');
+      var icon = btn.querySelector('use');
+      var set = function (state, text, iconId) {
+        btn.dataset.state = state; if (label) label.textContent = text;
+        if (icon) icon.setAttribute('href', '#cx-icon-' + iconId);
+      };
+      var done = function (ok) {
+        set(ok ? 'copied' : 'failed', ok ? 'Copied' : 'Couldn\u2019t copy', ok ? 'check' : 'content-copy');
+        setTimeout(function () { set('', 'Copy page', 'content-copy'); }, ms('--cx-motion-duration-plate'));
+      };
+      if (!navigator.clipboard) return;
+      btn.hidden = false;
+      btn.addEventListener('click', function () {
+        var text = fetch(btn.dataset.copyPage).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); });
+        var copied = window.ClipboardItem && navigator.clipboard.write
+          ? navigator.clipboard.write([new ClipboardItem({ 'text/plain': text.then(function (t) { return new Blob([t], { type: 'text/plain' }); }) })])
+          : text.then(function (t) { return navigator.clipboard.writeText(t); });
+        copied.then(function () { done(true); }, function () { done(false); });
+      });
+    });
+
     // Docs navigation: dock it (sticky, scrolling on its own) while it sits beside the main column, as the TOC does.
     document.querySelectorAll('.cx-docs').forEach(function (docs) {
       var nav = docs.querySelector('.cx-docs-nav');

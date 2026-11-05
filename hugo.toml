@@ -2,6 +2,14 @@
 # Declares where this repo's files appear inside the consuming site,
 # so the site only needs the import line.
 
+# A Markdown copy of each page (index.md beside index.html), for "Copy page" and for AI assistants. A site turns
+# it on with outputs; the templates are layouts/page.markdown.md and its siblings (docs/hugo.md).
+[outputFormats.markdown]
+  mediaType = "text/markdown"
+  baseName = "index"
+  isPlainText = true
+  permalinkable = false
+
 [module]
   [module.hugoVersion]
     extended = true

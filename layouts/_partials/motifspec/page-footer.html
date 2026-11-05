@@ -1,0 +1,21 @@
+{{- /* page-footer.md: when the page last changed (its Lastmod; with enableGitInfo, from Git) and a link to edit its
+       source. The edit link needs params.motifspec.editURL, the repository's edit address ending in "/", such as
+       "https://github.com/owner/repo/edit/main/". When the site lives in a folder of the repository, also set
+       params.motifspec.siteDir to that folder, so files mounted from outside it get the right path.
+       Context: a page. */ -}}
+{{- $p := . -}}
+{{- $edit := "" -}}
+{{- with and site.Params.motifspec.editURL $p.File -}}
+  {{- $root := strings.TrimSuffix (printf "/%s" (site.Params.motifspec.siteDir | default "" | strings.Trim "/")) hugo.WorkingDir -}}
+  {{- $edit = printf "%s%s" site.Params.motifspec.editURL (strings.TrimPrefix (printf "%s/" $root) $p.File.Filename) -}}
+{{- end -}}
+{{- if or (not $p.Lastmod.IsZero) $edit }}
+<footer class="cx-page-footer">
+  {{- if not $p.Lastmod.IsZero }}
+  <p class="cx-meta">Last updated <time datetime="{{ $p.Lastmod.Format "2006-01-02" }}">{{ $p.Lastmod.Format "2 January 2006" }}</time></p>
+  {{- end }}
+  {{- with $edit }}
+  <a class="cx-link" href="{{ . }}"><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-edit"></use></svg>Edit this page<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg></a>
+  {{- end }}
+</footer>
+{{- end -}}
