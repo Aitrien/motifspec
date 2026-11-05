@@ -6,7 +6,7 @@
 // in style attributes here, the one place MotifSpec writes them (token-table.md says why).
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { ROOT, loadTokens, isAlias, aliasTarget, resolve, resolveIn, cssVar, hexOf, contrastReport } from './lib.mjs';
+import { ROOT, loadTokens, isAlias, aliasTarget, resolve, resolveIn, cssVar, hexOf, ratio, contrastReport } from './lib.mjs';
 import { RULES, WARNINGS } from './check.mjs';
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -51,16 +51,24 @@ export function referencePages() {
     }
   };
   const ref = (v) => (isAlias(v) ? aliasTarget(v).replace(/^primitive\.[a-z]+\./, '') : '');
-  const swatch = (path) => `<span class="cx-swatch" style="--_swatch: var(${cssVar(path)})"></span>`;
+  // A colour tile (token-table.md): the colour as the background, with a label and its hex written on it in whichever
+  // of the darkest and lightest neutral reads better on it. A primitive keeps its value in both themes, so the ink can
+  // be chosen here.
+  const inks = ['primitive.color.ash.1000', 'primitive.color.ash.0'].map((p) => tokens.get(p));
+  const tile = (path, label) => {
+    const c = resolve(tokens, tokens.get(path).value);
+    const ink = inks.reduce((a, b) => (ratio(c, b.value) > ratio(c, a.value) ? b : a));
+    return `<span class="cx-swatch cx-swatch--tile" style="--_swatch: var(${cssVar(path)}); --_ink: var(${cssVar(ink.path)})"><b>${esc(label)}</b><span>${hexOf(c)}</span></span>`;
+  };
   // A semantic colour in one theme: its primitive's chip, the primitive's name and the hex.
   const colourCell = (t, mode) => {
     const v = mode === 'dark' ? (t.extensions['codex.modes']?.dark ?? t.value) : t.value;
     const target = isAlias(v) ? aliasTarget(v) : t.path;
-    return `${swatch(target)}${ref(v) ? `${esc(ref(v))}<br>` : ''}${code(valueOf(t, mode))}`;
+    return tile(target, ref(v) || mode);
   };
   const rule = (t) => (t.deprecated ? `<strong>Deprecated.</strong> ${text(t.deprecated)} ` : '') + text(t.description);
   const BREAK = { breakout: true };
-  const tokenRows = (list) => list.map((t) => [code(t.path), `${code(valueOf(t))}${ref(t.value) ? ` <span class="cx-sep" aria-hidden="true">|</span> ${code(ref(t.value))}` : ''}`, rule(t)]);
+  const tokenRows = (list) => list.map((t) => [code(t.path), code(valueOf(t)), rule(t)]);
   const pages = {};
 
   // ---------------------------------------------------------------- colour
@@ -68,7 +76,7 @@ export function referencePages() {
   const prim = all.filter((t) => t.tier === 'primitive' && t.type === 'color');
   const hues = [...new Set(prim.map((t) => t.segments[2]))];
   const palette = hues.map((h) => {
-    const steps = prim.filter((t) => t.segments[2] === h).map((t) => `<li class="cx-palette__step">${swatch(t.path)}<b>${t.segments[3]}</b><span>${hexOf(t.value)}</span></li>`).join('');
+    const steps = prim.filter((t) => t.segments[2] === h).map((t) => `<li>${tile(t.path, t.segments[3])}</li>`).join('');
     return `### ${h}\n\n${text(colorJson.primitive.color[h].$description)}\n\n<ol class="cx-palette" aria-label="${h}">${steps}</ol>`;
   }).join('\n\n');
   const colourGroups = [...new Set(semantic.filter((t) => t.segments[0] === 'color').map((t) => t.segments[1]))];
@@ -152,16 +160,16 @@ export function referencePages() {
   const tokenTables = cats.map((c) => {
     const list = semantic.filter((t) => t.segments[0] === c);
     const name = c[0].toUpperCase() + c.slice(1);
-    const rows = list.map((t) => [code(t.path), code(cssVar(t.path)), t.type === 'color' ? `${swatch(t.path)}${valueOf(t)} <span class="cx-sep" aria-hidden="true">|</span> ${valueOf(t, 'dark')}` : code(valueOf(t)), rule(t)]);
-    return `## ${name}\n\n${table(`${name} tokens | ${list.length}`.replace(' | ', ' <span class="cx-sep" aria-hidden="true">|</span> '), ['Token', 'CSS', 'Value', 'Rule'], rows, BREAK)}`;
+    const rows = list.map((t) => [code(t.path), t.type === 'color' ? `${colourCell(t, 'light')} ${colourCell(t, 'dark')}` : code(valueOf(t)), rule(t)]);
+    return `## ${name}\n\n${table(`${name} tokens | ${list.length}`.replace(' | ', ' <span class="cx-sep" aria-hidden="true">|</span> '), ['Token', 'Value', 'Rule'], rows, BREAK)}`;
   }).join('\n\n');
   const deprecatedNote = deprecated.length
     ? `> [!WARNING]\n> ${deprecated.length} tokens are deprecated and kept until they are removed: ${deprecated.map((t) => `\`${t.path}\``).join(', ')}. Each row says why and when. The checker fails a project that uses one.\n\n`
     : '';
   pages['reference/tokens'] = page({
     title: 'Tokens', weight: 1, toc: false, source: 'tokens/README.md',
-    lede: `Every semantic token: ${semantic.length} in all, with its CSS name, value and rule. Pages and components use these; the ${all.length - semantic.length} primitives behind them are not for use outside MotifSpec.`,
-    body: `${deprecatedNote}${tokenTables}`,
+    lede: `Every semantic token: ${semantic.length} in all, with its value and rule. Pages and components use these; the ${all.length - semantic.length} primitives behind them are not for use outside MotifSpec.`,
+    body: `${deprecatedNote}A token's CSS name is \`--cx-\` and its name with dashes: \`color.text.primary\` is \`${cssVar('color.text.primary')}\`. A colour shows its light value, then its dark one.\n\n${tokenTables}`,
   });
 
   // ---------------------------------------------------------------- reference: contrast pairs
