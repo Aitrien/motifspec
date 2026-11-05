@@ -11,10 +11,12 @@ Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entri
 - `page-footer.html` reads a page's `source` param, the repository path of the file a content adapter made the page from, so Edit this page works for pages with no file of their own.
 
 ### Changed
+- A documentation site's home page is a landing page (`docs/layouts/documentation.md`, Landing, which replaces Docs home): full width outside the docs shell, with the head and foot of the backdrop as on a portfolio's home page. `body-start.html` writes the head there and the side on every other page.
 - On a documentation site, `article.html` leaves out the end mark: the layout's only ornament is the footer band, as `docs/layouts/documentation.md` says.
 - The README's setup is grouped as Getting started (Hugo, npm, an AI assistant), Checking a project and The MCP server, the sections motifspec.com renders as pages. Every table in the README, `CONVENTIONS.md` and the docs has a caption, in an HTML comment before it that GitHub doesn't show.
 
 ### Fixed
+- The site header no longer marks a menu entry without an `identifier`, such as an external link, as the current page on the home page, whose section is empty.
 - The render hooks for tables, blockquotes, images and links, and `article.html`, no longer fail on a page that has no content file, such as one made by a content adapter.
 
 ## [1.19.0] - 2026-11-04

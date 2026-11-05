@@ -12,7 +12,7 @@
       <nav class="cx-nav" aria-label="Main">
         <ul>
           {{- range site.Menus.main }}
-          <li><a href="{{ .URL }}"{{ if eq $.Section .Identifier }} aria-current="page"{{ end }}>{{ .Name }}{{ if hasPrefix .URL "http" }}<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg>{{ end }}</a></li>
+          <li><a href="{{ .URL }}"{{ if and .Identifier (eq $.Section .Identifier) }} aria-current="page"{{ end }}>{{ .Name }}{{ if hasPrefix .URL "http" }}<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg>{{ end }}</a></li>
           {{- end }}
         </ul>
       </nav>

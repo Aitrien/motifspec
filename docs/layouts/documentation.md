@@ -10,14 +10,14 @@ Since 1.20.0, the token table (`token-table.md`) for reference pages generated f
 
 ## Shell
 
-The site header and footer, and between them the docs shell (`docs-shell.md`): grouped page navigation on the left, the page in the middle and "On this page" (the table of contents) on the right when there is room. Below `size.breakpoint.lg` "On this page" moves above the article, and below `size.breakpoint.md` the page navigation sits behind a Menu control above the page. In Hugo, see `docs/hugo.md` (A documentation page).
+The site header and footer, and between them, on every page but the landing page, the docs shell (`docs-shell.md`): grouped page navigation on the left, the page in the middle and "On this page" (the table of contents) on the right when there is room. Below `size.breakpoint.lg` "On this page" moves above the article, and below `size.breakpoint.md` the page navigation sits behind a Menu control above the page. In Hugo, see `docs/hugo.md` (A documentation page).
 
 ## Page templates
 
 <!-- caption: Page templates -->
 | Template | Order | Dominant | Secondary |
 |---|---|---|---|
-| **Docs home** | Header → statement (display h1, lede) → entry points to each section → what's new → footer | The statement and entry points | What's new |
+| **Landing** | Header → statement (display h1, lede, a primary button to Getting started and a secondary one) on the frost → why the product exists → entry points to each section → footer. Full width, outside the docs shell. | The statement and its call to action | Why, entry points, the backdrop |
 | **Article** | Header → title and lede → TOC + prose with figures, code blocks, callouts and tables → edit link and last updated → previous and next → footer | The prose column | TOC, page actions |
 | **Reference table** | Header → title and one-line intro → the table (tokens, icons, rules) → footer | The table | Intro |
 | **Changelog** | Header → title → releases, newest first, each with its version, date and changes → footer | The releases | Dates |
@@ -29,7 +29,8 @@ Every shared component, plus the components whose doc lists `documentation` unde
 
 ## Decoration
 
-- The side of the backdrop on every page, down the left edge behind the navigation, fading out before the article (`backdrop.md`). On a phone, the foot behind the footer instead. No head, so every page, the docs home included, opens on the plain surface.
+- The landing page: the head of the backdrop behind the statement and the foot behind the footer, as on a portfolio's home page (`backdrop.md`).
+- Every page in the docs shell: the side of the backdrop, down the left edge behind the navigation, fading out before the article. On a phone, the foot behind the footer instead.
 - The footer band. No other ornaments in articles.
 
 ## Headings
