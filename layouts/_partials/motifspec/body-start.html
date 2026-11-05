@@ -1,7 +1,10 @@
-{{- /* docs/hugo.md. Call first inside <body class="cx-backdrop-page"> with the page: on the home page, the head of the
-       contour backdrop behind the statement (backdrop.md); the icon sprite (icon.md), once, before anything that uses
-       it; and the skip link to <main id="main">. */ -}}
-{{- if .IsHome }}
+{{- /* docs/hugo.md. Call first inside <body class="cx-backdrop-page"> with the page: the contour backdrop's first
+       layer (backdrop.md), which is the side layer on every page of a documentation site (params.motifspec.layout
+       "documentation", with <body class="cx-backdrop-page cx-backdrop-page--side">) and otherwise the head, on the home
+       page only; the icon sprite (icon.md), once, before anything that uses it; and the skip link to <main id="main">. */ -}}
+{{- if eq site.Params.motifspec.layout "documentation" }}
+{{ with resources.Get "motifspec/backdrop-side.html" }}{{ .Content | safeHTML }}{{ else }}{{ errorf "motifspec/backdrop-side.html is missing: is the MotifSpec module imported?" }}{{ end }}
+{{- else if .IsHome }}
 {{ with resources.Get "motifspec/backdrop.html" }}{{ .Content | safeHTML }}{{ else }}{{ errorf "motifspec/backdrop.html is missing: is the MotifSpec module imported?" }}{{ end }}
 {{- end }}
 <div hidden>{{ with resources.Get "motifspec/icons.svg" }}{{ .Content | safeHTML }}{{ end }}</div>

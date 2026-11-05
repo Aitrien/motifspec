@@ -1286,6 +1286,27 @@ body:not(.cx-backdrop-page):has(.cx-backdrop-page) { background: transparent; }
   mask-composite: intersect;
 }
 .cx-backdrop--foot { bottom: 0; }
+/* Side: documentation pages (cx-backdrop-page--side) from size.breakpoint.md up. One layer down the left edge, fixed,
+   so it stays beside the navigation as the page scrolls. It reaches the left edge of the docs' main column
+   (--_side: the page container's margin and gutter, then the navigation column), and the page's surface fades in
+   across it, so the contours show in the margin, keep color.backdrop.calm behind the navigation, and are gone before
+   the article. The header fades the same way, so there is no edge across the band. On a phone the foot takes over. */
+.cx-backdrop--side { display: none; }
+.cx-backdrop-page--side {
+  --_side: calc(max(0%, 50% - var(--cx-size-container-page) / 2 - var(--cx-space-gutter-page)) + var(--cx-space-gutter-page) + var(--cx-size-column-sidebar));
+}
+@media (width >= 48rem) {
+  .cx-backdrop-page--side { background: linear-gradient(to right, transparent, var(--cx-color-surface-base) var(--_side)); }
+  /* The header keeps the same fade when it sticks: what scrolls under it is the article, which is past --_side. */
+  .cx-backdrop-page--side .cx-header, .cx-backdrop-page--side .cx-header[data-scrolled] { background: linear-gradient(to right, transparent, var(--cx-color-surface-base) var(--_side)); }
+  .cx-backdrop-page--side .cx-header[data-scrolled="true"] { background-color: transparent; }
+  .cx-backdrop-page--side .cx-backdrop--foot { display: none; }
+  .cx-backdrop-page--side .cx-backdrop--side {
+    display: block; position: fixed; top: 0; bottom: 0; left: 0; right: auto; width: var(--_side); height: auto;
+    -webkit-mask-image: linear-gradient(to right, var(--_full), var(--_calm) 55%);
+    mask-image: linear-gradient(to right, var(--_full), var(--_calm) 55%);
+  }
+}
 .cx-backdrop .cx-plate__map { position: relative; z-index: 0; width: 100%; height: 100%; filter: saturate(var(--cx-color-backdrop-saturation)); }
 /* Sharp hairlines, as on the plate, without its survey grid. No draw-in: the backdrop is already there when a page opens. */
 .cx-backdrop .cx-plate__grid { display: none; }
@@ -2322,11 +2343,11 @@ body:not(.cx-backdrop-page):has(.cx-backdrop-page) { background: transparent; }
   }
 
   // ------------------------------------------------------------ static markup (used by the build)
-  // kind 'head' or 'foot' draws the same survey full-bleed behind a page (docs/components/backdrop.md): sliced to cover
-  // its layer instead of fitted into the plate's square, on a finer grid so a warmed hill is round.
-  var BACKDROP = { head: { seed: 3, cells: 48 }, foot: { seed: 7, cells: 48 } };
+  // kind 'head', 'foot' or 'side' draws the same survey full-bleed behind a page (docs/components/backdrop.md): sliced
+  // to cover its layer instead of fitted into the plate's square, on a finer grid so a warmed hill is round.
+  var BACKDROP = { head: { seed: 3, cells: 48 }, foot: { seed: 7, cells: 48 }, side: { seed: 11, cells: 48 } };
   function markup(opts, kind) {
-    var bg = kind === 'head' || kind === 'foot';
+    var bg = Object.prototype.hasOwnProperty.call(BACKDROP, kind);
     if (bg) { opts = opts || {}; for (var key in BACKDROP[kind]) if (opts[key] == null) opts[key] = BACKDROP[kind][key]; }
     var s = survey(opts), S = s.options.size, q = S / 4;
     var grid = [q, 2 * q, 3 * q].map(function (v) { return 'M' + v + ' 0V' + S + 'M0 ' + v + 'H' + S; }).join('');

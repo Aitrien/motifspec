@@ -28,7 +28,7 @@ Every shared component, plus the components whose doc lists `documentation` unde
 
 ## Decoration
 
-- The head of the backdrop on the docs home, and its foot behind the footer on every page.
+- The side of the backdrop on every page, down the left edge behind the navigation, fading out before the article (`backdrop.md`). On a phone, the foot behind the footer instead. No head, so every page, the docs home included, opens on the plain surface.
 - The footer band. No other ornaments in articles.
 
 ## Headings

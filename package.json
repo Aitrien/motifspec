@@ -49,6 +49,7 @@
     "./plate.html": "./dist/plate.html",
     "./backdrop.html": "./dist/backdrop.html",
     "./backdrop-foot.html": "./dist/backdrop-foot.html",
+    "./backdrop-side.html": "./dist/backdrop-side.html",
     "./icons.svg": "./dist/icons.svg",
     "./tokens.js": "./dist/tokens.js",
     "./tokens.json": "./dist/tokens.json",

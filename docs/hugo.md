@@ -44,7 +44,7 @@ Pin a release with `hugo mod get github.com/aitrien/motifspec@vX.Y.Z`. The modul
 | Partial | What it writes |
 |---|---|
 | `motifspec/head.html` | The stored-theme snippet, font preloads, `codex.css` and `codex.js`, in that order. |
-| `motifspec/body-start.html` | Call with the page. On the home page, the head of the backdrop; then the icon sprite and the skip link to `#main`. |
+| `motifspec/body-start.html` | Call with the page. On the home page, the head of the backdrop (on a documentation site, the side, on every page); then the icon sprite and the skip link to `#main`. |
 | `motifspec/site-header.html` | `site-header.md`: wordmark from `site.Title` and `site.Params.role`, nav from `site.Menus.main` and the theme toggle. A menu entry is current when its `identifier` is the page's section; one whose URL starts with `http` gets the outward arrow. With `params.motifspec.search = true`, search comes first (`search.md`); with `params.motifspec.version` (and `changelog`, a URL), the version comes before the theme toggle. |
 | `motifspec/body-end.html` | The foot of the backdrop, behind the footer, and `plate.js`, which settles the home page's contours and lets the pointer warm them. |
 
@@ -55,7 +55,7 @@ The footer stays in the site: its columns are the site's own links and colophon.
 A site using the documentation layout (`docs/layouts/documentation.md`) puts the docs shell inside `<main>`'s place, so the page shell above changes to:
 
 ```go-html-template
-<body>
+<body class="cx-backdrop-page cx-backdrop-page--side">
   {{ partial "motifspec/body-start.html" . }}
   {{ partial "motifspec/site-header.html" . }}
   <div class="cx-container cx-docs">
@@ -67,7 +67,7 @@ A site using the documentation layout (`docs/layouts/documentation.md`) puts the
 </body>
 ```
 
-The body has no `cx-backdrop-page` class on article pages; the docs home keeps it (`docs/layouts/documentation.md`, Decoration).
+With `params.motifspec.layout = "documentation"`, `body-start.html` writes the side of the backdrop on every page, the docs home included, and `cx-backdrop-page--side` puts it down the left edge; on a phone the foot shows instead (`backdrop.md`).
 
 An article page's `main` block, in order: the page head with `page-actions.html` after the lede, `article.html`, `page-footer.html`, then `pagination-docs.html`.
 
