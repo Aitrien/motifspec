@@ -159,8 +159,9 @@ const DOC_SELECTORS = {
   'status': ['.cx-status'],
   'disclosure': ['.cx-disclosure'],
   'keyboard-key': ['.cx-kbd'],
+  'docs-shell': ['.cx-docs', '.cx-docs-nav'],
 };
-const FOCUSABLE = new Set(['disclosure', 'specimen-plate', 'heading-anchor', 'site-header', 'project-card', 'post-list-item', 'tag', 'button-and-link', 'pagination', 'table-of-contents', 'code-block', 'data-table', 'prose']);
+const FOCUSABLE = new Set(['disclosure', 'docs-shell', 'specimen-plate', 'heading-anchor', 'site-header', 'project-card', 'post-list-item', 'tag', 'button-and-link', 'pagination', 'table-of-contents', 'code-block', 'data-table', 'prose']);
 const byVar = new Map([...tokens.values()].map((t) => [cssVar(t.path), t.path]));
 const rules = [...(componentsCss + '\n' + chromaCss).replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({ sel: m[1].trim(), body: m[2] }));
 const usesOf = (prefixes) => {

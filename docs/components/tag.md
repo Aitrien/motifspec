@@ -44,7 +44,7 @@ A small mono label for a topic or technology, optionally linking to its index.
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <ul class="cx-tags">
   <li><a class="cx-tag" href="/tags/webgl/">webgl<span class="cx-tag__count">4</span></a></li>
   <li><a class="cx-tag" href="/tags/accessibility/" aria-current="page">accessibility</a></li>

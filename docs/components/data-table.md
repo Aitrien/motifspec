@@ -45,7 +45,7 @@ A framed table for comparing values: mono headers, hairline rows, right-aligned 
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <div class="cx-table" role="region" aria-labelledby="tbl-fonts" tabindex="0">
   <table>
     <caption id="tbl-fonts">Font budget <span class="cx-sep" aria-hidden="true">|</span> Latin subset</caption>
@@ -59,7 +59,7 @@ A framed table for comparing values: mono headers, hairline rows, right-aligned 
 
 A table of things to act on gives each row a state cell (`td.is-state`, with a status from `status.md`) and an actions cell (`td.is-actions`) of compact buttons. Each button's hidden text finishes its name, so a screen reader hears "Restart Jellyfin", not "Restart" six times:
 
-```html preview
+```html {preview=true}
 <div class="cx-table" role="region" aria-labelledby="tbl-services" tabindex="0">
   <table>
     <caption id="tbl-services">Services</caption>

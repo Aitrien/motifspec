@@ -1,0 +1,31 @@
+{{- /* docs-shell.md: the documentation layout's page navigation. Pages at the top level of the site come first,
+       ungrouped; then each top-level section is a group, in weight order, listing its pages in weight order.
+       A section or page with `docs_nav: false` in its front matter is left out. Every group starts open; the
+       current page is marked. Context: the current page. */ -}}
+{{- $current := . -}}
+{{- $top := where (where site.Home.RegularPages "Params.docs_nav" "ne" false) "Kind" "page" -}}
+<nav class="cx-docs-nav" aria-label="Documentation">
+  <details class="cx-docs-nav__menu">
+    <summary>Menu<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-expand"></use></svg></summary>
+    <div class="cx-docs-nav__groups">
+      {{- with $top.ByWeight }}
+      <ul class="cx-docs-nav__list">
+        {{- range . }}
+        <li><a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $current.RelPermalink }} aria-current="page"{{ end }}>{{ .LinkTitle }}</a></li>
+        {{- end }}
+      </ul>
+      {{- end }}
+      {{- range where site.Home.Sections.ByWeight "Params.docs_nav" "ne" false }}
+      {{- $id := printf "docs-nav-%s" (.Section | urlize) }}
+      <details class="cx-docs-nav__group" open>
+        <summary id="{{ $id }}">{{ .LinkTitle }}<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-expand"></use></svg></summary>
+        <ul class="cx-docs-nav__list" aria-labelledby="{{ $id }}">
+          {{- range where .Pages.ByWeight "Params.docs_nav" "ne" false }}
+          <li><a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $current.RelPermalink }} aria-current="page"{{ end }}>{{ .LinkTitle }}</a></li>
+          {{- end }}
+        </ul>
+      </details>
+      {{- end }}
+    </div>
+  </details>
+</nav>

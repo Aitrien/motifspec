@@ -6,14 +6,16 @@ For product and system documentation: guides, reference pages and a changelog. m
 
 In progress. The documentation shell and its own components arrive in a later release, so this file says what exists now and what doesn't.
 
-- **Available now:** every shared component, including disclosures and keyboard keys, plus the table of contents, heading anchors and the ornaments.
-- **Not available yet:** the documentation shell, the top bar with search and version, the docs sidebar, page actions (Copy page), the page footer (edit link, last updated), the component preview, the token table, steps and tabs.
+- **Available now:** the docs shell with its page navigation (`docs-shell.md`), every shared component including disclosures and keyboard keys, plus the table of contents, heading anchors and the ornaments.
+- **Not available yet:** search and the version and repository link in the header, page actions (Copy page), the page footer (edit link, last updated, previous and next), the component preview, steps and tabs.
 
 Don't write classes for parts that aren't available. The checker fails on any `cx-` class MotifSpec doesn't define. Build what you can from the shared components, and say which parts MotifSpec doesn't have yet.
 
 ## Shell
 
-Planned: a top bar (wordmark, search, section nav, version, theme toggle, repository link), grouped page navigation on the left, the article in the middle and "On this page" on the right. Below `size.breakpoint.md`, the page navigation sits behind a Menu disclosure and "On this page" moves above the article. Until it ships, use the site header and footer with the table of contents.
+The site header and footer, and between them the docs shell (`docs-shell.md`): grouped page navigation on the left, the page in the middle and "On this page" (the table of contents) on the right when there is room. Below `size.breakpoint.lg` "On this page" moves above the article, and below `size.breakpoint.md` the page navigation sits behind a Menu control above the page. In Hugo, see `docs/hugo.md` (A documentation page).
+
+Planned for the header: search, the version and a repository link.
 
 ## Page templates
 

@@ -56,7 +56,7 @@ A contour survey of generated terrain: simplex-noise height lines drawn as a sta
 
 The build writes the plate to `dist/plate.html` (the contours at time zero) and ships the script as `dist/plate.js`. In Hugo, inline the markup and load the script; it finds every `.cx-plate[data-plate-seed]` on its own:
 
-```html preview
+```html {preview=true}
 <figure class="cx-plate-frame">
   <label class="cx-plate__pause" hidden>
     <input class="cx-visually-hidden" type="checkbox" aria-label="Pause animation">

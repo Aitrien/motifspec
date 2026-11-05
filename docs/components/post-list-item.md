@@ -55,7 +55,7 @@ One ledger row in a list of writing: catalogue number, date and reading time bes
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <h2 class="cx-posts__year">2026</h2>
 <ol class="cx-posts" reversed>
   <li class="cx-post">

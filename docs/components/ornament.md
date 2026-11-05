@@ -37,7 +37,7 @@ Yarndings 12 knitting-chart glyphs: the footer band, the prose divider, the arti
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <span class="cx-band" aria-hidden="true"></span>
 <hr class="cx-divider">
 <p>Last sentence of the article.<span class="cx-end-mark" aria-hidden="true">g</span></p>

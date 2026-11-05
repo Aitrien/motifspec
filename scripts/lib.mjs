@@ -229,9 +229,9 @@ export function htmlToJsx(html) {
   return roots > 1 ? `<>\n${jsx}\n</>` : jsx;
 }
 
-/** A component doc with each `html preview` example replaced by its JSX form (see htmlToJsx). */
+/** A component doc with each ```html {preview=true} example replaced by its JSX form (see htmlToJsx). */
 export function docAsJsx(md) {
-  return md.replace(/```html preview\n([\s\S]*?)```/g, (block, html) => {
+  return md.replace(/```html \{preview=true\}\n([\s\S]*?)```/g, (block, html) => {
     const jsx = htmlToJsx(html);
     return jsx === null
       ? `This example is written for Hugo, so it has no JSX form. Outside Hugo, use the files the README's npm table lists.\n\n${block}`

@@ -7,7 +7,7 @@ const { tokens, errors: loadErrors } = loadTokens();
 const errors = [...loadErrors, ...validate(tokens)];
 
 // Component docs follow docs/components/_template.md and only list semantic tokens that exist.
-const SECTIONS = ['## When to use', '## When not to use', '## Markup', '```html preview', '## Do', "## Don't", '## Accessibility'];
+const SECTIONS = ['## When to use', '## When not to use', '## Markup', '```html {preview=true}', '## Do', "## Don't", '## Accessibility'];
 const docsDir = join(ROOT, 'docs', 'components');
 // The layouts a component can belong to: one file each in docs/layouts/, except à la carte, which has no components of its own.
 const LAYOUTS = readdirSync(join(ROOT, 'docs', 'layouts')).filter((f) => f.endsWith('.md') && f !== 'a-la-carte.md').map((f) => f.replace(/\.md$/, ''));

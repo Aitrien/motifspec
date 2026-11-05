@@ -46,7 +46,7 @@ A framed image or diagram with a numbered plate label and a caption.
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <figure class="cx-figure cx-figure--breakout cx-figure--diagram">
   <div class="cx-figure__frame">
     <svg class="cx-diagram" viewBox="0 0 720 120" role="img" aria-label="Tokens go through the build, which writes CSS for sites.">

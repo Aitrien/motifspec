@@ -38,7 +38,7 @@ A short label that appears beside an icon-only control on hover or keyboard focu
 
 The tooltip is a child of the control, so hover and focus on the control reveal it:
 
-```html preview
+```html {preview=true}
 <button class="cx-theme-toggle" type="button" aria-label="Switch to dark theme">
   <svg class="cx-icon" aria-hidden="true" focusable="false"><use href="#cx-icon-theme-dark"></use></svg>
   <span class="cx-tooltip" aria-hidden="true">Switch to dark theme</span>

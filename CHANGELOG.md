@@ -2,6 +2,14 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [Unreleased]
+
+### Added
+- Docs shell (`docs-shell.md`, documentation layout): grouped page navigation beside the page, with "On this page" on the right when there is room. On a phone the navigation sits behind a Menu control that ships closed and opens without script. With `dist/codex.js` it docks beside the page and scrolls on its own. The Hugo partial `docs-nav.html` writes it from the site's sections, and `docs/hugo.md` shows a documentation page.
+
+### Changed
+- Component examples are fenced as ```` ```html {preview=true} ```` instead of ```` ```html preview ````. Hugo drops a bare word after the language but passes attributes to the render hook, which the component preview needs. GitHub still shows them as HTML. The build, the checker, the JSX conversion and the MCP server read the new form.
+
 ## [1.18.1] - 2026-11-04
 
 ### Fixed

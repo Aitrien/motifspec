@@ -48,7 +48,7 @@ A numbered list of an article's sections, beside the text on wide screens and ab
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <div class="cx-article">
   <nav class="cx-toc" aria-labelledby="toc-title">
     <details open>

@@ -46,7 +46,7 @@ A three-cell bar: previous with its title, current position, and next with its t
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <nav class="cx-pagination" aria-label="Post navigation">
   <a class="cx-pagination__link" href="/writing/instancing-arcs/" rel="prev">
     <span class="cx-pagination__dir"><svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-back"></use></svg>Previous</span>

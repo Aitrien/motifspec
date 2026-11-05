@@ -50,6 +50,25 @@ Pin a release with `hugo mod get github.com/aitrien/motifspec@vX.Y.Z`. The modul
 
 The footer stays in the site: its columns are the site's own links and colophon. Use the markup in `site-footer.md`.
 
+### A documentation page
+
+A site using the documentation layout (`docs/layouts/documentation.md`) puts the docs shell inside `<main>`'s place, so the page shell above changes to:
+
+```go-html-template
+<body>
+  {{ partial "motifspec/body-start.html" . }}
+  {{ partial "motifspec/site-header.html" . }}
+  <div class="cx-container cx-docs">
+    {{ partial "motifspec/docs-nav.html" . }}
+    <main id="main" class="cx-docs__main" tabindex="-1">{{ block "main" . }}{{ end }}</main>
+  </div>
+  {{/* the site's footer (site-footer.md) */}}
+  {{ partial "motifspec/body-end.html" . }}
+</body>
+```
+
+The body has no `cx-backdrop-page` class on article pages; the docs home keeps it (`docs/layouts/documentation.md`, Decoration).
+
 ## Component partials
 
 Every partial below is called as `partial "motifspec/<name>.html" <context>`.
@@ -69,6 +88,7 @@ Every partial below is called as `partial "motifspec/<name>.html" <context>`.
 | `filed-under.html` | `tag.md`, `docs/layouts/portfolio.md` | A page. "Filed under" and its tags, after an article. |
 | `pagination-entries.html` | `pagination.md` | `dict "page" . "label" "Post navigation" "noun" "Post"`. Previous and next in the page's section, oldest first. |
 | `pagination-pages.html` | `pagination.md` | `dict "pager" $pager "label" "Writing pages"`. Pages of a paginated list; nothing when it fits on one page. |
+| `docs-nav.html` | `docs-shell.md` | A page. The documentation layout's navigation: top-level pages, then a group per top-level section in weight order. `docs_nav: false` in front matter leaves a page or section out. |
 | `back-link.html` | `button-and-link.md` | `dict "href" "…" "label" "All work"`. |
 | `section-heading.html` | `heading-anchor.md` | `dict "id" "work" "title" "Selected work"`, inside a `<section id="work" aria-labelledby="work-title">`. |
 | `tokens.html` | | Call with `partialCached "motifspec/tokens.html" "tokens"`. A map from token name to its entry in `dist/tokens.json`, for templates that need a token's value at build time. |

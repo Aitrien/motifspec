@@ -58,7 +58,7 @@ The bar at the top of every page: wordmark, primary nav and the theme toggle. On
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <a class="cx-skip-link" href="#main">Skip to content</a>
 <header class="cx-header">
   <div class="cx-container cx-header__inner">

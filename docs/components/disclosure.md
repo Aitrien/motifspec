@@ -36,7 +36,7 @@ A native `<details>` that shows and hides a block of content under a labelled ro
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <details class="cx-disclosure">
   <summary>Show as a table<svg class="cx-icon cx-icon--sm cx-disclosure__chevron" aria-hidden="true" focusable="false"><use href="#cx-icon-expand"></use></svg></summary>
   <div class="cx-disclosure__body">
