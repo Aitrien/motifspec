@@ -1,10 +1,11 @@
-// The reference pages of motifspec.com that are generated from MotifSpec's own data: the foundations (colour, type,
-// space and size, motion, icons, ornaments) and the token, contrast-pair and checker-rule tables. Called by
-// scripts/docs.mjs, which writes them to site/assets/generated/ (not committed); the site's content adapters turn each
-// into a page. Each file is Markdown with a "# " title, a lede, "## " sections and the tables as raw HTML, in the
-// data table's markup (data-table.md) with the token table's samples (token-table.md). The samples' values are set
-// in style attributes here, the one place MotifSpec writes them (token-table.md says why).
-import { readFileSync } from 'node:fs';
+// The pages of motifspec.com that show MotifSpec's own data: the foundations (colour, type, space and size, motion,
+// icons, ornaments) and the token, contrast-pair and checker-rule reference. Their wording is Markdown in
+// docs/foundations/ and docs/reference/; each element made from the data (a palette, a table) is a marker line there,
+// "*Generated from `tokens/color.json`: the palette.*", which this script replaces with the element. Called by
+// scripts/docs.mjs, which writes the pages to site/assets/generated/ (not committed) for the site's content adapters.
+// Tables use the data table's markup (data-table.md) with the token table's samples (token-table.md), whose values
+// are set in style attributes here, the one place MotifSpec writes them (token-table.md says why).
+import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT, loadTokens, isAlias, aliasTarget, resolve, resolveIn, cssVar, hexOf, ratio, contrastReport } from './lib.mjs';
 import { RULES, WARNINGS } from './check.mjs';
@@ -24,7 +25,9 @@ function table(caption, head, rows, { num = [], breakout = head.length > 4 } = {
   return `<div class="${cls}" role="region" aria-labelledby="${id}" tabindex="0"><table><caption id="${id}">${caption}</caption><thead><tr>${th}</tr></thead><tbody>${tr}</tbody></table></div>`;
 }
 
-const page = ({ title, lede, source, weight, body, toc = true }) => `---\nsource: ${source}\nweight: ${weight}\ntoc: ${toc}\n---\n\n# ${title}\n\n${lede}\n\n${body.trim()}\n`;
+// A marker line in a page's Markdown: "*Generated from `tokens/color.json`: the palette.*". It reads as a note on
+// GitHub; the site puts the element there.
+const MARKER = /^\*Generated from (.+?): (.+?)\.\*$/gm;
 
 export function referencePages() {
   const { tokens } = loadTokens();
@@ -69,34 +72,26 @@ export function referencePages() {
   const rule = (t) => (t.deprecated ? `<strong>Deprecated.</strong> ${text(t.deprecated)} ` : '') + text(t.description);
   const BREAK = { breakout: true };
   const tokenRows = (list) => list.map((t) => [code(t.path), code(valueOf(t)), rule(t)]);
-  const pages = {};
+  const sep = ' <span class="cx-sep" aria-hidden="true">|</span> ';
+  const byCat = (c) => semantic.filter((t) => t.segments[0] === c);
 
-  // ---------------------------------------------------------------- colour
+  // Colour
   const colorJson = JSON.parse(readFileSync(join(ROOT, 'tokens', 'color.json'), 'utf8'));
   const prim = all.filter((t) => t.tier === 'primitive' && t.type === 'color');
   const hues = [...new Set(prim.map((t) => t.segments[2]))];
-  const palette = hues.map((h) => {
+  const palette = () => hues.map((h) => {
     const steps = prim.filter((t) => t.segments[2] === h).map((t) => `<li>${tile(t.path, t.segments[3])}</li>`).join('');
     return `### ${h}\n\n${text(colorJson.primitive.color[h].$description)}\n\n<ol class="cx-palette" aria-label="${h}">${steps}</ol>`;
   }).join('\n\n');
-  const colourGroups = [...new Set(semantic.filter((t) => t.segments[0] === 'color').map((t) => t.segments[1]))];
-  const groupTables = colourGroups.map((g) => {
-    const list = semantic.filter((t) => t.segments[0] === 'color' && t.segments[1] === g);
-    const rows = list.map((t) => (t.type === 'color'
+  const semanticColours = () => [...new Set(byCat('color').map((t) => t.segments[1]))].map((g) => {
+    const rows = byCat('color').filter((t) => t.segments[1] === g).map((t) => (t.type === 'color'
       ? [code(t.path), colourCell(t, 'light'), colourCell(t, 'dark'), rule(t)]
       : [code(t.path), code(valueOf(t)), code(valueOf(t, 'dark')), rule(t)]));
     const name = g[0].toUpperCase() + g.slice(1);
-    return `### ${name}\n\n${table(`${name} colours`, ['Token', 'Light', 'Dark', 'Rule'], rows, { breakout: true })}`;
+    return `### ${name}\n\n${table(`${name} colours`, ['Token', 'Light', 'Dark', 'Rule'], rows, BREAK)}`;
   }).join('\n\n');
-  pages['foundations/colour'] = page({
-    title: 'Colour', weight: 3, source: 'tokens/color.json',
-    lede: 'The primitive palette, and the semantic colours built on it that components and pages use, each with its light and dark value and its rule.',
-    body: `## Palette\n\nFive hues generated in OKLCH so the steps are perceptually even, stored as sRGB. Primitives are never used directly in components or pages: they exist so semantic colours can point at them.\n\n${palette}\n\n## Semantic colours\n\nEach semantic colour names a primitive for each theme, and the page switches with \`light-dark()\`, following the system unless the reader picks a theme. A text colour lists the surfaces it may sit on; [Contrast pairs](/reference/contrast/) measures every one.\n\n${groupTables}`,
-  });
 
-  // ---------------------------------------------------------------- type
-  const fam = semantic.filter((t) => t.path.startsWith('font.family.'));
-  const sizes = semantic.filter((t) => t.path.startsWith('font.size.'));
+  // Type
   const pxAt = (t, vw) => {
     const target = isAlias(t.value) ? tokens.get(aliasTarget(t.value)) : t;
     const max = toRem(target.value); const f = target.extensions['codex.fluid'];
@@ -105,97 +100,94 @@ export function referencePages() {
     const x = Math.min(1, Math.max(0, (vw - v0) / (v1 - v0)));
     return Math.round((a + (max - a) * x) * 16 * 10) / 10;
   };
-  const otherType = semantic.filter((t) => t.segments[0] === 'font' && !['family', 'size'].includes(t.segments[1]));
-  pages['foundations/type'] = page({
-    title: 'Type', weight: 4, toc: false, source: 'tokens/typography.json',
-    lede: 'The typefaces, the type scale and the weights, leading and tracking that set every piece of text.',
-    body: `## Typefaces\n\n${table('Typefaces', ['Token', 'Sample', 'Rule'], fam.map((t) => [code(t.path), t.path.endsWith('ornament') ? `<span class="cx-token-sample" style="--_family: var(${cssVar(t.path)})" aria-hidden="true">kWfgcAW</span>` : `<span class="cx-token-sample" style="--_family: var(${cssVar(t.path)})">${esc(valueOf(t))}</span>`, rule(t)]))}\n\n## Type scale\n\nSizes are fluid between the smallest and widest screens, and the smallest stay fixed so labels never shrink. Each sample is set at its size.\n\n${table('Type scale', ['Token', 'At 360px', 'At 1440px', 'Sample and rule'], sizes.map((t) => [code(t.path), `${pxAt(t, 360)}px`, `${pxAt(t, 1440)}px`, `<span class="cx-token-sample" style="--_size: var(${cssVar(t.path)})">${t.segments[2]}</span>${rule(t)}`]), { num: [1, 2], breakout: true })}\n\n## Weight, leading and tracking\n\n${table('Weight, leading and tracking', ['Token', 'Value', 'Rule'], tokenRows(otherType)), BREAK}`,
-  });
+  const familySample = (t) => (t.path.endsWith('ornament')
+    ? `<span class="cx-token-sample" style="--_family: var(${cssVar(t.path)})" aria-hidden="true">kWfgcAW</span>`
+    : `<span class="cx-token-sample" style="--_family: var(${cssVar(t.path)})">${esc(valueOf(t))}</span>`);
+  const sizes = semantic.filter((t) => t.path.startsWith('font.size.'));
 
-  // ---------------------------------------------------------------- space and size
+  // Space
   const spacePrim = all.filter((t) => t.tier === 'primitive' && t.segments[1] === 'space');
   const maxSpace = Math.max(...spacePrim.map((t) => toRem(t.value)));
-  const bars = table('Spacing steps', ['Step', 'Value', 'Length'], spacePrim.map((t) => [code(t.segments[2]), `${px(t.value)}px`, `<span class="cx-token-bar" style="--_width: ${Math.round((toRem(t.value) / maxSpace) * 1000) / 10}%"></span>`]), { num: [1] });
-  const byCat = (c) => semantic.filter((t) => t.segments[0] === c);
-  pages['foundations/space-and-size'] = page({
-    title: 'Space and size', weight: 5, toc: false, source: 'tokens/space.json',
-    lede: 'A 4px spacing grid with roles for padding and gaps, and the sizes, radii and borders components are drawn with.',
-    body: `## Spacing\n\nComponents use the semantic roles: inset is padding, stack is a vertical gap, inline a horizontal gap, and section and gutter space out a page. The steps they point at, to scale:\n\n${bars}\n\n${table('Space', ['Token', 'Value', 'Rule'], tokenRows(byCat('space')), BREAK)}\n\n## Size\n\n${table('Size', ['Token', 'Value', 'Rule'], tokenRows(byCat('size')), BREAK)}\n\n## Radius and border\n\n${table('Radius', ['Token', 'Value', 'Rule'], tokenRows(byCat('radius')), BREAK)}\n\n${table('Border', ['Token', 'Value', 'Rule'], tokenRows(byCat('border')), BREAK)}`,
-  });
 
-  // ---------------------------------------------------------------- motion
-  pages['foundations/motion'] = page({
-    title: 'Motion', weight: 6, toc: false, source: 'tokens/motion.json',
-    lede: 'The durations and curves for the few things that move. Under reduced motion every duration is zero.',
-    body: `## Durations and curves\n\nOnly state changes animate, and the contour survey ([Principles](/foundations/principles/)).\n\n${table('Motion', ['Token', 'Value', 'Rule'], tokenRows(byCat('motion')), BREAK)}`,
-  });
-
-  // ---------------------------------------------------------------- icons
+  // Icons and ornaments
   const manifest = JSON.parse(readFileSync(join(ROOT, 'icons', 'manifest.json'), 'utf8'));
   const icons = Object.entries(manifest.icons);
-  pages['foundations/icons'] = page({
-    title: 'Icons', weight: 7, source: 'icons/manifest.json',
-    lede: `The ${icons.length} approved icons, each for its listed use. ${text(manifest.$description)}`,
-    body: `## Approved icons\n\nUse them as \`icon.md\` says: beside text that says the same thing, from the sprite.\n\n${table(`${icons.length} icons | Material Symbols Sharp 300 | Apache-2.0`.replace(/ \| /g, ' <span class="cx-sep" aria-hidden="true">|</span> '), ['Key', 'Icon', 'Symbol', 'Use'], icons.map(([k, v]) => [code(k), `<svg class="cx-icon cx-icon--lg" aria-hidden="true" focusable="false"><use href="#cx-icon-${k}"></use></svg>`, code(v.symbol), text(v.use)]))}`,
-  });
-
-  // ---------------------------------------------------------------- ornaments
   const glyphs = tokens.get('font.family.ornament').extensions['codex.glyphs'];
   const glyph = (c) => `<span class="cx-ornament" aria-hidden="true">${esc(c)}</span>`;
   const keyOf = (c) => (c.charCodeAt(0) > 126 ? `U+${c.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}` : c);
-  const groups = Object.entries(glyphs.groups).map(([g, desc]) => {
-    const items = Object.entries(glyphs.glyphs).filter(([, v]) => v.group === g);
-    const name = g[0].toUpperCase() + g.slice(1);
-    return `### ${name}\n\n${text(desc)}\n\n${table(`${name} glyphs`, ['Name', 'Glyph', 'Key'], items.map(([k, v]) => [code(k), glyph(v.char), code(keyOf(v.char))]))}`;
-  }).join('\n\n');
-  pages['foundations/ornaments'] = page({
-    title: 'Ornaments', weight: 8, source: 'tokens/typography.json',
-    lede: `The ${Object.keys(glyphs.glyphs).length} approved Yarndings 12 glyphs, by group, and the ones that are never used. Ornaments are decoration only, always hidden from assistive tech (\`ornament.md\`).`,
-    body: `## Roles\n\nThe system's own ornaments always use these glyphs.\n\n${table('Ornament roles', ['Role', 'Glyphs'], Object.entries(glyphs.roles).map(([r, d]) => [code(r), text(d)]))}\n\n## Approved glyphs\n\n${groups}\n\n## Never used\n\n${text(glyphs.forbidden.reason)}\n\n${table('Forbidden glyphs', ['Key', 'Glyph'], [...glyphs.forbidden.chars].map((c) => [code(keyOf(c)), glyph(c)]))}`,
-  });
 
-  // ---------------------------------------------------------------- reference: every token
-  const cats = [...new Set(semantic.map((t) => t.segments[0]))].sort();
-  const deprecated = semantic.filter((t) => t.deprecated);
-  const tokenTables = cats.map((c) => {
-    const list = semantic.filter((t) => t.segments[0] === c);
-    const name = c[0].toUpperCase() + c.slice(1);
-    const rows = list.map((t) => [code(t.path), t.type === 'color' ? `${colourCell(t, 'light')} ${colourCell(t, 'dark')}` : code(valueOf(t)), rule(t)]);
-    return `## ${name}\n\n${table(`${name} tokens | ${list.length}`.replace(' | ', ' <span class="cx-sep" aria-hidden="true">|</span> '), ['Token', 'Value', 'Rule'], rows, BREAK)}`;
-  }).join('\n\n');
-  const deprecatedNote = deprecated.length
-    ? `> [!WARNING]\n> ${deprecated.length} tokens are deprecated and kept until they are removed: ${deprecated.map((t) => `\`${t.path}\``).join(', ')}. Each row says why and when. The checker fails a project that uses one.\n\n`
-    : '';
-  pages['reference/tokens'] = page({
-    title: 'Tokens', weight: 1, toc: false, source: 'tokens/README.md',
-    lede: `Every semantic token: ${semantic.length} in all, with its value and rule. Pages and components use these; the ${all.length - semantic.length} primitives behind them are not for use outside MotifSpec.`,
-    body: `${deprecatedNote}A token's CSS name is \`--cx-\` and its name with dashes: \`color.text.primary\` is \`${cssVar('color.text.primary')}\`. A colour shows its light value, then its dark one.\n\n${tokenTables}`,
-  });
-
-  // ---------------------------------------------------------------- reference: contrast pairs
+  // Contrast
   const pairs = contrastReport(tokens);
   const sample = (p, mode) => {
-    const fg = tokens.get(p.fg); const bg = tokens.get(p.bg);
     const v = (t) => cssVar(aliasTarget(mode === 'dark' ? t.extensions['codex.modes']?.dark ?? t.value : t.value));
-    return `<span class="cx-pair-sample" style="--_fg: var(${v(fg)}); --_bg: var(${v(bg)})" aria-hidden="true">Aa</span>`;
+    return `<span class="cx-pair-sample" style="--_fg: var(${v(tokens.get(p.fg))}); --_bg: var(${v(tokens.get(p.bg))})" aria-hidden="true">Aa</span>`;
   };
-  const fgs = [...new Set(pairs.map((p) => p.fg))];
-  const pairTables = fgs.map((fg) => {
-    const rows = pairs.filter((p) => p.fg === fg).map((p) => [code(p.bg), `${p.min}:1`, `${sample(p, 'light')}${p.light.ratio.toFixed(2)}`, `${sample(p, 'dark')}${p.dark.ratio.toFixed(2)}`, `<span class="cx-status cx-status--${p.pass ? 'success' : 'danger'}">${p.pass ? 'Pass' : 'Fail'}</span>`]);
-    return table(code(fg), ['On', 'Target', 'Light', 'Dark', 'Result'], rows, { num: [1, 2, 3] });
-  }).join('\n\n');
-  const worst = Math.min(...pairs.filter((p) => p.min === 7).flatMap((p) => [p.light.ratio, p.dark.ratio])).toFixed(2);
-  pages['reference/contrast'] = page({
-    title: 'Contrast pairs', weight: 2, toc: false, source: 'tokens/color.json',
-    lede: `Every foreground and the surfaces it may sit on (\`codex.pairsWith\`), measured in both themes on every build: ${pairs.filter((p) => p.pass).length} of ${pairs.length} pairs pass.`,
-    body: `## Targets\n\nReading text targets 7:1, metadata and status labels 4.5:1, and controls, focus and graphics 3:1. The lowest reading-text ratio is ${worst}:1. Each sample is drawn in the pair's own colours for that theme.\n\n## Pairs\n\n${pairTables}`,
-  });
 
-  // ---------------------------------------------------------------- reference: checker rules
-  pages['reference/checker-rules'] = page({
-    title: 'Checker rules', weight: 3, source: 'scripts/check.mjs',
-    lede: `What the checker reports, and what to do instead. ${Object.keys(RULES).length - WARNINGS.size} rules fail the run; ${WARNINGS.size} warn without failing for now.`,
-    body: `## Rules\n\n${table('Checker rules', ['Rule', 'Result', 'What to do'], Object.entries(RULES).map(([k, v]) => [code(k), WARNINGS.has(k) ? '<span class="cx-status cx-status--warning">Warns</span>' : '<span class="cx-status cx-status--danger">Fails</span>', text(v)]))}\n\n[Checking a project](/guide/checking/) says how to run it.`,
-  });
+  // Each element a page can ask for, by the name its marker line gives, with the files it is generated from. A
+  // marker that names other files fails the build, so the line on GitHub always says where the element comes from.
+  const ELEMENTS = {
+    'the palette': { from: ['tokens/color.json'], render: palette },
+    'semantic colours': { from: ['tokens/color.json'], render: semanticColours },
+    typefaces: { from: ['tokens/typography.json'], render: () => table('Typefaces', ['Token', 'Sample', 'Rule'], semantic.filter((t) => t.path.startsWith('font.family.')).map((t) => [code(t.path), familySample(t), rule(t)])) },
+    'the type scale': { from: ['tokens/typography.json'], render: () => table('Type scale', ['Token', 'At 360px', 'At 1440px', 'Sample and rule'], sizes.map((t) => [code(t.path), `${pxAt(t, 360)}px`, `${pxAt(t, 1440)}px`, `<span class="cx-token-sample" style="--_size: var(${cssVar(t.path)})">${t.segments[2]}</span>${rule(t)}`]), { num: [1, 2], breakout: true }) },
+    'weight, leading and tracking': { from: ['tokens/typography.json'], render: () => table('Weight, leading and tracking', ['Token', 'Value', 'Rule'], tokenRows(byCat('font').filter((t) => !['family', 'size'].includes(t.segments[1]))), BREAK) },
+    'spacing steps': { from: ['tokens/space.json'], render: () => table('Spacing steps', ['Step', 'Value', 'Length'], spacePrim.map((t) => [code(t.segments[2]), `${px(t.value)}px`, `<span class="cx-token-bar" style="--_width: ${Math.round((toRem(t.value) / maxSpace) * 1000) / 10}%"></span>`]), { num: [1] }) },
+    'space tokens': { from: ['tokens/space.json'], render: () => table('Space', ['Token', 'Value', 'Rule'], tokenRows(byCat('space')), BREAK) },
+    'size tokens': { from: ['tokens/size.json'], render: () => table('Size', ['Token', 'Value', 'Rule'], tokenRows(byCat('size')), BREAK) },
+    'radius tokens': { from: ['tokens/radius.json'], render: () => table('Radius', ['Token', 'Value', 'Rule'], tokenRows(byCat('radius')), BREAK) },
+    'border tokens': { from: ['tokens/border.json'], render: () => table('Border', ['Token', 'Value', 'Rule'], tokenRows(byCat('border')), BREAK) },
+    'motion tokens': { from: ['tokens/motion.json'], render: () => table('Motion', ['Token', 'Value', 'Rule'], tokenRows(byCat('motion')), BREAK) },
+    'the icons': { from: ['icons/manifest.json'], render: () => table(`${icons.length} icons${sep}Material Symbols Sharp 300${sep}Apache-2.0`, ['Key', 'Icon', 'Symbol', 'Use'], icons.map(([k, v]) => [code(k), `<svg class="cx-icon cx-icon--lg" aria-hidden="true" focusable="false"><use href="#cx-icon-${k}"></use></svg>`, code(v.symbol), text(v.use)])) },
+    'ornament roles': { from: ['tokens/typography.json'], render: () => table('Ornament roles', ['Role', 'Glyphs'], Object.entries(glyphs.roles).map(([r, d]) => [code(r), text(d)])) },
+    'approved glyphs': { from: ['tokens/typography.json'], render: () => Object.entries(glyphs.groups).map(([g, desc]) => {
+      const items = Object.entries(glyphs.glyphs).filter(([, v]) => v.group === g);
+      const name = g[0].toUpperCase() + g.slice(1);
+      return `### ${name}\n\n${text(desc)}\n\n${table(`${name} glyphs${sep}${items.length}`, ['Name', 'Glyph', 'Key'], items.map(([k, v]) => [code(k), glyph(v.char), code(keyOf(v.char))]))}`;
+    }).join('\n\n') },
+    'forbidden glyphs': { from: ['tokens/typography.json'], render: () => `${text(glyphs.forbidden.reason)}\n\n${table('Forbidden glyphs', ['Key', 'Glyph'], [...glyphs.forbidden.chars].map((c) => [code(keyOf(c)), glyph(c)]))}` },
+    'deprecated tokens': { from: ['tokens/'], render: () => {
+      const list = semantic.filter((t) => t.deprecated);
+      return list.length ? `> [!WARNING]\n> ${list.length} tokens are deprecated and kept until they are removed: ${list.map((t) => `\`${t.path}\``).join(', ')}. Each row says why and when. The checker fails a project that uses one.` : '';
+    } },
+    'every semantic token': { from: ['tokens/'], render: () => [...new Set(semantic.map((t) => t.segments[0]))].sort().map((c) => {
+      const list = byCat(c);
+      const name = c[0].toUpperCase() + c.slice(1);
+      const rows = list.map((t) => [code(t.path), t.type === 'color' ? `${colourCell(t, 'light')} ${colourCell(t, 'dark')}` : code(valueOf(t)), rule(t)]);
+      return `## ${name}\n\n${table(`${name} tokens${sep}${list.length}`, ['Token', 'Value', 'Rule'], rows, BREAK)}`;
+    }).join('\n\n') },
+    'the contrast summary': { from: ['tokens/color.json'], render: () => {
+      const worst = Math.min(...pairs.filter((p) => p.min === 7).flatMap((p) => [p.light.ratio, p.dark.ratio])).toFixed(2);
+      return `${pairs.filter((p) => p.pass).length} of ${pairs.length} pairs pass in both themes. The lowest reading-text ratio is ${worst}:1.`;
+    } },
+    'contrast pairs': { from: ['tokens/color.json'], render: () => [...new Set(pairs.map((p) => p.fg))].map((fg) => {
+      const rows = pairs.filter((p) => p.fg === fg).map((p) => [code(p.bg), `${p.min}:1`, `${sample(p, 'light')}${p.light.ratio.toFixed(2)}`, `${sample(p, 'dark')}${p.dark.ratio.toFixed(2)}`, `<span class="cx-status cx-status--${p.pass ? 'success' : 'danger'}">${p.pass ? 'Pass' : 'Fail'}</span>`]);
+      return table(code(fg), ['On', 'Target', 'Light', 'Dark', 'Result'], rows, { num: [1, 2, 3] });
+    }).join('\n\n') },
+    'checker rules': { from: ['scripts/check.mjs'], render: () => table(`Checker rules${sep}${Object.keys(RULES).length - WARNINGS.size} fail${sep}${WARNINGS.size} warn`, ['Rule', 'Result', 'What to do'], Object.entries(RULES).map(([k, v]) => [code(k), WARNINGS.has(k) ? '<span class="cx-status cx-status--warning">Warns</span>' : '<span class="cx-status cx-status--danger">Fails</span>', text(v)])) },
+  };
+
+  // The pages: each Markdown file in docs/foundations/ and docs/reference/, with every marker line replaced by its
+  // element. The front matter gains `source` (the file, for View source) and `data` (what its elements come from).
+  const pages = {};
+  const used = new Set();
+  for (const dir of ['foundations', 'reference']) {
+    for (const f of readdirSync(join(ROOT, 'docs', dir)).filter((n) => n.endsWith('.md')).sort()) {
+      const file = `docs/${dir}/${f}`;
+      const data = new Set();
+      const md = readFileSync(join(ROOT, file), 'utf8').replace(MARKER, (line, from, name) => {
+        const el = ELEMENTS[name];
+        if (!el) throw new Error(`${file}: no element called "${name}". Elements: ${Object.keys(ELEMENTS).join(', ')}.`);
+        const named = [...from.matchAll(/`([^`]+)`/g)].map((m) => m[1]).sort();
+        if (named.join() !== [...el.from].sort().join()) throw new Error(`${file}: "${name}" is generated from ${el.from.map((x) => `\`${x}\``).join(' and ')}; the line says ${from}.`);
+        el.from.forEach((x) => data.add(x));
+        used.add(name);
+        return el.render();
+      });
+      if (!/^---\n/.test(md)) throw new Error(`${file}: needs front matter (weight, and toc: false for a page of wide tables).`);
+      pages[`${dir}/${f.replace(/\.md$/, '')}`] = md.replace(/^---\n/, `---\nsource: ${file}\ndata: [${[...data].map((x) => JSON.stringify(x)).join(', ')}]\n`);
+    }
+  }
+  const unused = Object.keys(ELEMENTS).filter((n) => !used.has(n));
+  if (unused.length) throw new Error(`No page in docs/foundations/ or docs/reference/ shows: ${unused.join(', ')}.`);
   return pages;
 }

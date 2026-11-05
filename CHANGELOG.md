@@ -5,10 +5,10 @@ Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entri
 ## [1.20.0] - 2026-11-05
 
 ### Added
-- Token table (`token-table.md`, documentation layout): colour tiles with their name and value written on them, a primitive palette, type samples, spacing bars and contrast samples in data tables, for reference pages generated from the tokens. motifspec.com's Colour, Type, Space and size, Motion, Icons, Ornaments, Tokens, Contrast pairs and Checker rules pages use it.
+- Token table (`token-table.md`, documentation layout): colour tiles with their name and value written on them, a primitive palette, type samples, spacing bars and contrast samples in data tables, for reference pages generated from the tokens. motifspec.com's Colour, Type, Space and size, Motion, Icons, Ornaments, Tokens, Contrast pairs and Checker rules pages use it. Their wording is Markdown in `docs/foundations/` and `docs/reference/`, with a line such as "*Generated from `tokens/color.json`: the palette.*" where each table goes; the build fails if a line names the wrong files.
 - A deprecated component's doc has a `deprecated:` line saying what replaces it and when it goes; the validator requires it. `docs-nav.html` says "(deprecated)" after the title of a page that sets `deprecated`.
 - `article.html` takes `"toc" "never"`, for a page such as a changelog whose headings repeat.
-- `page-footer.html` reads a page's `source` param, the repository path of the file a content adapter made the page from, so Edit this page works for pages with no file of their own.
+- Page footer: **View source**, with `params.motifspec.sourceURL` (`editURL` still gives Edit this page). It reads a page's `source` param, the repository path of the file a content adapter made it from, and `sourceAnchor`, the heading it starts at, so a page made from one section of a file opens there. A page's `data` param lists the files its generated tables come from, shown as "Generated from" after the date.
 
 ### Changed
 - A documentation site's home page is a landing page (`docs/layouts/documentation.md`, Landing, which replaces Docs home): full width outside the docs shell, with the head and foot of the backdrop as on a portfolio's home page. `body-start.html` writes the head there and the side on every other page.

@@ -1,6 +1,9 @@
 {{- /* The page dict a content adapter adds. Context: dict "path" "title" "lede" "body" "source" (the repository path
-       of the file it comes from, for Edit this page and Last updated) "weight", and optional "params". */ -}}
+       of the file it comes from, for View source and Last updated) "weight", and optional "section" (the "## " heading
+       the page is made from, so View source opens there) and "params" (with "data", the files a generated page's
+       tables come from, for the page footer and Last updated). */ -}}
 {{- $params := merge (dict "source" .source) (.params | default dict) -}}
+{{- with .section }}{{ $params = merge $params (dict "sourceAnchor" (anchorize .)) }}{{ end -}}
 {{- $page := dict
     "path" .path
     "title" .title
@@ -11,5 +14,13 @@
 {{- /* The lede as plain text, for the page head and the meta description: links keep their text, code and bold
        lose their marks. (markdownify isn't available while content adapters run.) */ -}}
 {{- with .lede }}{{ $page = merge $page (dict "description" (replaceRE `\[([^\]]*)\]\([^)]*\)` "$1" . | replaceRE "`|\\*\\*" "" | strings.TrimSpace)) }}{{ end -}}
-{{- with index (site.Data.generated.lastmod | default dict) .source }}{{ $page = merge $page (dict "dates" (dict "lastmod" (time.AsTime .))) }}{{ end -}}
+{{- /* Last updated: the latest change to the page's file or to any file its tables come from (a folder, such as
+       "tokens/", counts every file in it). */ -}}
+{{- $latest := "" -}}
+{{- range $file, $date := site.Data.generated.lastmod | default dict -}}
+  {{- range $want := (slice $.source) | append ($params.data | default slice) -}}
+    {{- if or (eq $file $want) (and (hasSuffix $want "/") (hasPrefix $file $want)) }}{{ if gt $date $latest }}{{ $latest = $date }}{{ end }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+{{- with $latest }}{{ $page = merge $page (dict "dates" (dict "lastmod" (time.AsTime .))) }}{{ end -}}
 {{- return $page -}}
