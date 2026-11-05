@@ -2,7 +2,7 @@ name: Release
 
 # Runs after CI passes on a push to main. If package.json has a version that isn't tagged yet, it tags the exact
 # commit CI checked and publishes a GitHub release with that version's CHANGELOG entry. Otherwise it does nothing.
-# Then it publishes that commit to npm, deploys it as the MCP server and publishes its showcase at motifspec.com. So
+# Then it publishes that commit to npm, deploys it as the MCP server and publishes its docs site at motifspec.com. So
 # releasing is: bump the version and add the CHANGELOG entry in a PR, then merge it.
 on:
   workflow_run:
@@ -159,9 +159,8 @@ jobs:
           exit 1
 
   pages:
-    # Publishes the release's showcase (dist/showcase.standalone.html, one self-contained file) as https://motifspec.com
-    # with GitHub Pages. The custom domain is set in the repo's Pages settings and DNS is in Route 53. Run by hand, it
-    # publishes main's showcase.
+    # Builds the release's docs site (site/, npm run docs) and publishes it as https://motifspec.com with GitHub Pages.
+    # The custom domain is set in the repo's Pages settings and DNS is in Route 53. Run by hand, it publishes main's.
     needs: release
     if: always() && (needs.release.outputs.released == 'true' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
@@ -172,21 +171,32 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
+    env:
+      HUGO_VERSION: 0.151.0
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
-      - name: Assemble the site
+          fetch-depth: 0   # every file's history, for "Last updated"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Hugo extended
+        run: |
+          wget -qO "${{ runner.temp }}/hugo.deb" \
+            "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
+          sudo dpkg -i "${{ runner.temp }}/hugo.deb"
+      - name: Build the site
         id: site
         run: |
+          npm ci
+          npm run docs
           version=$(node -p "require('./package.json').version")
           echo "version=$version" >> "$GITHUB_OUTPUT"
-          mkdir -p build/site
-          cp dist/showcase.standalone.html build/site/index.html
-          grep -q "v$version" build/site/index.html || { echo "::error::The showcase doesn't name v$version; was dist/ rebuilt?"; exit 1; }
+          grep -q "v$version" site/public/index.html || { echo "::error::The site doesn't name v$version."; exit 1; }
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: build/site
+          path: site/public
       - id: deploy
         uses: actions/deploy-pages@v4
       - name: Check the live site shows this version
@@ -198,4 +208,4 @@ jobs:
             if curl -fsSL "$URL" | grep -q "$WANT"; then echo "$URL shows MotifSpec $WANT."; exit 0; fi
             sleep 10
           done
-          echo "::warning title=Showcase::$URL didn't show $WANT within a minute. Pages can take a little longer, and HTTPS for a new custom domain can take up to an hour; check it by hand."
+          echo "::warning title=Docs site::$URL didn't show $WANT within a minute. Pages can take a little longer; check it by hand."

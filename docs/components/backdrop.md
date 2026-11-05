@@ -34,7 +34,7 @@ Contour surveys drawn full-bleed behind the top of the home page and the bottom 
 
 ## When not to use
 
-- On the same page as the specimen plate: one kind of contour field per page. The showcase, which documents both, is the only exception.
+- On the same page as the specimen plate: one kind of contour field per page.
 - Inside a component or as a section background. The frost belongs to the page's top and bottom.
 - Behind layouts that need the plain surface from the very top, such as a full-screen app or a print stylesheet.
 

@@ -1,0 +1,11 @@
+# {{ site.Title }}
+
+> {{ .Params.statement }} {{ .Description }}
+
+Each page has a Markdown copy at its address with index.md. The MCP server at https://mcp.motifspec.com/mcp serves the rules, components, tokens and checker to an assistant directly.
+{{ range site.Home.Sections.ByWeight }}
+## {{ .Title }}
+{{ range .Pages.ByWeight }}
+- [{{ .Title }}]({{ (.OutputFormats.Get "markdown").Permalink }}){{ with .Description }}: {{ . }}{{ end }}
+{{- end }}
+{{ end -}}

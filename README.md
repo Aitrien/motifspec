@@ -69,7 +69,7 @@ Import `github.com/aitrien/motifspec` as a Hugo module and pin a release with `h
 npm install --save-exact @aitrien/motifspec
 ```
 
-Pin an exact version, as a Hugo site pins a tag: the version you install is the version the checker holds you to. The package has the CSS, scripts, tokens, fonts, icons, component docs, Hugo templates and the checker; it leaves out the showcase.
+Pin an exact version, as a Hugo site pins a tag: the version you install is the version the checker holds you to. The package has the CSS, scripts, tokens, fonts, icons, component docs, Hugo templates and the checker; it leaves out the docs site.
 
 <!-- caption: npm imports -->
 | Import | What it is |
@@ -164,15 +164,14 @@ layouts/            Hugo partials (_partials/motifspec/) and Markdown render hoo
 docs/syntax-highlighting.md
 fonts/              Self-hosted WOFF2 (Latin subsets) and their OFL licences
 scripts/            validate, build, audit, check (the rule checker projects run), pack-check, release, and docs with docs-reference (motifspec.com and its generated pages)
-js/codex.js         Theme toggle, copy buttons, tooltip dismissal, TOC docking and active section (shared by sites and the showcase)
+js/codex.js         Theme toggle, copy buttons, tooltip dismissal, TOC docking and active section, search, tabs and the component preview
 js/theme-init.js    One-line <head> snippet that applies a stored theme before first paint
 js/plate.js         Contour survey generator for the backdrop and the specimen plate: draws the static contours at build time and animates them in the browser
-showcase/           Source of the system's showcase page
 site/               motifspec.com: a Hugo site whose pages are made from this README's sections, docs/, CONVENTIONS.md and CHANGELOG.md
 mcp/                The MCP server (server.mjs), its Lambda handler, bundle step and tests
 infra/mcp.yml       The server's AWS stack and deploy role (CloudFormation, applied by hand)
 hugo.toml, go.mod   Hugo module definition and its mounts
-dist/               Generated: tokens.css, components in codex.css, chroma.css, fonts.css, icons.svg (sprite), tokens.json, tokens.js (ES module export), codex.js and theme-init.js (behaviour), backdrop.html, backdrop-foot.html and backdrop-side.html, plate.html and plate.js (backdrop and specimen plate), contrast.md, showcase.html (fragment for publishing), showcase.standalone.html (open locally)
+dist/               Generated: tokens.css, components in codex.css, chroma.css, fonts.css, icons.svg (sprite), tokens.json, tokens.js (ES module export), codex.js and theme-init.js (behaviour), backdrop.html, backdrop-foot.html and backdrop-side.html, plate.html and plate.js (backdrop and specimen plate), contrast.md
 ```
 
 ## Commands
@@ -180,7 +179,7 @@ dist/               Generated: tokens.css, components in codex.css, chroma.css, 
 ```sh
 npm run validate  # naming rules, tiers, aliases, DTCG value shapes, every contrast pair in both themes
 npm run build     # validate, then write dist/ and refresh generated doc tables
-npm run audit     # prove dist/showcase.html and the shipped scripts have no raw colour, size or duration outside :root
+npm run audit     # prove codex.css and the shipped scripts have no raw colour, size or duration outside :root
 npm run release:check  # what merging this would release, and whether that release is valid
 npm run pack:check     # the npm package has every file the README and package.json promise
 npm run check -- <dir>  # check a project that uses MotifSpec (Checking a project, above)
@@ -188,6 +187,7 @@ npm run test:mcp       # call every MCP tool through the Lambda handler
 npm run mcp:bundle     # build/mcp.zip, the server's Lambda package
 npm run docs           # build motifspec.com into site/public and index it for search (needs Hugo extended)
 npm run docs:check     # run the checker on the site
+npm run docs:quality   # Lighthouse accessibility on four pages of the built site (needs Chrome)
 ```
 
 Releases are automatic; `CONVENTIONS.md` (Versioning) says how.

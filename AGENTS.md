@@ -16,7 +16,7 @@ MotifSpec is a design system that other projects install at a pinned version, so
 
 ## Before you finish
 
-Run `npm run build`, `npm run audit`, `npm run release:check`, `npm run pack:check` and `npm run test:mcp`, and `npm run docs` and `npm run docs:check` (they need Hugo extended), since the site renders the docs and the README. CI runs the same checks.
+Run `npm run build`, `npm run audit`, `npm run release:check`, `npm run pack:check` and `npm run test:mcp`, and `npm run docs`, `npm run docs:check` and `npm run docs:quality` (they need Hugo extended and Chrome), since the site renders the docs and the README. CI runs the same checks.
 
 ## Releasing
 
