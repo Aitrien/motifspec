@@ -86,7 +86,7 @@ enableGitInfo = true  # Lastmod from Git, for "Last updated"
 
 [params.motifspec]
   layout = "documentation"
-  editURL = "https://github.com/owner/repo/edit/main/"
+  sourceURL = "https://github.com/owner/repo/blob/main/"
 ```
 
 The templates are `layouts/page.markdown.md`, `section.markdown.md` and `home.markdown.md`; a site's own file at the same path wins.
@@ -132,7 +132,7 @@ Every partial below is called as `partial "motifspec/<name>.html" <context>`.
 | `pagination-pages.html` | `pagination.md` | `dict "pager" $pager "label" "Writing pages"`. Pages of a paginated list; nothing when it fits on one page. |
 | `docs-nav.html` | `docs-shell.md` | A page. The documentation layout's navigation: top-level pages, then a group per top-level section in weight order. `docs_nav: false` in front matter leaves a page or section out. |
 | `page-actions.html` | `page-actions.md` | A page. Copy page and View as Markdown, when the page has the markdown output format; nothing otherwise. |
-| `page-footer.html` | `page-footer.md` | A page. Last updated (its `Lastmod`) and Edit this page, from `params.motifspec.editURL` and, for a site in a folder of its repository, `params.motifspec.siteDir`; a page with no file of its own uses its `source` param, the repository path of the file it was made from. |
+| `page-footer.html` | `page-footer.md` | A page. Last updated (its `Lastmod`), Generated from (its `data` param) and View source, from `params.motifspec.sourceURL` (or Edit this page, from `editURL`) and, for a site in a folder of its repository, `params.motifspec.siteDir`. A page with no file of its own sets `source` and, for one section of a file, `sourceAnchor`. |
 | `pagination-docs.html` | `pagination.md`, `page-footer.md` | A page. Previous and next in the order `docs-nav.html` lists the pages. |
 | `search.html` | `search.md` | A page. The search trigger and dialog; `site-header.html` calls it when `params.motifspec.search` is true. |
 | `back-link.html` | `button-and-link.md` | `dict "href" "…" "label" "All work"`. |
