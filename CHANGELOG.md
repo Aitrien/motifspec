@@ -9,6 +9,7 @@ Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entri
 - motifspec.com's pages about the tokens, icons and checker rules keep their wording in Markdown in `docs/foundations/` and `docs/reference/`, with a visible line such as "*Generated from `tokens/color.json`: the palette.*" where each table goes. View source opens that file, and the footer names the data. The build fails if a line names the wrong files or an element no page shows.
 
 ### Fixed
+- motifspec.com's Type page showed "[object Object]" after the weight, leading and tracking table, from a misplaced bracket in the generator, and that table didn't widen like the others.
 - On motifspec.com, Edit this page opened the whole README for pages made from one of its sections, and a data file for pages whose wording was in the generator. View source now opens the section, or the file with all of the page's wording.
 
 ## [1.20.0] - 2026-11-05
