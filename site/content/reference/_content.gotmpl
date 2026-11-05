@@ -7,15 +7,15 @@
   {{- $w = add $w 1 -}}
   {{- $.AddPage (partial "src/page.html" (dict "path" .path "title" (.title | default $d.title) "lede" $d.lede "body" $d.body "source" .file "weight" $w)) -}}
 {{- end -}}
-{{- $.AddPage (partial "src/page.html" (dict "path" "mcp-server" "title" "MCP server" "lede" "The tools the MCP server at https://mcp.motifspec.com/mcp offers an AI assistant. Getting started says how to connect it." "body" (partial "src/section.html" (dict "text" $readme "heading" "The MCP server")) "source" "README.md" "weight" 4)) -}}
+{{- $.AddPage (partial "src/page.html" (dict "path" "mcp-server" "title" "MCP server" "lede" "The tools the MCP server at https://mcp.motifspec.com/mcp offers an AI assistant. Getting started says how to connect it." "body" (partial "src/section.html" (dict "text" $readme "heading" "The MCP server")) "source" "README.md" "section" "The MCP server" "weight" 4)) -}}
 {{- /* CONVENTIONS.md, without its Versioning section (the Releasing and versions guide page). */ -}}
 {{- $c := partial "src/doc.html" $conv -}}
 {{- $body := replaceRE `(?s)\n## Versioning \(semver\)\n.*?(\n## |\z)` "$1" $c.body -}}
 {{- $.AddPage (partial "src/page.html" (dict "path" "conventions" "title" "Conventions" "lede" $c.lede "body" $body "source" "CONVENTIONS.md" "weight" 7)) -}}
 {{- $log := partial "src/doc.html" (resources.Get "src/CHANGELOG.md").Content -}}
 {{- $.AddPage (partial "src/page.html" (dict "path" "changelog" "title" "Changelog" "lede" $log.lede "body" $log.body "source" "CHANGELOG.md" "weight" 9 "params" (dict "toc" false))) -}}
-{{- /* Pages generated from MotifSpec's own data by scripts/docs-reference.mjs (npm run docs writes them first). */ -}}
+{{- /* Pages generated from MotifSpec's own data by scripts/docs-reference.mjs from docs/reference/ (npm run docs writes them first). */ -}}
 {{- range resources.Match "generated/reference/*.md" -}}
   {{- $d := partial "src/doc.html" .Content -}}
-  {{- $.AddPage (partial "src/page.html" (dict "path" (path.BaseName .Name) "title" $d.title "lede" $d.lede "body" $d.body "source" $d.front.source "weight" $d.front.weight "params" (dict "toc" $d.front.toc))) -}}
+  {{- $.AddPage (partial "src/page.html" (dict "path" (path.BaseName .Name) "title" $d.title "lede" $d.lede "body" $d.body "source" $d.front.source "weight" $d.front.weight "params" (dict "toc" $d.front.toc "data" $d.front.data))) -}}
 {{- end -}}
