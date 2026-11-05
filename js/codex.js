@@ -21,6 +21,10 @@
       b.setAttribute('aria-label', label);
       var tip = b.querySelector('.cx-tooltip'); if (tip) tip.textContent = label;
     });
+    // Component previews run in their own documents; keep them in the page's theme.
+    document.querySelectorAll('.cx-preview__frame').forEach(function (f) {
+      try { var r = f.contentDocument && f.contentDocument.documentElement; if (r) { if (pref === 'auto') r.removeAttribute('data-theme'); else r.setAttribute('data-theme', pref); } } catch (e) { /* not ready yet */ }
+    });
   }
 
   // Durations come from the tokens, never from literals in this file.
@@ -103,6 +107,67 @@
         var select = function () { var r = document.createRange(); r.selectNodeContents(code); var s = getSelection(); s.removeAllRanges(); s.addRange(r); done(false); };
         if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { done(true); }, select);
         else select();
+      });
+    });
+
+    // Component previews: size each frame to its document's body (the root is never shorter than the frame), and keep
+    // its theme. Inside a preview, links don't navigate.
+    document.querySelectorAll('.cx-preview__frame').forEach(function (f) {
+      var fit = function () {
+        try { var d = f.contentDocument; if (d && d.body) f.style.setProperty('--_frame-height', d.body.offsetHeight + 'px'); } catch (e) { /* cross-origin: keep the default height */ }
+      };
+      var start = function () {
+        apply(theme); fit();
+        try { if ('ResizeObserver' in window) new ResizeObserver(fit).observe(f.contentDocument.body); } catch (e) { /* keep the measured height */ }
+      };
+      f.addEventListener('load', start);
+      try { if (f.contentDocument && f.contentDocument.readyState === 'complete' && f.contentDocument.body && f.contentDocument.body.childNodes.length) start(); } catch (e) { /* wait for load */ }
+    });
+    if (document.body.classList.contains('cx-preview-body')) {
+      document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('a[href]')) e.preventDefault(); });
+    }
+
+    // Tabs: turn the labelled panels into a tab list with one panel shown. Sets that share data-tabs stay in step,
+    // and the choice is remembered for the next page (cx-tabs:<name> in localStorage).
+    document.querySelectorAll('.cx-tabs').forEach(function (set, n) {
+      var panels = Array.prototype.slice.call(set.querySelectorAll(':scope > .cx-tabs__panel'));
+      if (panels.length < 2) return;
+      var list = document.createElement('div'); list.className = 'cx-tabs__list'; list.setAttribute('role', 'tablist');
+      if (set.getAttribute('aria-label')) list.setAttribute('aria-label', set.getAttribute('aria-label'));
+      var tabs = panels.map(function (panel, i) {
+        var label = panel.querySelector('.cx-tabs__label');
+        var id = 'cx-tabs-' + n + '-' + i;
+        var tab = document.createElement('button'); tab.type = 'button'; tab.className = 'cx-tabs__tab'; tab.id = id + '-tab';
+        tab.setAttribute('role', 'tab'); tab.setAttribute('aria-controls', panel.id || (panel.id = id + '-panel'));
+        tab.textContent = label ? label.textContent : 'Tab ' + (i + 1);
+        panel.setAttribute('role', 'tabpanel'); panel.setAttribute('aria-labelledby', tab.id); panel.tabIndex = 0;
+        list.appendChild(tab);
+        return tab;
+      });
+      var key = set.dataset.tabs ? 'cx-tabs:' + set.dataset.tabs : null;
+      var select = function (i, focus) {
+        tabs.forEach(function (t, j) { t.setAttribute('aria-selected', i === j ? 'true' : 'false'); t.tabIndex = i === j ? 0 : -1; panels[j].hidden = i !== j; });
+        if (focus) tabs[i].focus();
+      };
+      set.insertBefore(list, panels[0]); set.classList.add('is-tabbed');
+      var stored = null; try { stored = key && localStorage.getItem(key); } catch (e) { /* storage blocked */ }
+      var first = tabs.findIndex(function (t) { return t.textContent === stored; });
+      select(first < 0 ? 0 : first);
+      set.addEventListener('cx-tabs-sync', function (e) { var i = tabs.findIndex(function (t) { return t.textContent === e.detail; }); if (i >= 0) select(i); });
+      var choose = function (i, focus) {
+        select(i, focus);
+        if (!key) return;
+        try { localStorage.setItem(key, tabs[i].textContent); } catch (e) { /* storage blocked */ }
+        document.querySelectorAll('.cx-tabs[data-tabs="' + set.dataset.tabs + '"]').forEach(function (other) {
+          if (other !== set) other.dispatchEvent(new CustomEvent('cx-tabs-sync', { detail: tabs[i].textContent }));
+        });
+      };
+      tabs.forEach(function (t, i) { t.addEventListener('click', function () { choose(i); }); });
+      list.addEventListener('keydown', function (e) {
+        var at = tabs.indexOf(document.activeElement), last = tabs.length - 1;
+        var to = { ArrowRight: at + 1 > last ? 0 : at + 1, ArrowLeft: at - 1 < 0 ? last : at - 1, Home: 0, End: last }[e.key];
+        if (to === undefined || at < 0) return;
+        e.preventDefault(); choose(to, true);
       });
     });
 

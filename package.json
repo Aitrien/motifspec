@@ -1,6 +1,6 @@
 {
   "name": "@aitrien/motifspec",
-  "version": "1.18.1",
+  "version": "1.19.0",
   "description": "Liam Marshall's design system: DTCG tokens, component rules, generated CSS, Hugo templates and a rule checker.",
   "keywords": [
     "design-system",
@@ -49,6 +49,7 @@
     "./plate.html": "./dist/plate.html",
     "./backdrop.html": "./dist/backdrop.html",
     "./backdrop-foot.html": "./dist/backdrop-foot.html",
+    "./backdrop-side.html": "./dist/backdrop-side.html",
     "./icons.svg": "./dist/icons.svg",
     "./tokens.js": "./dist/tokens.js",
     "./tokens.json": "./dist/tokens.json",

@@ -216,11 +216,11 @@
   }
 
   // ------------------------------------------------------------ static markup (used by the build)
-  // kind 'head' or 'foot' draws the same survey full-bleed behind a page (docs/components/backdrop.md): sliced to cover
-  // its layer instead of fitted into the plate's square, on a finer grid so a warmed hill is round.
-  var BACKDROP = { head: { seed: 3, cells: 48 }, foot: { seed: 7, cells: 48 } };
+  // kind 'head', 'foot' or 'side' draws the same survey full-bleed behind a page (docs/components/backdrop.md): sliced
+  // to cover its layer instead of fitted into the plate's square, on a finer grid so a warmed hill is round.
+  var BACKDROP = { head: { seed: 3, cells: 48 }, foot: { seed: 7, cells: 48 }, side: { seed: 11, cells: 48 } };
   function markup(opts, kind) {
-    var bg = kind === 'head' || kind === 'foot';
+    var bg = Object.prototype.hasOwnProperty.call(BACKDROP, kind);
     if (bg) { opts = opts || {}; for (var key in BACKDROP[kind]) if (opts[key] == null) opts[key] = BACKDROP[kind][key]; }
     var s = survey(opts), S = s.options.size, q = S / 4;
     var grid = [q, 2 * q, 3 * q].map(function (v) { return 'M' + v + ' 0V' + S + 'M0 ' + v + 'H' + S; }).join('');

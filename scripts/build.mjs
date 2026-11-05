@@ -1,4 +1,4 @@
-// npm run build — tokens -> dist/*.css, dist/tokens.json, dist/tokens.js, dist/codex.js, dist/theme-init.js, dist/plate.*, dist/backdrop.html, dist/backdrop-foot.html, dist/contrast.md, docs table, dist/showcase.html
+// npm run build — tokens -> dist/*.css, dist/tokens.json, dist/tokens.js, dist/codex.js, dist/theme-init.js, dist/plate.*, dist/backdrop.html, dist/backdrop-foot.html, dist/backdrop-side.html, dist/contrast.md, docs table, dist/showcase.html
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import vm from 'node:vm';
@@ -133,7 +133,7 @@ writeFileSync(join(DIST, 'fonts.css'), fontsCss);
 writeFileSync(join(DIST, 'codex.css'), [fontsCss, tokensCss, componentsCss, chromaCss].join('\n'));
 
 // ------------------------------------------------------------------ docs/components/*.md: tokens front matter from the CSS
-const FOCUSABLE = new Set(['disclosure', 'docs-shell', 'search', 'specimen-plate', 'heading-anchor', 'site-header', 'project-card', 'post-list-item', 'tag', 'button-and-link', 'pagination', 'table-of-contents', 'code-block', 'data-table', 'prose']);
+const FOCUSABLE = new Set(['disclosure', 'docs-shell', 'search', 'tabs', 'specimen-plate', 'heading-anchor', 'site-header', 'project-card', 'post-list-item', 'tag', 'button-and-link', 'pagination', 'table-of-contents', 'code-block', 'data-table', 'prose']);
 const byVar = new Map([...tokens.values()].map((t) => [cssVar(t.path), t.path]));
 const rules = [...(componentsCss + '\n' + chromaCss).replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({ sel: m[1].trim(), body: m[2] }));
 const usesOf = (prefixes) => {
@@ -261,6 +261,7 @@ const BACKDROP = plateCtx.cxPlate.backdrop('head');
 writeFileSync(join(DIST, 'backdrop.html'), BACKDROP + '\n');
 const BACKDROP_FOOT = plateCtx.cxPlate.backdrop('foot');
 writeFileSync(join(DIST, 'backdrop-foot.html'), BACKDROP_FOOT + '\n');
+writeFileSync(join(DIST, 'backdrop-side.html'), plateCtx.cxPlate.backdrop('side') + '\n');
 writeFileSync(join(DIST, 'plate.js'), plateJs);
 
 const CHROMA_TABLE = `<div class="cx-table" role="region" aria-label="Chroma mapping" tabindex="0"><table><thead><tr><th scope="col">Role</th><th scope="col">Chroma classes</th><th scope="col">Token</th><th scope="col">Sample</th></tr></thead><tbody>${
@@ -312,5 +313,5 @@ writeFileSync(join(DIST, 'showcase.html'), src);
 // A complete document for opening locally (the publishing host supplies the doctype for showcase.html).
 writeFileSync(join(DIST, 'showcase.standalone.html'), `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n</head>\n<body>\n${src}\n</body>\n</html>\n`);
 
-console.log(`Built dist/: tokens.css, chroma.css, fonts.css, codex.css, codex.js, theme-init.js, icons.svg, tokens.json, tokens.js, plate.html, plate.js, backdrop.html, backdrop-foot.html, contrast.md, showcase.html (${(src.length / 1024).toFixed(0)} KB).`);
+console.log(`Built dist/: tokens.css, chroma.css, fonts.css, codex.css, codex.js, theme-init.js, icons.svg, tokens.json, tokens.js, plate.html, plate.js, backdrop.html, backdrop-foot.html, backdrop-side.html, contrast.md, showcase.html (${(src.length / 1024).toFixed(0)} KB).`);
 console.log(`${tokens.size} tokens, ${pairs.length} pairs, fonts ${stats.FONT_KB} KB.`);

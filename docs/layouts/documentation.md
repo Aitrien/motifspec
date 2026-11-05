@@ -4,12 +4,9 @@ For product and system documentation: guides, reference pages and a changelog. m
 
 ## Status
 
-In progress. The documentation shell and its own components arrive in a later release, so this file says what exists now and what doesn't.
+Complete since 1.19.0: the docs shell with its page navigation (`docs-shell.md`), search (`search.md`) and the version and repository link in the header (`site-header.md`), page actions (`page-actions.md`), the page footer with previous and next (`page-footer.md`), a Markdown copy of each page, and the component preview (`component-preview.md`), with every shared component, including steps, tabs, disclosures and keyboard keys, plus the table of contents, heading anchors and the ornaments.
 
-- **Available now:** the docs shell with its page navigation (`docs-shell.md`), search (`search.md`) and the version and repository link in the header (`site-header.md`), page actions (`page-actions.md`), the page footer with previous and next (`page-footer.md`), a Markdown copy of each page, every shared component including disclosures and keyboard keys, plus the table of contents, heading anchors and the ornaments.
-- **Not available yet:** the component preview, steps and tabs.
-
-Don't write classes for parts that aren't available. The checker fails on any `cx-` class MotifSpec doesn't define. Build what you can from the shared components, and say which parts MotifSpec doesn't have yet.
+Not yet: tables generated from MotifSpec's own data (tokens, icons, checker rules) come with motifspec.com, the layout's first site. Don't write classes for anything MotifSpec doesn't define; the checker fails on them.
 
 ## Shell
 
@@ -31,7 +28,7 @@ Every shared component, plus the components whose doc lists `documentation` unde
 
 ## Decoration
 
-- The head of the backdrop on the docs home, and its foot behind the footer on every page.
+- The side of the backdrop on every page, down the left edge behind the navigation, fading out before the article (`backdrop.md`). On a phone, the foot behind the footer instead. No head, so every page, the docs home included, opens on the plain surface.
 - The footer band. No other ornaments in articles.
 
 ## Headings

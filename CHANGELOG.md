@@ -2,7 +2,7 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
-## [Unreleased]
+## [1.19.0] - 2026-11-04
 
 ### Added
 - Docs shell (`docs-shell.md`, documentation layout): grouped page navigation beside the page, with "On this page" on the right when there is room. On a phone the navigation sits behind a Menu control that ships closed and opens without script. With `dist/codex.js` it docks beside the page and scrolls on its own. The Hugo partial `docs-nav.html` writes it from the site's sections, and `docs/hugo.md` shows a documentation page.
@@ -13,6 +13,10 @@ Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entri
 
 - Search (`search.md`, shared): a trigger in the header and a modal dialog of results as you type, from a Pagefind index built with the site. Ctrl+K, Cmd+K or "/" opens it, arrow keys move through the results, and Escape closes it. MotifSpec draws it with Pagefind's API, not Pagefind's own interface, and it makes no requests to other hosts. The trigger ships hidden and the script shows it.
 - The site header can carry search (`params.motifspec.search`), the version linked to the changelog (`params.motifspec.version` and `changelog`), and external links in its nav with the outward arrow.
+- Component preview (`component-preview.md`, documentation layout): an `html` fence with `{preview=true}` shows the example live above its code, in an iframe whose document has the system's stylesheet, script, theme snippet and icons, so an example's ids, sticky headers and landmarks can't clash with the page. `codex.js` sizes the frame to its example, keeps it in the page's theme, and stops its links navigating.
+- Steps (`steps.md`, shared): a numbered procedure, from HTML or from a Markdown ordered list with `{.cx-steps}`.
+- Tabs (`tabs.md`, shared): the same content in two to four forms. Without script every panel shows under its label; with it, an ARIA tab list with arrow keys, and sets that share a `data-tabs` name change together and are remembered.
+- A side layer for the backdrop (`dist/backdrop-side.html`, `cx-backdrop-page--side`): on a documentation site, contours down the left edge behind the navigation, fixed as the page scrolls, with the page and header fading in across them so there is no edge across the page. On a phone the foot shows instead. `body-start.html` writes it on every page of a site whose layout is `documentation`.
 - `color.scrim` and `color.wash.scrim`: the colour behind a modal dialog and how much of it is mixed in, dark in both themes.
 - The Markdown render hooks and partials mark what isn't page content `data-pagefind-ignore` (heading anchors, code block bars, the end mark, the table of contents, page actions, page footer and docs pagination), so search excerpts are the page's own text. It changes nothing without Pagefind.
 

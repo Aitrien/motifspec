@@ -271,4 +271,7 @@ export const DOC_SELECTORS = {
   'page-actions': ['.cx-page-actions'],
   'page-footer': ['.cx-page-footer'],
   'search': ['.cx-search', '.cx-search-trigger'],
+  'component-preview': ['.cx-preview', '.cx-preview-body'],
+  'steps': ['.cx-steps'],
+  'tabs': ['.cx-tabs'],
 };

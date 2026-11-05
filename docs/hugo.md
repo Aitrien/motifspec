@@ -44,7 +44,7 @@ Pin a release with `hugo mod get github.com/aitrien/motifspec@vX.Y.Z`. The modul
 | Partial | What it writes |
 |---|---|
 | `motifspec/head.html` | The stored-theme snippet, font preloads, `codex.css` and `codex.js`, in that order. |
-| `motifspec/body-start.html` | Call with the page. On the home page, the head of the backdrop; then the icon sprite and the skip link to `#main`. |
+| `motifspec/body-start.html` | Call with the page. On the home page, the head of the backdrop (on a documentation site, the side, on every page); then the icon sprite and the skip link to `#main`. |
 | `motifspec/site-header.html` | `site-header.md`: wordmark from `site.Title` and `site.Params.role`, nav from `site.Menus.main` and the theme toggle. A menu entry is current when its `identifier` is the page's section; one whose URL starts with `http` gets the outward arrow. With `params.motifspec.search = true`, search comes first (`search.md`); with `params.motifspec.version` (and `changelog`, a URL), the version comes before the theme toggle. |
 | `motifspec/body-end.html` | The foot of the backdrop, behind the footer, and `plate.js`, which settles the home page's contours and lets the pointer warm them. |
 
@@ -55,7 +55,7 @@ The footer stays in the site: its columns are the site's own links and colophon.
 A site using the documentation layout (`docs/layouts/documentation.md`) puts the docs shell inside `<main>`'s place, so the page shell above changes to:
 
 ```go-html-template
-<body>
+<body class="cx-backdrop-page cx-backdrop-page--side">
   {{ partial "motifspec/body-start.html" . }}
   {{ partial "motifspec/site-header.html" . }}
   <div class="cx-container cx-docs">
@@ -67,7 +67,7 @@ A site using the documentation layout (`docs/layouts/documentation.md`) puts the
 </body>
 ```
 
-The body has no `cx-backdrop-page` class on article pages; the docs home keeps it (`docs/layouts/documentation.md`, Decoration).
+With `params.motifspec.layout = "documentation"`, `body-start.html` writes the side of the backdrop on every page, the docs home included, and `cx-backdrop-page--side` puts it down the left edge; on a phone the foot shows instead (`backdrop.md`).
 
 An article page's `main` block, in order: the page head with `page-actions.html` after the lede, `article.html`, `page-footer.html`, then `pagination-docs.html`.
 
@@ -89,6 +89,15 @@ enableGitInfo = true  # Lastmod from Git, for "Last updated"
 ```
 
 The templates are `layouts/page.markdown.md`, `section.markdown.md` and `home.markdown.md`; a site's own file at the same path wins.
+
+### Steps from Markdown
+
+Steps (`steps.md`) come from an ordered list with `{.cx-steps}` on the line after it, which needs Goldmark's block attributes:
+
+```toml {file="hugo.toml"}
+[markup.goldmark.parser.attribute]
+  block = true
+```
 
 ### Search
 
@@ -162,7 +171,7 @@ These apply to all Markdown content once the module is imported.
 | `render-heading.html` | Headings get ids; h2s get a `#` anchor. | `heading-anchor.md` |
 | `render-image.html` | A standalone image is a numbered figure: `![alt](file.png "caption")`, image in the page bundle, alt and caption required. `{width="prose"}` on the next line keeps it to the text measure. Inline images stay plain. An `.svg` on its own line becomes a diagram figure, inlined so its `cx-diagram` classes follow the theme. | `figure.md` |
 | `render-table.html` | `{caption="Title \| subtitle"}` on the line after a table is required. Numeric columns align right; more than four columns break out. | `data-table.md` |
-| `render-codeblock.html` | Header bar with language, optional `{file="path"}` and copy button. Breaks out when a line is longer than the prose measure. | `code-block.md` |
+| `render-codeblock.html` | Header bar with language, optional `{file="path"}` and copy button. Breaks out when a line is longer than the prose measure. An `html` fence with `{preview=true}` also shows the example live, above its code. | `code-block.md`, `component-preview.md` |
 | `render-blockquote.html` | `> [!NOTE]`, `[!TIP]`, `[!WARNING]` and `[!CAUTION]` become callouts. A quotation must end with a line `— Name \| Source title`. | `callout.md`, `prose.md` |
 | `render-link.html` | Internal links are resolved, and a broken one fails the build. External links get the outward arrow. | `icon.md` |
 
