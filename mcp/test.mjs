@@ -81,12 +81,12 @@ test('get_component returns one form of the markup when asked, and every JSX for
   assert.match(hugo, /## In a Hugo site/);
   assert.match(jsx, /```jsx\n/);
   assert.match(jsx, /className="cx-card/);
-  assert.doesNotMatch(jsx, /```html preview|\sclass="/);
+  assert.doesNotMatch(jsx, /```html \{preview=true\}|\sclass="/);
   assert.match(await call('get_component', { name: 'backdrop', form: 'jsx' }), /written for Hugo, so it has no JSX form/);
   let compiled = 0;
   for (const f of readdirSync(new URL('../docs/components/', import.meta.url)).filter((x) => x.endsWith('.md'))) {
     const md = readFileSync(new URL(`../docs/components/${f}`, import.meta.url), 'utf8');
-    for (const [, block] of md.matchAll(/```html preview\n([\s\S]*?)```/g)) {
+    for (const [, block] of md.matchAll(/```html \{preview=true\}\n([\s\S]*?)```/g)) {
       const out = htmlToJsx(block);
       if (out === null) continue;
       await assert.doesNotReject(transform(`export default () => (${out});`, { loader: 'jsx' }), `${f}: JSX form doesn't compile`);

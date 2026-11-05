@@ -36,7 +36,7 @@ A short mono label with a dot that names a state: online, degraded, down, live, 
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <span class="cx-status cx-status--success">Online</span>
 <span class="cx-status cx-status--warning">Degraded</span>
 <span class="cx-status cx-status--danger">Down</span>

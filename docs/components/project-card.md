@@ -46,7 +46,7 @@ A framed summary of one project that links to its case study.
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <ul class="cx-cards">
   <li>
     <article class="cx-card">

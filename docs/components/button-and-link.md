@@ -58,7 +58,7 @@ Buttons start actions or journeys; standalone links and back links move between 
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <div class="cx-actions">
   <a class="cx-button cx-button--primary" href="/work/">View work <svg class="cx-icon cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg></a>
   <a class="cx-button" href="/writing/">Read the writing</a>
@@ -70,7 +70,7 @@ Buttons start actions or journeys; standalone links and back links move between 
 
 Add `cx-button--sm` for a compact button in a table row or a toolbar, where full-size buttons would make every row tall:
 
-```html preview
+```html {preview=true}
 <button class="cx-button cx-button--sm" type="button">Restart<span class="cx-visually-hidden"> Jellyfin</span></button>
 ```
 

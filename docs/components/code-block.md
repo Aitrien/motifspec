@@ -76,7 +76,7 @@ A framed block of syntax-highlighted code with a header bar for language, file n
 
 Hugo render hook (`layouts/_default/_markup/render-codeblock.html`):
 
-```html preview
+```html {preview=true}
 <figure class="cx-code">
   <figcaption class="cx-code__bar">
     <span>ts</span>

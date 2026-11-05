@@ -61,7 +61,7 @@ Store the number in front matter (`accession: LM-W-004`) rather than deriving it
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <dl class="cx-label" aria-label="Accession label">
   <div class="cx-label__id"><dt>No.</dt><dd>LM-W-001</dd></div>
   <div><dt>Filed</dt><dd><time datetime="2026-03-14">2026-03-14</time></dd></div>

@@ -40,7 +40,7 @@ A "#" link after a section heading, so readers can copy a link straight to that 
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <!-- Prose: the heading carries the id -->
 <h2 id="approach">Approach <a class="cx-anchor" href="#approach" aria-label="Link to Approach">#</a></h2>
 

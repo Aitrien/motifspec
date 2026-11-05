@@ -49,7 +49,7 @@ A tinted note set apart from running text, in four kinds: note, tip, warning and
 
 Hugo shortcode output (`{{< callout warning >}}…{{< /callout >}}`):
 
-```html preview
+```html {preview=true}
 <div class="cx-callout cx-callout--warning" role="note">
   <p class="cx-callout__title"><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-warning"></use></svg>Warning</p>
   <p>Renaming a semantic token is a major version bump.</p>

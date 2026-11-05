@@ -72,6 +72,52 @@ p, li, dd, figcaption { text-wrap: pretty; }
 .cx-article > .cx-article__main { flex: 999 1 0; min-width: min(100%, 60%); }
 .cx-article > .cx-toc { flex: 1 1 var(--cx-size-column-sidebar); }
 
+/* ------------------------------------------------------------ docs shell (documentation layout) */
+/* A side column of page navigation beside the main column, inside the page container. The main column holds the
+   page head and a cx-article, so "On this page" sits on the right when there is room for it. */
+.cx-docs { display: grid; grid-template-columns: var(--cx-size-column-sidebar) minmax(0, 1fr); align-items: start; gap: 0 var(--cx-space-gutter-grid); }
+.cx-docs__main { min-width: 0; padding-bottom: var(--cx-space-section-sm); }
+.cx-docs-nav { min-width: 0; padding-block: var(--cx-space-section-sm); font-size: var(--cx-font-size-small); }
+/* Docked by dist/codex.js while it sits beside the main column: it stays in view and scrolls on its own. */
+.cx-docs-nav.is-docked {
+  position: sticky; top: var(--_header-height, var(--cx-size-target-touch));
+  max-height: calc(var(--_viewport-height) - var(--_header-height, var(--cx-size-target-touch))); overflow-y: auto; scrollbar-width: thin;
+}
+.cx-docs-nav__menu > summary {
+  display: flex; align-items: center; gap: var(--cx-space-inline-xs); width: fit-content; min-height: var(--cx-size-target-control);
+  padding-inline: var(--cx-space-inset-md); border: var(--cx-border-width-hairline) solid var(--cx-color-border-strong); border-radius: var(--cx-radius-pill);
+  color: var(--cx-color-text-primary); font-weight: var(--cx-font-weight-strong); cursor: pointer; list-style: none;
+}
+.cx-docs-nav__menu > summary::-webkit-details-marker, .cx-docs-nav__group > summary::-webkit-details-marker { display: none; }
+.cx-docs-nav__menu[open] > summary .cx-icon, .cx-docs-nav__group[open] > summary .cx-icon { transform: rotate(180deg); }
+.cx-docs-nav__groups { display: flex; flex-direction: column; gap: var(--cx-space-stack-md); }
+.cx-docs-nav__group > summary {
+  display: flex; align-items: center; gap: var(--cx-space-inline-sm); min-height: var(--cx-size-target-min); padding-inline: var(--cx-space-inset-md);
+  color: var(--cx-color-text-primary); font-weight: var(--cx-font-weight-strong); cursor: pointer; list-style: none;
+}
+.cx-docs-nav__group > summary .cx-icon { margin-left: auto; color: var(--cx-color-text-muted); transition: transform var(--cx-motion-duration-base) var(--cx-motion-easing-standard); }
+.cx-docs-nav__list { margin: 0; padding: 0; list-style: none; border-left: var(--cx-border-width-hairline) solid var(--cx-color-border-default); }
+.cx-docs-nav__group > .cx-docs-nav__list { margin-top: var(--cx-space-stack-xs); }
+.cx-docs-nav__list a {
+  display: flex; align-items: center; min-height: var(--cx-size-target-min);
+  margin-left: calc(var(--cx-border-width-hairline) * -1); padding: var(--cx-space-inset-xs) var(--cx-space-inset-md);
+  border-left: var(--cx-border-width-emphasis) solid transparent; color: var(--cx-color-text-secondary); text-decoration: none; line-height: var(--cx-font-line-height-ui);
+  transition: color var(--cx-motion-duration-base) var(--cx-motion-easing-standard), border-color var(--cx-motion-duration-base) var(--cx-motion-easing-standard);
+}
+.cx-docs-nav__list a:hover { color: var(--cx-color-text-primary); border-left-color: var(--cx-color-border-strong); }
+.cx-docs-nav__list a[aria-current="page"] { color: var(--cx-color-text-primary); font-weight: var(--cx-font-weight-strong); border-left-color: var(--cx-color-accent-border); }
+/* Wide: the navigation is always open and the Menu control is hidden. */
+@media (width >= token(size.breakpoint.md)) {
+  .cx-docs-nav__menu > summary { display: none; }
+  .cx-docs-nav__menu::details-content { content-visibility: visible; }
+}
+/* Phone: one column; the navigation sits behind the Menu control above the page, closed until it's opened. */
+@media (width < token(size.breakpoint.md)) {
+  .cx-docs { grid-template-columns: minmax(0, 1fr); }
+  .cx-docs-nav { padding-block: var(--cx-space-stack-md) 0; }
+  .cx-docs-nav__menu[open] > .cx-docs-nav__groups { padding-top: var(--cx-space-stack-md); }
+}
+
 /* ------------------------------------------------------------ site header and nav */
 .cx-header {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;

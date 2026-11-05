@@ -48,7 +48,7 @@ The closing band of every page: a knitted ornament band, grouped links, a coloph
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <footer class="cx-footer">
   <span class="cx-band" aria-hidden="true"></span>
   <div class="cx-container">

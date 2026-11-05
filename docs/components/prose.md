@@ -80,7 +80,7 @@ Styles for Markdown-rendered long-form content: headings, paragraphs, lists, blo
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <div class="cx-prose">
   <p>A token without a rule is a colour with a name, so the <a href="/writing/rules/">description becomes the contract</a>.</p>
   <h2 id="why">Why tokens need rules <a class="cx-anchor" href="#why" aria-label="Link to Why tokens need rules">#</a></h2>

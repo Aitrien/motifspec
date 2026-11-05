@@ -3,6 +3,9 @@ name: icon
 status: stable
 layouts: [shared]
 tokens:
+  - color.text.muted
+  - motion.duration.base
+  - motion.easing.standard
   - size.icon.lg
   - size.icon.md
   - size.icon.sm
@@ -28,7 +31,7 @@ A Material Symbols glyph from the MotifSpec sprite, used to reinforce a control'
 
 Inline the sprite once per page, right after `<body>` (Hugo: `{{ readFile "assets/motifspec/icons.svg" | safeHTML }}` inside a hidden wrapper, or the build's inline sprite). Then reference symbols by id:
 
-```html preview
+```html {preview=true}
 <a class="cx-button cx-button--primary" href="/work/">
   View work
   <svg class="cx-icon cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg>

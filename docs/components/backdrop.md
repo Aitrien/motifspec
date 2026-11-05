@@ -38,7 +38,7 @@ Contour surveys drawn full-bleed behind the top of the home page and the bottom 
 
 The build writes the head to `dist/backdrop.html` and the foot to `dist/backdrop-foot.html`: the contours at time zero, on a different stretch of terrain each, sliced to cover the layer. In Hugo, `motifspec/body-start.html` inlines the head on the home page, and `motifspec/body-end.html` inlines the foot and loads `dist/plate.js`:
 
-```html preview
+```html {preview=true}
 <body class="cx-backdrop-page">
   {{ (resources.Get "motifspec/backdrop.html").Content | safeHTML }}
   <!-- home page only: <div class="cx-backdrop cx-backdrop--head" aria-hidden="true" data-plate-seed="3" data-plate-cells="48"><svg class="cx-plate__map" preserveAspectRatio="xMidYMid slice" …>…</svg></div> -->

@@ -64,6 +64,7 @@
       var end = header.querySelector('.cx-header__end'), mark = header.querySelector('.cx-wordmark');
       var measure = function () {
         root.style.setProperty('--_header-height', header.offsetHeight + 'px');
+        root.style.setProperty('--_viewport-height', window.innerHeight + 'px');
         // When the nav and controls wrap below the wordmark, mark the header so the nav aligns with the page text.
         if (end && mark) header.toggleAttribute('data-wrapped', end.offsetTop > mark.offsetTop + mark.offsetHeight / 2);
       };
@@ -103,6 +104,21 @@
         if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { done(true); }, select);
         else select();
       });
+    });
+
+    // Docs navigation: dock it (sticky, scrolling on its own) while it sits beside the main column, as the TOC does.
+    document.querySelectorAll('.cx-docs').forEach(function (docs) {
+      var nav = docs.querySelector('.cx-docs-nav');
+      var main = docs.querySelector('.cx-docs__main');
+      if (!nav || !main) return;
+      var dock = function () {
+        root.style.setProperty('--_viewport-height', window.innerHeight + 'px');
+        nav.classList.toggle('is-docked', Math.abs(nav.offsetTop - main.offsetTop) < 1);
+      };
+      dock(); window.addEventListener('resize', dock);
+      // Bring the current page into view inside the docked navigation.
+      var current = nav.querySelector('[aria-current="page"]');
+      if (current && nav.classList.contains('is-docked') && current.offsetTop > nav.clientHeight / 2) nav.scrollTop = current.offsetTop - nav.clientHeight / 2;
     });
 
     // Table of contents: dock beside the article when there is room, and mark the current section.

@@ -21,7 +21,7 @@ One sentence: what it is for.
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <!-- Minimal markup: the pattern to copy. -->
 ```
 

@@ -30,7 +30,7 @@ A key the reader presses, set as a small keycap: Ctrl K, Esc, Enter.
 
 ## Markup
 
-```html preview
+```html {preview=true}
 <kbd class="cx-kbd">Ctrl</kbd> <kbd class="cx-kbd">K</kbd>
 ```
 
