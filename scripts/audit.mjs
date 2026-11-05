@@ -1,9 +1,11 @@
-// npm run audit — prove dist/showcase.html, dist/codex.js and dist/theme-init.js have no raw colour, size or duration values outside the generated :root block,
-// and that the Hugo templates in layouts/ pass scripts/check.mjs, the checker sites use.
+// npm run audit — prove dist/codex.css, dist/codex.js and dist/theme-init.js have no raw colour, size or duration values
+// outside the generated :root block, that the style attributes in motifspec.com's generated pages only set token values,
+// and that the Hugo templates in layouts/ and the component docs' markup pass scripts/check.mjs, the checker sites use.
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { ROOT } from './lib.mjs';
 import { checkText, format } from './check.mjs';
+import { referencePages } from './docs-reference.mjs';
 
 function* walk(dir) {
   for (const name of readdirSync(dir)) {
@@ -59,13 +61,22 @@ export function auditHtml(html) {
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const html = readFileSync(join(ROOT, 'dist', 'showcase.html'), 'utf8');
-  const problems = auditHtml(html);
-  // Sites load these files directly, so check them on their own as well as inlined in the showcase.
+  // The stylesheet sites load, as one <style> block: its own :root block is the only place for raw values.
+  const problems = auditHtml(`<style>\n${readFileSync(join(ROOT, 'dist', 'codex.css'), 'utf8')}\n</style>`).map((p) => `dist/codex.css: ${p}`);
+  // Sites load these files directly.
   for (const f of ['codex.js', 'theme-init.js']) {
     const js = readFileSync(join(ROOT, 'dist', f), 'utf8');
     const own = auditHtml(`<style>\n:root {\n}\n</style><script>${js}</script>`);
     problems.push(...own.map((p) => `dist/${f}: ${p}`));
+  }
+  // motifspec.com's generated pages are the one place MotifSpec writes style attributes (token-table.md): each may
+  // only set a token-table custom property to a token or a percentage.
+  for (const [path, md] of Object.entries(referencePages())) {
+    for (const m of md.matchAll(/\sstyle="([^"]*)"/g)) {
+      for (const decl of m[1].split(';').map((d) => d.trim()).filter(Boolean)) {
+        if (!/^--_(swatch|fg|bg|size|family|width): (var\(--cx-[a-z0-9-]+\)|\d+(\.\d+)?%)$/.test(decl)) problems.push(`site generated/${path}: style "${decl}" sets something other than a token-table value`);
+      }
+    }
   }
   // The module's own Hugo templates, and the markup examples in the component docs that sites copy, by the same
   // checker sites use (scripts/check.mjs).
@@ -75,5 +86,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   }
   for (const file of walk(join(ROOT, 'layouts'))) problems.push(...checkText(readFileSync(file, 'utf8'), { file: relative(ROOT, file) }).map(format));
   if (problems.length) { console.error(problems.map((p) => `✗ ${p}`).join('\n')); process.exit(1); }
-  console.log('No raw colour, size or duration values outside the :root block (CSS, style attributes, SVG colours, scripts, dist/codex.js, dist/theme-init.js), and layouts/ and the component docs\' markup pass scripts/check.mjs.');
+  console.log('No raw colour, size or duration values outside the :root block (dist/codex.css, dist/codex.js, dist/theme-init.js), only token values in the docs site\'s generated style attributes, and layouts/ and the component docs\' markup pass scripts/check.mjs.');
 }

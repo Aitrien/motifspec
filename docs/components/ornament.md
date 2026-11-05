@@ -58,7 +58,7 @@ Yarndings 12 knitting-chart glyphs: the footer band, the prose divider, the arti
 | diamond | Diamonds and rings | diamond `–` (U+2013), diamond-nested `p`, ring `?` |
 | mark | Corners, bars, dots, triangles | summit `·` (U+00B7), corner-top-left `/`, bar `(`, dot `.` |
 
-`codex.glyphs.roles` fixes the glyphs for the system's own ornaments (band, divider, end mark, empty state); anything else may use any approved glyph. The showcase lists every glyph.
+`codex.glyphs.roles` fixes the glyphs for the system's own ornaments (band, divider, end mark, empty state); anything else may use any approved glyph. motifspec.com's Ornaments page lists every glyph.
 
 ## Do
 

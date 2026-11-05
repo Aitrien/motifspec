@@ -20,8 +20,15 @@ enableRobotsTXT = true
   siteDir = "site"
   # version: set from package.json by npm run docs (HUGO_PARAMS_MOTIFSPEC_VERSION).
 
+# llms.txt: the site's pages for AI assistants, each linking to its Markdown copy (R17).
+[outputFormats.llms]
+  mediaType = "text/plain"
+  baseName = "llms"
+  isPlainText = true
+  notAlternative = true
+
 [outputs]
-  home = ["html", "markdown"]
+  home = ["html", "markdown", "llms"]
   section = ["html", "markdown"]
   page = ["html", "markdown"]
 

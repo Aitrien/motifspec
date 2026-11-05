@@ -1,6 +1,6 @@
 {
   "name": "@aitrien/motifspec",
-  "version": "1.19.0",
+  "version": "1.20.0",
   "description": "Liam Marshall's design system: DTCG tokens, component rules, generated CSS, Hugo templates and a rule checker.",
   "keywords": [
     "design-system",
@@ -24,8 +24,6 @@
   },
   "files": [
     "dist",
-    "!dist/showcase.html",
-    "!dist/showcase.standalone.html",
     "tokens",
     "docs",
     "fonts",
@@ -67,7 +65,8 @@
     "test:mcp": "node --test mcp/test.mjs",
     "mcp:bundle": "node mcp/build.mjs",
     "docs": "node scripts/docs.mjs",
-    "docs:check": "node scripts/check.mjs site"
+    "docs:check": "node scripts/check.mjs site",
+    "docs:quality": "node scripts/docs-quality.mjs"
   },
   "engines": {
     "node": ">=20"

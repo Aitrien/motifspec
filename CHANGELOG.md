@@ -5,6 +5,8 @@ Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entri
 ## [1.20.0] - 2026-11-05
 
 ### Added
+- motifspec.com is a documentation site built with the documentation layout from this repository (`site/`), in place of the one-page showcase. Every page is made from a file the repository already keeps: the component and layout docs, `docs/hugo.md`, the README's guide sections, `CONVENTIONS.md`, `CHANGELOG.md`, and pages generated from the tokens, icons and checker rules. It has search, a Markdown copy of every page, `llms.txt`, an A to Z page and a landing page. Links to the old page's sections (such as `/#components`) go to the pages that replaced them.
+- `npm run docs`, `docs:check` and `docs:quality` build the site, check it, and run Lighthouse's accessibility audit on it. CI runs them, with a link check, on every pull request; a release publishes the site.
 - Token table (`token-table.md`, documentation layout): colour swatches, a primitive palette, type samples, spacing bars and contrast samples in data tables, for reference pages generated from the tokens. motifspec.com's Colour, Type, Space and size, Motion, Icons, Ornaments, Tokens, Contrast pairs and Checker rules pages use it.
 - A deprecated component's doc has a `deprecated:` line saying what replaces it and when it goes; the validator requires it. `docs-nav.html` says "(deprecated)" after the title of a page that sets `deprecated`.
 - `article.html` takes `"toc" "never"`, for a page such as a changelog whose headings repeat.
@@ -15,7 +17,11 @@ Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entri
 - On a documentation site, `article.html` leaves out the end mark: the layout's only ornament is the footer band, as `docs/layouts/documentation.md` says.
 - The README's setup is grouped as Getting started (Hugo, npm, an AI assistant), Checking a project and The MCP server, the sections motifspec.com renders as pages. Every table in the README, `CONVENTIONS.md` and the docs has a caption, in an HTML comment before it that GitHub doesn't show.
 
+### Removed
+- The showcase: `showcase/`, `dist/showcase.html` and `dist/showcase.standalone.html`, which the npm package never shipped. `npm run audit` now checks `dist/codex.css` directly. The `showcase` URL in `package.json`, `tokens.json` and `tokens.js` keeps its name and now means the docs site.
+
 ### Fixed
+- On a phone, the search trigger in the header had no accessible name: its label was removed with `display: none`. It is now visually hidden, so the icon-only button is still announced as "Search".
 - The site header no longer marks a menu entry without an `identifier`, such as an external link, as the current page on the home page, whose section is empty.
 - The render hooks for tables, blockquotes, images and links, and `article.html`, no longer fail on a page that has no content file, such as one made by a content adapter.
 

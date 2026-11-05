@@ -1,6 +1,6 @@
 // MotifSpec behaviour: theme toggle, the backdrop header's scroll state, tooltip dismissal, code copy buttons,
 // TOC docking and active section.
-// Shipped as dist/codex.js (@aitrien/motifspec/codex.js) and inlined into the showcase, so there is one implementation.
+// Shipped as dist/codex.js (@aitrien/motifspec/codex.js).
 // Enhancement only. Without this script: themes follow the system, code is selectable, the TOC is a plain open list,
 // and every control that needs script stays hidden. Load it with `defer`; it also works inline at the end of <body>.
 // Pair it with dist/theme-init.js inline in <head>, which applies a stored theme before first paint.

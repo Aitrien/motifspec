@@ -1,4 +1,4 @@
-// npm run pack:check: prove the npm package contains what the README and package.json promise, and not the showcase.
+// npm run pack:check: prove the npm package contains what the README and package.json promise, and not the docs site.
 // Runs `npm pack --dry-run`, so nothing is written or published.
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
@@ -24,7 +24,7 @@ for (const [, font] of css.matchAll(/url\("\.\.\/fonts\/([^"]+)"\)/g)) if (!file
 for (const f of files) if (f.startsWith('fonts/') && f.endsWith('.woff2') && ![...files].some((g) => g.startsWith('fonts/OFL-'))) problems.push(`${f} has no licence file`);
 // What the checker imports must ship with it.
 for (const [, dep] of readFileSync(join(ROOT, 'scripts', 'check.mjs'), 'utf8').matchAll(/from '\.\/([^']+)'/g)) if (!files.has(`scripts/${dep}`)) problems.push(`missing scripts/${dep}, which check.mjs imports`);
-for (const f of ['dist/showcase.html', 'dist/showcase.standalone.html']) if (files.has(f)) problems.push(`${f} should not ship`);
+for (const f of files) if (f.startsWith('site/')) problems.push(`${f} should not ship: the docs site isn't part of the package`);
 if (!readFileSync(join(ROOT, 'scripts', 'check.mjs'), 'utf8').startsWith('#!/usr/bin/env node')) problems.push('scripts/check.mjs needs a #!/usr/bin/env node line to run as motifspec-check');
 
 if (problems.length) {

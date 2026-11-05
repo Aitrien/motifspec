@@ -23,7 +23,7 @@ jobs:
         run: npm run build
       - name: Check dist/ is up to date
         run: git diff --exit-code -- dist docs || (echo "::error::dist/ or the generated doc tables are stale. Run npm run build and commit the result." && exit 1)
-      - name: Audit showcase
+      - name: Audit the stylesheet, scripts and templates
         run: npm run audit
       - name: Release check
         run: npm run release:check
@@ -35,8 +35,9 @@ jobs:
         run: npm run mcp:bundle && MCP_HANDLER=build/mcp/index.mjs npm run test:mcp
 
   docs:
-    # motifspec.com, built from site/ against this commit's module: every page must build with no warnings, and the
-    # checker must pass on the site's own templates and content.
+    # motifspec.com, built from site/ against this commit's module: every page must build with no warnings, the checker
+    # must pass on the site's own templates and content, no link or fragment may be broken, and Lighthouse must score
+    # accessibility 100 on the pages R19 in the layouts plan names.
     runs-on: ubuntu-latest
     env:
       HUGO_VERSION: 0.151.0
@@ -58,3 +59,9 @@ jobs:
         run: npm run docs
       - name: Check the site
         run: npm run docs:check
+      - name: Check the site's links and fragments
+        run: |
+          curl -sSL "https://github.com/lycheeverse/lychee/releases/download/lychee-v0.20.1/lychee-x86_64-unknown-linux-gnu.tar.gz" | tar -xz -C "${{ runner.temp }}"
+          "${{ runner.temp }}/lychee" --offline --include-fragments --index-files index.html --root-dir "$PWD/site/public" --no-progress 'site/public/**/*.html'
+      - name: Lighthouse accessibility (100 on the landing page, an article, a component page and the tokens page)
+        run: npm run docs:quality

@@ -48,7 +48,7 @@ if (glyphs) {
 }
 // Deprecated tokens stay published but nothing in the system may use them.
 const deprecated = [...tokens.values()].filter((t) => t.deprecated !== undefined);
-for (const f of ['css/components.css', 'syntax/chroma.json', 'js/codex.js', 'js/plate.js', 'showcase/showcase.css', 'showcase/index.src.html']) {
+for (const f of ['css/components.css', 'syntax/chroma.json', 'js/codex.js', 'js/plate.js', 'scripts/docs-reference.mjs']) {
   let text; try { text = readFileSync(join(ROOT, f), 'utf8'); } catch { continue; }
   for (const t of deprecated) {
     const css = `--cx-${t.path.replace(/\./g, '-')}`;
