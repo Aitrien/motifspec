@@ -20,7 +20,7 @@ A layout is a kind of site: its shell, page templates, components, decoration an
 |---|---|---|
 | Portfolio | Case studies, writing and an about page | `docs/layouts/portfolio.md` |
 | Dashboard | Tools and admin screens (in progress) | `docs/layouts/dashboard.md` |
-| Documentation | Guides, reference and a changelog (in progress) | `docs/layouts/documentation.md` |
+| Documentation | Guides, reference and a changelog | `docs/layouts/documentation.md` |
 | À la carte | A project that fits none of them: chosen components, its own frame | `docs/layouts/a-la-carte.md` |
 
 Each component doc says which layouts it belongs to in its front matter (`layouts:`). Shared components belong to every layout.

@@ -1,11 +1,23 @@
 {{- /* code-block.md: header bar (language, optional file, copy button revealed by codex.js) around Chroma's
        classed output. Breakout when a line is longer than the prose measure (size.measure.prose, in characters),
-       as code-block.md asks. Use {file="path"} for a path. */ -}}
+       as code-block.md asks. Use {file="path"} for a path.
+       component-preview.md: an html fence with {preview=true} also shows the example live, above its code, in an
+       iframe whose document has the system's theme snippet, stylesheet, script and icon sprite. */ -}}
 {{- $lang := .Type | default "text" -}}
 {{- $measure := (index (partialCached "motifspec/tokens.html" "tokens") "size.measure.prose").value | replaceRE `[^0-9]` "" | int -}}
 {{- $long := false -}}
 {{- range split .Inner "\n" }}{{ if gt (strings.RuneCount .) $measure }}{{ $long = true }}{{ end }}{{ end -}}
 {{- $result := transform.HighlightCodeBlock . -}}
+{{- $preview := and .Attributes.preview (eq $lang "html") -}}
+{{- if $preview }}
+{{- $css := resources.Get "motifspec/codex.css" | resources.Copy "cx/codex.css" | minify | fingerprint -}}
+{{- $js := resources.Get "motifspec/codex.js" | resources.Copy "cx/codex.js" | minify | fingerprint -}}
+{{- $init := (resources.Get "motifspec/theme-init.js").Content -}}
+{{- $sprite := (resources.Get "motifspec/icons.svg").Content -}}
+{{- $doc := printf `<!doctype html><html lang="%s"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><script>%s</script><link rel="stylesheet" href="%s"><script src="%s" defer></script></head><body class="cx-preview-body"><div hidden>%s</div>%s</body></html>` (site.Language.LanguageCode | default "en") $init $css.RelPermalink $js.RelPermalink $sprite .Inner }}
+<div class="cx-preview">
+  <iframe class="cx-preview__frame" title="Example{{ with .Page }}: {{ .LinkTitle }}{{ end }}" loading="lazy" srcdoc="{{ $doc }}"></iframe>
+{{- end }}
 <figure class="cx-code{{ if $long }} cx-code--breakout{{ end }}">
   <figcaption class="cx-code__bar" data-pagefind-ignore>
     <span>{{ $lang }}</span>
@@ -14,5 +26,8 @@
     {{- end }}
     <button class="cx-code__copy" type="button" hidden><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use data-copy-icon href="#cx-icon-content-copy"></use></svg><span class="cx-code__copy-label">Copy</span></button>
   </figcaption>
-  {{ replaceRE ` file="[^"]*"` "" (string $result.Wrapped) 1 | safeHTML }}
+  {{ replaceRE ` (?:file|preview)="[^"]*"` "" (string $result.Wrapped) 2 | safeHTML }}
 </figure>
+{{- if $preview }}
+</div>
+{{- end }}

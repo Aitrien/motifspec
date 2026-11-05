@@ -90,6 +90,15 @@ enableGitInfo = true  # Lastmod from Git, for "Last updated"
 
 The templates are `layouts/page.markdown.md`, `section.markdown.md` and `home.markdown.md`; a site's own file at the same path wins.
 
+### Steps from Markdown
+
+Steps (`steps.md`) come from an ordered list with `{.cx-steps}` on the line after it, which needs Goldmark's block attributes:
+
+```toml {file="hugo.toml"}
+[markup.goldmark.parser.attribute]
+  block = true
+```
+
 ### Search
 
 Search (`search.md`) reads a Pagefind index of the built site. Turn it on in the header with `params.motifspec.search = true`, and run Pagefind after Hugo, at an exact version, so the index and its script are written into the site:
@@ -162,7 +171,7 @@ These apply to all Markdown content once the module is imported.
 | `render-heading.html` | Headings get ids; h2s get a `#` anchor. | `heading-anchor.md` |
 | `render-image.html` | A standalone image is a numbered figure: `![alt](file.png "caption")`, image in the page bundle, alt and caption required. `{width="prose"}` on the next line keeps it to the text measure. Inline images stay plain. An `.svg` on its own line becomes a diagram figure, inlined so its `cx-diagram` classes follow the theme. | `figure.md` |
 | `render-table.html` | `{caption="Title \| subtitle"}` on the line after a table is required. Numeric columns align right; more than four columns break out. | `data-table.md` |
-| `render-codeblock.html` | Header bar with language, optional `{file="path"}` and copy button. Breaks out when a line is longer than the prose measure. | `code-block.md` |
+| `render-codeblock.html` | Header bar with language, optional `{file="path"}` and copy button. Breaks out when a line is longer than the prose measure. An `html` fence with `{preview=true}` also shows the example live, above its code. | `code-block.md`, `component-preview.md` |
 | `render-blockquote.html` | `> [!NOTE]`, `[!TIP]`, `[!WARNING]` and `[!CAUTION]` become callouts. A quotation must end with a line `— Name \| Source title`. | `callout.md`, `prose.md` |
 | `render-link.html` | Internal links are resolved, and a broken one fails the build. External links get the outward arrow. | `icon.md` |
 
