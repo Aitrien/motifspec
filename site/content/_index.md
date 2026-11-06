@@ -1,5 +1,6 @@
 ---
 title: MotifSpec
+eyebrow: An experiment by Liam Marshall
 statement: A design system an AI assistant can follow, one layer at a time.
 description: An experiment in turning a brand kit into tokens and layered rules, served to AI coding assistants through an MCP server. The colours, type and contours are an example brand, ready to swap for a real one.
 ---
