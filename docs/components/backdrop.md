@@ -40,9 +40,22 @@ Contour surveys drawn full-bleed behind the top of the home page and the bottom 
 
 ## Markup
 
-The build writes the head to `dist/backdrop.html` and the foot to `dist/backdrop-foot.html`: the contours at time zero, on a different stretch of terrain each, sliced to cover the layer. In Hugo, `motifspec/body-start.html` inlines the head on the home page, and `motifspec/body-end.html` inlines the foot and loads `dist/plate.js`:
+The page, as it reaches the browser. Each layer's contours are an SVG the build draws (left out here, so the preview shows only the frost):
 
 ```html {preview=true}
+<body class="cx-backdrop-page">
+  <div class="cx-backdrop cx-backdrop--head" aria-hidden="true" data-plate-seed="3" data-plate-cells="48"><!-- the contours: dist/backdrop.html --></div>
+  <a class="cx-skip-link" href="#main">Skip to content</a>
+  <header class="cx-header"><!-- site-header.md --></header>
+  <main id="main"><!-- the template --></main>
+  <footer class="cx-footer"><!-- site-footer.md --></footer>
+  <div class="cx-backdrop cx-backdrop--foot" aria-hidden="true" data-plate-seed="7" data-plate-cells="48"><!-- the contours: dist/backdrop-foot.html --></div>
+</body>
+```
+
+The build writes the head to `dist/backdrop.html` and the foot to `dist/backdrop-foot.html`: the contours at time zero, on a different stretch of terrain each, sliced to cover the layer. In Hugo, `motifspec/body-start.html` inlines the head on the home page, and `motifspec/body-end.html` inlines the foot and loads `dist/plate.js`:
+
+```go-html-template
 <body class="cx-backdrop-page">
   {{ (resources.Get "motifspec/backdrop.html").Content | safeHTML }}
   <!-- home page only: <div class="cx-backdrop cx-backdrop--head" aria-hidden="true" data-plate-seed="3" data-plate-cells="48"><svg class="cx-plate__map" preserveAspectRatio="xMidYMid slice" …>…</svg></div> -->

@@ -760,12 +760,23 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 .cx-toc a[aria-current="true"] { color: var(--cx-color-text-primary); border-left-color: var(--cx-color-accent-border); }
 .cx-toc__no { color: var(--cx-color-text-muted); font-family: var(--cx-font-family-mono); font-size: var(--cx-font-size-label); font-variant-numeric: tabular-nums; }
 
-/* ------------------------------------------------------------ specimen plate (contour survey of simplex-noise terrain) */
+/* ------------------------------------------------------------ specimen plate (specimen-plate.md) */
+/* A framed, captioned illustration that moves: an inline SVG, a video, a scripted drawing, or MotifSpec's own contour
+   survey of simplex-noise terrain (data-plate-seed, run by js/plate.js). */
 .cx-plate-frame { position: relative; display: inline-flex; flex-direction: column; gap: var(--cx-space-stack-sm); margin: var(--cx-size-mark-tick); padding: var(--cx-space-inset-md); border: var(--cx-border-width-hairline) solid var(--cx-color-border-default); background: var(--cx-color-surface-raised); max-width: 100%; }
 .cx-plate {
   position: relative; width: var(--cx-size-column-card); max-width: 100%; aspect-ratio: 1; overflow: hidden;
   /* Read by js/plate.js: how long the terrain takes to drift one noise unit, and how long to wait for the draw-in. */
   --cx-plate-drift: var(--cx-motion-duration-drift); --cx-plate-draw: var(--cx-motion-duration-plate);
+}
+.cx-plate--wide { width: calc(var(--cx-size-column-card) * 1.6); aspect-ratio: 16 / 10; }
+/* Whatever the illustration is, it fills the plate. */
+.cx-plate > :is(svg, img, video, canvas) { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* Paused (dist/codex.js sets data-paused on the frame), CSS animations in the illustration stop where they are. Under
+   reduced motion they never run: an illustration must read complete without them. */
+.cx-plate-frame[data-paused] .cx-plate[data-plate-motion] :is(*, *::before, *::after) { animation-play-state: paused !important; }
+@media (prefers-reduced-motion: reduce) {
+  .cx-plate[data-plate-motion] :is(*, *::before, *::after) { animation: none !important; transition: none !important; }
 }
 .cx-plate__map { display: block; width: 100%; height: 100%; }
 .cx-plate__map path { fill: none; vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-linejoin: round; }
@@ -782,8 +793,9 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 /* The dash only exists for the draw-in. The last keyframe drops it, so lines reshaped later never show gaps. */
 @keyframes cx-contour { 99% { stroke-dasharray: 1; stroke-dashoffset: 0; } 100% { stroke-dasharray: none; stroke-dashoffset: 0; } }
 
-/* Pause control: a native checkbox styled as an icon-only pill. It ships hidden; the script reveals it when it
-   starts the drift, so it never appears on a plate that isn't moving. */
+/* Pause control: a native checkbox styled as an icon-only pill. It ships hidden; a script reveals it when the
+   illustration starts moving (js/plate.js for the contour survey, dist/codex.js for any other), so it never appears
+   on a plate that isn't moving. */
 .cx-plate__pause {
   position: absolute; z-index: 2; top: var(--cx-space-inset-sm); right: var(--cx-space-inset-sm);
   display: inline-grid; place-items: center; width: var(--cx-size-target-touch); height: var(--cx-size-target-touch);

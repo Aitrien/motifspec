@@ -297,5 +297,26 @@
       }, { rootMargin: '0px 0px -70% 0px' });
       links.forEach(function (a) { var t = document.getElementById(a.getAttribute('href').slice(1)); if (t) io.observe(t); });
     });
+
+    // Specimen plates whose illustration moves (data-plate-motion): show the pause control, and pause or play what
+    // is inside with it: CSS animations (through data-paused on the frame), SMIL in an inline SVG, and video. A
+    // scripted drawing listens for the "cx-plate-pause" event. Under reduced motion nothing plays and the control
+    // stays hidden. The contour survey (data-plate-seed) is run by dist/plate.js instead.
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('.cx-plate[data-plate-motion]').forEach(function (plate) {
+      var frame = plate.closest('.cx-plate-frame') || plate.parentElement;
+      var toggle = frame.querySelector('.cx-plate__pause');
+      var input = toggle && toggle.querySelector('input');
+      var set = function (paused) {
+        frame.toggleAttribute('data-paused', paused);
+        plate.querySelectorAll('svg').forEach(function (svg) { if (svg.pauseAnimations) { if (paused) svg.pauseAnimations(); else svg.unpauseAnimations(); } });
+        plate.querySelectorAll('video').forEach(function (v) { if (paused) v.pause(); else { var p = v.play(); if (p && p.catch) p.catch(function () { /* autoplay refused: the poster stays */ }); } });
+        frame.dispatchEvent(new CustomEvent('cx-plate-pause', { bubbles: true, detail: { paused: paused } }));
+      };
+      if (still) { set(true); return; }
+      if (toggle) toggle.hidden = false;
+      if (input) input.addEventListener('change', function () { set(input.checked); });
+      set(Boolean(input && input.checked));
+    });
   });
 })();

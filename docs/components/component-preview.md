@@ -50,6 +50,7 @@ The frame's document has the theme snippet (`dist/theme-init.js`), `codex.css`, 
 - Don't put a preview's markup straight into the page; a header or shell example would clash with the page's own.
 - Don't rely on links in an example; they don't navigate.
 - Don't preview examples that need data from the page around them.
+- Don't preview an example written in Hugo template syntax (`{{ … }}`); it would show the template, not what it writes. Fence it as `go-html-template`. The code block hook fails the build on one.
 
 ## Accessibility
 

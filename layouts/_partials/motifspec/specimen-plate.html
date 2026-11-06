@@ -1,0 +1,33 @@
+{{- /* specimen-plate.md: a framed, captioned illustration that moves, with its pause control. dist/codex.js (for an
+       illustration of the site's own) or dist/plate.js (for the contour survey) reveals the control and runs it; both
+       load on every page through head.html and body-end.html. Context: dict
+       "src"      an asset path: an .svg or .html file to inline, such as "motifspec/plate.html" (MotifSpec's contour
+                  survey) or one of the site's own in assets/, or a video (.mp4 or .webm)
+       "caption"  what it shows, after "Plate 0"
+       "label"    the illustration's text alternative, when it shows something a reader needs. Without it, the plate is
+                  decoration and hidden from assistive tech.
+       "poster"   for a video: an image asset shown before it plays, and instead of it under reduced motion
+       "wide"     true for a 16:10 plate instead of a square one */ -}}
+{{- $r := resources.Get .src -}}
+{{- if not $r }}{{ errorf "specimen-plate.html: %q is not an asset (assets/, or a module's mount)." .src }}{{ end -}}
+{{- if not .caption }}{{ errorf "specimen-plate.html: %q needs a caption: what the plate shows (specimen-plate.md)." .src }}{{ end -}}
+{{- $video := in (slice "mp4" "webm") $r.MediaType.SubType -}}
+{{- $own := and (not $video) (hasPrefix (strings.TrimSpace $r.Content) `<div class="cx-plate"`) -}}
+{{- $class := cond (eq .wide true) "cx-plate cx-plate--wide" "cx-plate" -}}
+{{- $name := cond (ne (.label | default "") "") (printf ` role="img" aria-label="%s"` (.label | htmlEscape)) ` aria-hidden="true"` -}}
+<figure class="cx-plate-frame">
+  <label class="cx-plate__pause" hidden>
+    <input class="cx-visually-hidden" type="checkbox" aria-label="Pause animation">
+    <svg class="cx-icon" data-when="running" aria-hidden="true" focusable="false"><use href="#cx-icon-pause"></use></svg>
+    <svg class="cx-icon" data-when="paused" aria-hidden="true" focusable="false"><use href="#cx-icon-play"></use></svg>
+    <span class="cx-tooltip" aria-hidden="true"><span data-when="running">Pause animation</span><span data-when="paused">Play animation</span></span>
+  </label>
+  {{- if $own }}
+  {{ $r.Content | safeHTML }}
+  {{- else if $video }}
+  <div class="{{ $class }}" data-plate-motion{{ safeHTMLAttr $name }}><video src="{{ $r.RelPermalink }}" muted loop playsinline preload="metadata"{{ with .poster }}{{ with resources.Get . }} poster="{{ .RelPermalink }}"{{ end }}{{ end }}></video></div>
+  {{- else }}
+  <div class="{{ $class }}" data-plate-motion{{ safeHTMLAttr $name }}>{{ $r.Content | safeHTML }}</div>
+  {{- end }}
+  <figcaption>Plate 0 <span class="cx-sep" aria-hidden="true">|</span> {{ .caption }}</figcaption>
+</figure>
