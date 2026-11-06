@@ -46,7 +46,7 @@ Pin a release with `hugo mod get github.com/aitrien/motifspec@vX.Y.Z`. The modul
 |---|---|
 | `motifspec/head.html` | The stored-theme snippet, font preloads, `codex.css` and `codex.js`, in that order. |
 | `motifspec/body-start.html` | Call with the page. On the home page, the head of the backdrop (on a documentation site's other pages, the side); then the icon sprite and the skip link to `#main`. |
-| `motifspec/site-header.html` | `site-header.md`: wordmark from `site.Title` and `site.Params.role`, nav from `site.Menus.main` and the theme toggle. A menu entry is current when its `identifier` is the page's section; one whose URL starts with `http` gets the outward arrow. With `params.motifspec.search = true`, search comes first (`search.md`); with `params.motifspec.version` (and `changelog`, a URL), the version comes before the theme toggle. |
+| `motifspec/site-header.html` | `site-header.md`: wordmark from `site.Title` and `site.Params.role`, nav from `site.Menus.main` and the theme toggle. A menu entry is current when its `identifier` is the page's section; one whose URL starts with `http` gets the outward arrow. With `params.motifspec.search = true`, search comes first (`search.md`); with `params.motifspec.version` (and `changelog`, a URL), the version comes before the theme toggle. With `params.motifspec.layout = "documentation"`, it adds "On this page" and the menu, which take over below `size.breakpoint.lg` (`site-header.md`, In a documentation site). |
 | `motifspec/body-end.html` | The foot of the backdrop, behind the footer, and `plate.js`, which settles the home page's contours and lets the pointer warm them. |
 
 The footer stays in the site: its columns are the site's own links and colophon. Use the markup in `site-footer.md`.
@@ -68,7 +68,7 @@ A site using the documentation layout (`docs/layouts/documentation.md`) puts the
 </body>
 ```
 
-With `params.motifspec.layout = "documentation"`, `body-start.html` writes the side of the backdrop on every page but the home page, and `cx-backdrop-page--side` puts it down the left edge; on a phone the foot shows instead (`backdrop.md`). The home page is the landing page: full width, outside the docs shell, with `<body class="cx-backdrop-page">` and the head of the backdrop, as in the page shell above.
+With `params.motifspec.layout = "documentation"`, `body-start.html` writes the side of the backdrop on every page but the home page, and `cx-backdrop-page--side` puts it down the left edge; below `size.breakpoint.lg` the foot shows instead (`backdrop.md`). The home page is the landing page: full width, outside the docs shell, with `<body class="cx-backdrop-page">` and the head of the backdrop, as in the page shell above.
 
 An article page's `main` block, in order: the page head with `page-actions.html` after the lede, `article.html`, `page-footer.html`, then `pagination-docs.html`.
 
@@ -132,10 +132,12 @@ Every partial below is called as `partial "motifspec/<name>.html" <context>`.
 | `pagination-entries.html` | `pagination.md` | `dict "page" . "label" "Post navigation" "noun" "Post"`. Previous and next in the page's section, oldest first. |
 | `pagination-pages.html` | `pagination.md` | `dict "pager" $pager "label" "Writing pages"`. Pages of a paginated list; nothing when it fits on one page. |
 | `docs-nav.html` | `docs-shell.md` | A page. The documentation layout's navigation: top-level pages, then a group per top-level section in weight order. `docs_nav: false` in front matter leaves a page or section out. |
+| `docs-nav-groups.html` | `docs-shell.md` | `dict "page" . "prefix" "menu"`. The navigation's groups, which `docs-nav.html` and the documentation header's menu both write; `prefix` keeps each copy's ids apart. |
 | `page-actions.html` | `page-actions.md` | A page. Copy page and View as Markdown, when the page has the markdown output format; nothing otherwise. |
 | `page-footer.html` | `page-footer.md` | A page. Last updated (its `Lastmod`), Generated from (its `data` param) and View source, from `params.motifspec.sourceURL` (or Edit this page, from `editURL`) and, for a site in a folder of its repository, `params.motifspec.siteDir`. A page with no file of its own sets `source` and, for one section of a file, `sourceAnchor`. |
 | `pagination-docs.html` | `pagination.md`, `page-footer.md` | A page. Previous and next in the order `docs-nav.html` lists the pages. |
 | `search.html` | `search.md` | A page. The search trigger and dialog; `site-header.html` calls it when `params.motifspec.search` is true. |
+| `theme-toggle.html` | `site-header.md` | A page. The theme toggle; `site-header.html` writes it in the bar and, on a documentation site, in the menu. |
 | `back-link.html` | `button-and-link.md` | `dict "href" "…" "label" "All work"`. |
 | `section-heading.html` | `heading-anchor.md` | `dict "id" "work" "title" "Selected work"`, inside a `<section id="work" aria-labelledby="work-title">`. |
 | `tokens.html` | | Call with `partialCached "motifspec/tokens.html" "tokens"`. A map from token name to its entry in `dist/tokens.json`, for templates that need a token's value at build time. |

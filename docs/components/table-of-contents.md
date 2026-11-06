@@ -68,7 +68,7 @@ A numbered list of an article's sections, beside the text on wide screens and ab
 ## Do
 
 - Number sections because the order is real; nest `<h3>` entries one level only.
-- Ship `<details open>` so it works without script. Readers can collapse it on phones; the chevron rotates with `motion.duration.base`.
+- Ship `<details open>` so it works without script. Readers can collapse it on phones; the chevron rotates with `motion.duration.base`. On a documentation site it is hidden below `size.breakpoint.lg`, where the header has "On this page" (`site-header.md`).
 - Let the script add `is-docked` (sticky) only when the TOC sits beside the text, and set `aria-current="true"` on the visible section.
 
 ## Don't

@@ -2,6 +2,23 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.22.0] - 2026-11-06
+
+### Added
+- A documentation site's header (`cx-header--docs`, written by `site-header.html` when `params.motifspec.layout` is `"documentation"`) takes over the page navigation below `size.breakpoint.lg`. The bar is one row: the wordmark, "On this page", search and a menu. It sticks, and once the page scrolls the wordmark compacts and "On this page" appears.
+  - The menu is a `<details>` whose sheet holds the page navigation, which scrolls, with the menu's external links, the changelog with the version, and the theme toggle fixed at the bottom. The page behind it doesn't scroll.
+  - "On this page" is a panel under the bar with Back to top and the page's sections, the current one marked.
+  - Both work without script. With `dist/codex.js`, one opens at a time, and each closes on Escape, a click outside it, or a link followed inside it.
+- `docs-nav-groups.html` (the page navigation's groups, written in the side column and in the menu, with an id prefix each) and `theme-toggle.html`.
+
+### Changed
+- Search's trigger looks like the field it opens: square, on `color.surface.sunken` and as wide as `size.column.sidebar` allows, so it no longer reads as the current section's outlined pill. Below `size.breakpoint.lg` it is an icon.
+- The docs shell's side column, and the side layer of the backdrop, start at `size.breakpoint.lg` instead of `size.breakpoint.md`. Below it, the navigation and "On this page" are in the header, and the article's own table of contents is hidden.
+- From `size.breakpoint.lg` up, the documentation header compacts its wordmark on scroll and stays on one row, with the search field giving way first.
+
+### Removed
+- The docs shell's Menu control (`cx-docs-nav__menu`), replaced by the header's menu.
+
 ## [1.21.0] - 2026-11-05
 
 ### Added

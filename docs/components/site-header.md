@@ -7,10 +7,13 @@ tokens:
   - border.focus.width
   - border.width.hairline
   - color.accent.fill.rest
+  - color.border.default
   - color.border.strong
   - color.border.subtle
   - color.focus.ring
+  - color.link.rest
   - color.surface.base
+  - color.surface.raised
   - color.text.muted
   - color.text.on-accent
   - color.text.primary
@@ -19,18 +22,24 @@ tokens:
   - font.family.display
   - font.family.mono
   - font.line-height.ui
+  - font.size.body
   - font.size.heading-4
   - font.size.label
+  - font.size.small
   - font.tracking.heading
   - font.tracking.label
   - font.weight.display
   - font.weight.strong
   - font.weight.ui
+  - motion.duration.base
   - motion.duration.fast
   - motion.duration.slow
   - motion.easing.standard
   - radius.pill
+  - size.container.breakout
   - size.container.page
+  - size.target.control
+  - size.target.min
   - size.target.touch
   - space.gutter.page
   - space.inline.lg
@@ -39,6 +48,10 @@ tokens:
   - space.inset.md
   - space.inset.sm
   - space.inset.xs
+  - space.stack.lg
+  - space.stack.md
+  - space.stack.sm
+  - space.stack.xs
 ---
 
 # Site header and nav
@@ -83,24 +96,56 @@ The bar at the top of every page: wordmark, primary nav and the theme toggle. On
 
 ### In a documentation site
 
-A documentation site's header can also carry search (first, before the nav; `search.md`), a link out to the source repository in the nav, with the outward arrow, and the version before the theme toggle, linking to the changelog:
+A documentation site's header (`cx-header--docs`) also carries search, a link out to the source repository, the version linking to the changelog, and two `<details>` that take over below `size.breakpoint.lg`: "On this page" and a menu.
 
 ```html
-<div class="cx-header__end">
-  <button class="cx-search-trigger" type="button" data-search-open aria-haspopup="dialog" aria-controls="cx-search" hidden>…</button>
-  <nav class="cx-nav" aria-label="Main">
-    <ul>
-      <li><a href="/guide/" aria-current="page">Guide</a></li>
-      <li><a href="/reference/">Reference</a></li>
-      <li><a href="https://github.com/owner/repo">GitHub<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg></a></li>
-    </ul>
-  </nav>
-  <a class="cx-header__version" href="/reference/changelog/">v1.19.0<span class="cx-visually-hidden">, changelog</span></a>
-  <button class="cx-theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch to dark theme">…</button>
-</div>
+<header class="cx-header cx-header--docs">
+  <div class="cx-container cx-header__inner">
+    <a class="cx-wordmark" href="/">MotifSpec <span class="cx-wordmark__role">Brand guidelines</span></a>
+    <div class="cx-header__end">
+      <details class="cx-header__toc" data-pagefind-ignore>
+        <summary>On this page<svg class="cx-icon cx-icon--sm cx-header__chevron" aria-hidden="true" focusable="false"><use href="#cx-icon-expand"></use></svg></summary>
+        <nav class="cx-header__panel cx-toc" aria-label="On this page">
+          <a class="cx-header__top" href="#top">Back to top<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-upward"></use></svg></a>
+          <ol><li><a href="#install"><span class="cx-toc__no">01</span>Install</a></li></ol>
+        </nav>
+      </details>
+      <button class="cx-search-trigger" type="button" data-search-open aria-haspopup="dialog" aria-controls="cx-search" hidden>…</button>
+      <nav class="cx-nav" aria-label="Main">
+        <ul>
+          <li><a href="/guide/" aria-current="page">Guide</a></li>
+          <li><a href="https://github.com/owner/repo">GitHub<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg></a></li>
+        </ul>
+      </nav>
+      <a class="cx-header__version" href="/reference/changelog/">v1.22.0<span class="cx-visually-hidden">, changelog</span></a>
+      <button class="cx-theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch to dark theme">…</button>
+      <details class="cx-header__menu">
+        <summary aria-label="Menu"><svg class="cx-icon" data-when="closed" aria-hidden="true" focusable="false"><use href="#cx-icon-menu"></use></svg><svg class="cx-icon" data-when="open" aria-hidden="true" focusable="false"><use href="#cx-icon-close"></use></svg></summary>
+        <div class="cx-header__sheet" data-pagefind-ignore>
+          <nav class="cx-header__sheet-body cx-docs-nav" aria-label="Documentation"><!-- the page navigation: docs-shell.md --></nav>
+          <div class="cx-header__sheet-foot">
+            <ul class="cx-docs-nav__list">
+              <li><a href="https://github.com/owner/repo">GitHub<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg></a></li>
+              <li><a href="/reference/changelog/">Changelog<span class="cx-header__version">v1.22.0</span></a></li>
+            </ul>
+            <div class="cx-header__setting">Theme<button class="cx-theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch to dark theme">…</button></div>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
 ```
 
-A portfolio's header has none of these.
+<!-- caption: The documentation header by width -->
+| | Below `size.breakpoint.lg` | From `size.breakpoint.lg` |
+|---|---|---|
+| At the top of the page | The wordmark in full, search (an icon) and the menu | The wordmark in full, search (a field), the nav, the version and the theme toggle |
+| Scrolled | A compact wordmark, "On this page", search and the menu | The same, with a compact wordmark |
+| The menu | A sheet under the bar: the page navigation scrolls; the external links, the changelog with the version, and the theme toggle stay at the bottom | Not shown: the side column has the navigation |
+| "On this page" | A panel under the bar, with Back to top and the page's sections | Not shown: the article has its own |
+
+"On this page" is written only for a page whose article shows a table of contents: three or more h2s, and no `toc: false`. In Hugo, `partial "motifspec/site-header.html" .` writes all of this when `params.motifspec.layout` is `"documentation"`, with the menu's page navigation from `docs-nav-groups.html` and the toggle from `theme-toggle.html` (`docs/hugo.md`). A portfolio's header has none of these.
 
 ### Scripts
 
@@ -131,16 +176,18 @@ Copy the snippet as it is: the build fails if this doc and `js/theme-init.js` di
 
 ## Don't
 
-- Don't hide the nav behind a menu button at small widths. The list scrolls inside its row instead.
-- Don't add icons or ornaments to nav items. The theme toggle is the only header control with an icon.
+- Don't hide a portfolio's nav behind a menu button at small widths; the list scrolls inside its row instead. A documentation site, whose navigation is a long list of pages, puts it in its menu below `size.breakpoint.lg`.
+- Don't add icons or ornaments to nav items. The theme toggle, and on a documentation site the search icon and the menu, are the only header controls that are icons.
 - Don't make the header sticky on a backdrop page without its surface; see-through, it would sit on the text below it. The `data-scrolled` rules keep the two together.
-- Don't animate the header on scroll beyond that surface fade (no shrink, hide or reveal).
+- Don't animate the header on scroll beyond that surface fade and, on a documentation site, the compact wordmark: no hiding or revealing the bar.
 
 ## Accessibility
 
 - The skip link is the first focusable element and targets `<main id="main">`.
 - `<nav aria-label="Main">`; only one nav per page uses that label.
-- Nav links and the toggle are 44px (`size.target.touch`); the toggle is a pill with equal sides, so it renders as a circle.
+- Nav links, the toggle and the menu control are 44px (`size.target.touch`); the toggle is a pill with equal sides, so it renders as a circle.
+- The menu's control is named "Menu" (`aria-label` on its summary), and its icon changes to a cross while it is open; "On this page" is named by its text. Both are `<details>`, so Enter or Space opens them without script, and the browser announces whether they are expanded.
+- While the menu is open, the page behind it doesn't scroll. With `dist/codex.js`, Escape closes an open menu or panel and returns focus to its control.
 - The toggle's `aria-label` is its action ("Switch to light theme"); the visible tooltip repeats it and is `aria-hidden`. Escape hides the tooltip without moving the pointer (see `tooltip.md`).
 - `aria-current` carries the current state for assistive tech; the outline is the visual cue.
 - Pairs: `color.text.secondary` and `color.text.primary` on `color.surface.base` (7:1); `color.border.strong` on `color.surface.base` (current outline, 3:1). On a backdrop page the frost is measured as `color.surface.base`; the contour lines beneath it are not part of the check.
@@ -153,3 +200,4 @@ Copy the snippet as it is: the build fails if this doc and `js/theme-init.js` di
 - **System changes:** while following the system, a change to the system theme updates the toggle's label.
 - **Header height:** `--_header-height` on `<html>` is kept equal to the header's height, for scroll padding and the docked table of contents. When the nav wraps below the wordmark, the header gets `data-wrapped`.
 - **On a backdrop page:** the header sticks once script runs, and `data-scrolled="true"` fades its surface in as soon as the page leaves the top. Without script it scrolls away with the page.
+- **On a documentation site:** the header always sticks with its surface, and gets `data-scrolled` too, which compacts the wordmark and (below `size.breakpoint.lg`) shows "On this page" once the page leaves the top. Without script the bar stays compact, with "On this page" shown. Only one of the menu and "On this page" is open at a time; each closes on Escape, a click outside it, or a link followed inside it. The current section is marked in "On this page", as in the article's table of contents.

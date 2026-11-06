@@ -1,0 +1,7 @@
+{{- /* site-header.md: the theme toggle, an icon-only button that shows the action. dist/codex.js reveals it and keeps
+       every toggle on the page in step. Context: a page. */ -}}
+<button class="cx-theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch to dark theme">
+  <svg class="cx-icon" data-icon="to-dark" aria-hidden="true" focusable="false"><use href="#cx-icon-theme-dark"></use></svg>
+  <svg class="cx-icon" data-icon="to-light" aria-hidden="true" focusable="false"><use href="#cx-icon-theme-light"></use></svg>
+  <span class="cx-tooltip" aria-hidden="true">Switch to dark theme</span>
+</button>

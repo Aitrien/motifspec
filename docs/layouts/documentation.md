@@ -10,7 +10,7 @@ Since 1.20.0, the token table (`token-table.md`) for reference pages generated f
 
 ## Shell
 
-The site header and footer, and between them, on every page but the landing page, the docs shell (`docs-shell.md`): grouped page navigation on the left, the page in the middle and "On this page" (the table of contents) on the right when there is room. Below `size.breakpoint.lg` "On this page" moves above the article, and below `size.breakpoint.md` the page navigation sits behind a Menu control above the page. In Hugo, see `docs/hugo.md` (A documentation page).
+The site header and footer, and between them, on every page but the landing page, the docs shell (`docs-shell.md`): grouped page navigation on the left, the page in the middle and "On this page" (the table of contents) on the right when there is room. Below `size.breakpoint.lg` both move into the header (`site-header.md`): the page navigation into its menu, with the external links, the changelog and the theme toggle, and "On this page" into a panel that appears once the page scrolls. In Hugo, see `docs/hugo.md` (A documentation page).
 
 ## Page templates
 
@@ -30,7 +30,7 @@ Every shared component, plus the components whose doc lists `documentation` unde
 ## Decoration
 
 - The landing page: the head of the backdrop behind the statement and the foot behind the footer, as on a portfolio's home page (`backdrop.md`).
-- Every page in the docs shell: the side of the backdrop, down the left edge behind the navigation, fading out before the article. On a phone, the foot behind the footer instead.
+- Every page in the docs shell: the side of the backdrop, down the left edge behind the navigation, fading out before the article. Below `size.breakpoint.lg`, the foot behind the footer instead.
 - The footer band. No other ornaments in articles.
 
 ## Headings
