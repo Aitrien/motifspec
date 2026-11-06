@@ -61,7 +61,7 @@ export function createServer() {
     { name: 'motifspec', title: 'MotifSpec design system', version: d.version },
     {
       instructions: [
-        `MotifSpec ${d.version}: Liam Marshall's design system (CSS, tokens, components, Hugo templates).`,
+        `MotifSpec ${d.version}: Liam Marshall's design system (CSS, tokens, components, Hugo templates). Its rules come in layers, so fetch only the ones the task needs.`,
         'Before writing markup or CSS for a MotifSpec project, call get_rules. Build UI from get_component (form "hugo" in a Hugo site, "jsx" in React), and choose tokens with find_tokens.',
         'Choose the layout first with get_doc (portfolio, dashboard, documentation or a-la-carte). Keep the project\'s stack if it has one; otherwise follow the layout\'s stack table.',
         'Before finishing, call check on what you wrote and fix every problem it reports.',
