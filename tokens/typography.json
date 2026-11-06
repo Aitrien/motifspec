@@ -18,16 +18,16 @@
             "codex.tier": "primitive"
           }
         },
-        "jetbrains-mono": {
+        "geist-mono": {
           "$value": [
-            "JetBrains Mono",
+            "Geist Mono",
             "ui-monospace",
             "SFMono-Regular",
             "Menlo",
             "Consolas",
             "monospace"
           ],
-          "$description": "JetBrains Mono (OFL), variable wght 100-800, Latin subset 40 KB. Primitive.",
+          "$description": "Geist Mono (OFL), variable wght 100-900, Latin subset 34 KB. Primitive.",
           "$extensions": {
             "codex.tier": "primitive"
           }
@@ -388,7 +388,7 @@
         "$description": "Running text, UI text, nav and buttons. The default family on body."
       },
       "mono": {
-        "$value": "{primitive.font.family.jetbrains-mono}",
+        "$value": "{primitive.font.family.geist-mono}",
         "$description": "Code, plus short machine-like labels: accession numbers, dates, tags, eyebrow labels, table headers. Never for paragraphs."
       },
       "ornament": {

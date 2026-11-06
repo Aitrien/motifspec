@@ -141,7 +141,7 @@ It serves the latest release. A project pinned to an older version can be offere
 |---|---|
 | Concept | A specimen ledger: an archival botanical compendium drawn as a technical catalogue, with a US national-park signage voice. |
 | Colour | Five dye-plant hues generated in OKLCH: ash (neutral), sap (accent and success), woad (focus and info), weld (warning) and madder (danger). Cool paper in light mode, green-black in dark mode. |
-| Type | National Park (display and body), JetBrains Mono (code and labels), Yarndings 12 (ornament). 88 KB total. |
+| Type | National Park (display and body), Geist Mono (code and labels), Yarndings 12 (ornament). 82 KB total. |
 | Signature | The accession label: every entry has a catalogue number (`LM-W-004`, `LM-P-031`) shown on a framed label with registration ticks. |
 | Decoration | The backdrop: contour surveys of generated terrain under a light, grainy frost, behind the home page's statement and every footer. They settle once on arrival and warm into hills under the pointer, like a heatmap. The same survey framed as the specimen plate (Plate 0) for landing pages, and a knitted Yarndings band in the footer. |
 | Icons | 16 Material Symbols (Sharp, weight 300) as a self-hosted SVG sprite: direction arrows, theme, copy, callout kinds, RSS, external links. Functional only. |

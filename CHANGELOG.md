@@ -2,6 +2,24 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.23.1] - 2026-11-06
+
+### Changed
+- The README, motifspec.com's landing page, and the npm and site descriptions say what MotifSpec is for: an experiment in turning a brand kit into tokens and layered rules that an AI assistant reads a layer at a time, with every decision written once and everything else generated and released by CI.
+- The MCP server's instructions tell an assistant that the rules come in layers, so it fetches only the ones its task needs.
+
+## [1.23.0] - 2026-11-06
+
+### Changed
+- `font.family.mono` is now Geist Mono (SIL OFL 1.1, from Vercel's `geist` 1.9.2), in place of JetBrains Mono. It sets code and every label: eyebrows, accession numbers, tags, table headers, the table of contents' numbers and the version. Its characters are the same 0.6 em wide, so nothing reflows. Its lowercase is a little shorter (x-height 530 against 550 per 1000), so labels read slightly lighter.
+- `fonts/geist-mono-latin-wght.woff2` is cut to the same Latin set as the file it replaces, with weights 100 to 900, at 34 KB (was 40 KB). The fonts now total 82 KB.
+
+### Added
+- `primitive.font.family.geist-mono`, with its licence in `fonts/OFL-geist-mono.txt`.
+
+### Removed
+- `primitive.font.family.jetbrains-mono`, `fonts/jetbrains-mono-latin-wght.woff2` and its licence. Primitives are for MotifSpec's own CSS only, so nothing else should reference them.
+
 ## [1.22.1] - 2026-11-06
 
 ### Changed
