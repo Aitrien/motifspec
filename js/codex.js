@@ -79,12 +79,29 @@
     // Backdrop pages: the header starts on the frost and scrolls with the page. Once the script marks it, it sticks,
     // and data-scrolled="true" fades its surface in as soon as the page leaves the top; back at the top it fades out.
     // Without this script it keeps scrolling away, which is safe: it never sits see-through over the text.
-    document.querySelectorAll('.cx-backdrop-page .cx-header').forEach(function (header) {
+    // A docs header (cx-header--docs) is marked the same way, so it shows the wordmark in full at the top of the page
+    // and compacts once the page scrolls.
+    document.querySelectorAll('.cx-backdrop-page .cx-header, .cx-header--docs').forEach(function (header) {
       var queued = false;
       var set = function () { queued = false; header.setAttribute('data-scrolled', window.scrollY > 0 ? 'true' : 'false'); };
       set();
       window.addEventListener('scroll', function () { if (!queued) { queued = true; window.requestAnimationFrame(set); } }, { passive: true });
     });
+
+    // The docs header's "On this page" and menu are <details>, so they open and close without script. With it, one
+    // opens at a time, and they close on Escape, on a click outside them, and when a link in them is followed.
+    var panels = Array.prototype.slice.call(document.querySelectorAll('.cx-header__toc, .cx-header__menu'));
+    panels.forEach(function (d) {
+      d.addEventListener('toggle', function () { if (d.open) panels.forEach(function (o) { if (o !== d) o.open = false; }); });
+      d.addEventListener('click', function (e) { if (e.target.closest('a[href]')) d.open = false; });
+    });
+    if (panels.length) {
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        panels.forEach(function (d) { if (d.open) { d.open = false; d.querySelector('summary').focus(); } });
+      });
+      document.addEventListener('click', function (e) { panels.forEach(function (d) { if (d.open && !d.contains(e.target)) d.open = false; }); });
+    }
 
     // Copy buttons on code blocks.
     document.querySelectorAll('.cx-code').forEach(function (block) {
@@ -287,7 +304,8 @@
       if (!toc || !main) return;
       var dock = function () { toc.classList.toggle('is-docked', Math.abs(toc.offsetTop - main.offsetTop) < 1); };
       dock(); window.addEventListener('resize', dock);
-      var links = Array.prototype.slice.call(toc.querySelectorAll('a[href^="#"]'));
+      // The docs header's "On this page" (site-header.md) lists the same sections, so it is marked too.
+      var links = Array.prototype.slice.call(document.querySelectorAll('.cx-article .cx-toc a[href^="#"], .cx-header__toc li a[href^="#"]'));
       if (!('IntersectionObserver' in window)) return;
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {

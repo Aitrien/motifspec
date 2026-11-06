@@ -2,7 +2,7 @@
 @font-face { font-family: "JetBrains Mono"; src: url("../fonts/jetbrains-mono-latin-wght.woff2") format("woff2"); font-weight: 100 800; font-style: normal; font-display: swap; }
 @font-face { font-family: "Yarndings 12"; src: url("../fonts/yarndings-12-latin.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
 
-/* MotifSpec 1.21.0 — generated from tokens/*.json. Do not edit.
+/* MotifSpec 1.22.0 — generated from tokens/*.json. Do not edit.
    Themes: semantic colours use light-dark(); color-scheme follows the system unless
    <html data-theme="light|dark"> pins it. --cx-primitive-* are for this file only. */
 :root {
@@ -562,13 +562,8 @@ p, li, dd, figcaption { text-wrap: pretty; }
   position: sticky; top: var(--_header-height, var(--cx-size-target-touch));
   max-height: calc(var(--_viewport-height) - var(--_header-height, var(--cx-size-target-touch))); overflow-y: auto; scrollbar-width: thin;
 }
-.cx-docs-nav__menu > summary {
-  display: flex; align-items: center; gap: var(--cx-space-inline-xs); width: fit-content; min-height: var(--cx-size-target-control);
-  padding-inline: var(--cx-space-inset-md); border: var(--cx-border-width-hairline) solid var(--cx-color-border-strong); border-radius: var(--cx-radius-pill);
-  color: var(--cx-color-text-primary); font-weight: var(--cx-font-weight-strong); cursor: pointer; list-style: none;
-}
-.cx-docs-nav__menu > summary::-webkit-details-marker, .cx-docs-nav__group > summary::-webkit-details-marker { display: none; }
-.cx-docs-nav__menu[open] > summary .cx-icon, .cx-docs-nav__group[open] > summary .cx-icon { transform: rotate(180deg); }
+.cx-docs-nav__group > summary::-webkit-details-marker { display: none; }
+.cx-docs-nav__group[open] > summary .cx-icon { transform: rotate(180deg); }
 .cx-docs-nav__groups { display: flex; flex-direction: column; gap: var(--cx-space-stack-md); }
 .cx-docs-nav__group > summary {
   display: flex; align-items: center; gap: var(--cx-space-inline-sm); min-height: var(--cx-size-target-min); padding-inline: var(--cx-space-inset-md);
@@ -585,16 +580,11 @@ p, li, dd, figcaption { text-wrap: pretty; }
 }
 .cx-docs-nav__list a:hover { color: var(--cx-color-text-primary); border-left-color: var(--cx-color-border-strong); }
 .cx-docs-nav__list a[aria-current="page"] { color: var(--cx-color-text-primary); font-weight: var(--cx-font-weight-strong); border-left-color: var(--cx-color-accent-border); }
-/* Wide: the navigation is always open and the Menu control is hidden. */
-@media (width >= 48rem) {
-  .cx-docs-nav__menu > summary { display: none; }
-  .cx-docs-nav__menu::details-content { content-visibility: visible; }
-}
-/* Phone: one column; the navigation sits behind the Menu control above the page, closed until it's opened. */
-@media (width < 48rem) {
+/* Below size.breakpoint.lg: one column. The side column is hidden: the same navigation is in the header's menu, and
+   "On this page" is in the header too, so the article's own table of contents is hidden as well. */
+@media (width < 64rem) {
   .cx-docs { grid-template-columns: minmax(0, 1fr); }
-  .cx-docs-nav { padding-block: var(--cx-space-stack-md) 0; }
-  .cx-docs-nav__menu[open] > .cx-docs-nav__groups { padding-top: var(--cx-space-stack-md); }
+  .cx-docs > .cx-docs-nav, .cx-docs .cx-article > .cx-toc { display: none; }
 }
 
 /* ------------------------------------------------------------ page actions and page footer (documentation layout) */
@@ -613,14 +603,17 @@ p, li, dd, figcaption { text-wrap: pretty; }
 .cx-page-footer .cx-meta a:hover { color: var(--cx-color-link-hover); text-decoration-thickness: var(--cx-border-width-emphasis); }
 
 /* ------------------------------------------------------------ search (a dialog over the page, from the header) */
+/* The trigger looks like the field it opens: square, sunken and wide, so it doesn't read as the current section's
+   outlined pill in the nav beside it. */
 .cx-search-trigger {
-  flex: none; display: inline-flex; align-items: center; gap: var(--cx-space-inline-sm); min-height: var(--cx-size-target-touch);
-  padding-inline: var(--cx-space-inset-sm) var(--cx-space-inset-xs); border: var(--cx-border-width-hairline) solid var(--cx-color-border-strong);
-  border-radius: var(--cx-radius-pill); background: var(--cx-color-surface-base); color: var(--cx-color-text-secondary);
-  font: inherit; font-size: var(--cx-font-size-small); cursor: pointer;
+  flex: 0 1 var(--cx-size-column-sidebar); min-width: 0; display: inline-flex; align-items: center; gap: var(--cx-space-inline-sm);
+  min-height: var(--cx-size-target-control); padding-inline: var(--cx-space-inset-sm) var(--cx-space-inset-xs);
+  border: var(--cx-border-width-hairline) solid var(--cx-color-border-strong); border-radius: var(--cx-radius-control);
+  background: var(--cx-color-surface-sunken); color: var(--cx-color-text-muted); font: inherit; font-size: var(--cx-font-size-small); cursor: text;
 }
-.cx-search-trigger:hover { color: var(--cx-color-text-primary); background: var(--cx-color-surface-hover); }
-.cx-search-trigger__keys { display: inline-flex; gap: var(--cx-space-inline-xs); }
+.cx-search-trigger:hover { color: var(--cx-color-text-secondary); }
+.cx-search-trigger__label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+.cx-search-trigger__keys { flex: none; display: inline-flex; gap: var(--cx-space-inline-xs); }
 .cx-search {
   width: min(100% - 2 * var(--cx-space-gutter-page), 2 * var(--cx-size-column-card)); max-height: calc(100% - 2 * var(--cx-space-section-sm));
   margin: var(--cx-space-section-sm) auto auto; padding: 0; border: var(--cx-border-width-hairline) solid var(--cx-color-border-default);
@@ -654,8 +647,13 @@ p, li, dd, figcaption { text-wrap: pretty; }
 .cx-search__title { font-weight: var(--cx-font-weight-strong); line-height: var(--cx-font-line-height-heading); }
 .cx-search__excerpt { font-size: var(--cx-font-size-small); line-height: var(--cx-font-line-height-ui); color: var(--cx-color-text-secondary); }
 .cx-search__excerpt mark { background: var(--cx-color-surface-highlight); color: var(--cx-color-text-primary); }
-@media (width < 48rem) {
-  .cx-search-trigger { width: var(--cx-size-target-touch); padding: 0; justify-content: center; }
+/* Below size.breakpoint.lg, where the header is one short row, the trigger is an icon. */
+@media (width < 64rem) {
+  .cx-search-trigger {
+    flex: none; width: var(--cx-size-target-touch); min-height: var(--cx-size-target-touch); padding: 0; justify-content: center;
+    border: 0; border-radius: var(--cx-radius-pill); background: transparent; color: var(--cx-color-text-primary); cursor: pointer;
+  }
+  @media (hover: hover) { .cx-search-trigger:hover { background: var(--_wash); } }
   .cx-search-trigger__keys { display: none; }
   /* Icon only on a phone, but the label stays as the button's name (visually hidden, as cx-visually-hidden). */
   .cx-search-trigger__label {
@@ -668,6 +666,79 @@ p, li, dd, figcaption { text-wrap: pretty; }
 .cx-header__version { display: inline-flex; align-items: center; min-height: var(--cx-size-target-touch); padding-inline: var(--_nav-pad); border-radius: var(--cx-radius-pill); color: var(--cx-color-text-secondary); font-family: var(--cx-font-family-mono); font-size: var(--cx-font-size-label); text-decoration: none; }
 @media (hover: hover) { .cx-header__version:hover { color: var(--cx-color-text-primary); background: var(--_wash); } }
 .cx-nav a .cx-icon { margin-left: var(--cx-space-inline-xs); }
+
+/* ------------------------------------------------------------ docs header (site-header.md, documentation layout) */
+/* Below size.breakpoint.lg the bar is one row: the wordmark, "On this page", search and the menu. The nav, version and
+   theme toggle move into the menu's sheet with the page navigation. At the top of the page the wordmark shows in full;
+   once the page scrolls (data-scrolled="true", from dist/codex.js) it is compact and "On this page" appears. From
+   size.breakpoint.lg up the bar is the full header, compacting the same way on scroll. */
+.cx-header--docs .cx-wordmark { transition: font-size var(--cx-motion-duration-fast) var(--cx-motion-easing-standard); }
+.cx-header__toc, .cx-header__menu { flex: none; }
+.cx-header__toc > summary, .cx-header__menu > summary { list-style: none; cursor: pointer; }
+.cx-header__toc > summary::-webkit-details-marker, .cx-header__menu > summary::-webkit-details-marker { display: none; }
+.cx-header__toc > summary {
+  display: inline-flex; align-items: center; gap: var(--cx-space-inline-xs); min-height: var(--cx-size-target-control);
+  padding-inline: var(--cx-space-inset-sm); border: var(--cx-border-width-hairline) solid var(--cx-color-border-strong); border-radius: var(--cx-radius-pill);
+  color: var(--cx-color-text-primary); font-size: var(--cx-font-size-small); font-weight: var(--cx-font-weight-ui); white-space: nowrap;
+}
+.cx-header__chevron { transition: transform var(--cx-motion-duration-base) var(--cx-motion-easing-standard); }
+.cx-header__toc[open] .cx-header__chevron { transform: rotate(180deg); }
+.cx-header__menu > summary {
+  display: inline-grid; place-items: center; width: var(--cx-size-target-touch); height: var(--cx-size-target-touch);
+  border-radius: var(--cx-radius-pill); color: var(--cx-color-text-primary);
+}
+@media (hover: hover) { .cx-header__toc > summary:hover, .cx-header__menu > summary:hover { background: var(--_wash); } }
+.cx-header__menu [data-when="open"], .cx-header__menu[open] [data-when="closed"] { display: none; }
+.cx-header__menu[open] [data-when="open"] { display: inline-block; }
+/* "On this page": a panel under the bar, across the page, that scrolls if the page has many sections. */
+.cx-header__panel {
+  position: absolute; top: 100%; left: var(--cx-space-gutter-page); right: var(--cx-space-gutter-page);
+  max-height: calc(var(--_viewport-height, var(--cx-size-container-breakout)) - var(--_header-height, var(--cx-size-target-touch)) - var(--cx-space-stack-lg));
+  overflow-y: auto; padding-block: var(--cx-space-inset-xs); border: var(--cx-border-width-hairline) solid var(--cx-color-border-default);
+  background: var(--cx-color-surface-raised);
+}
+.cx-header__top {
+  display: flex; align-items: center; gap: var(--cx-space-inline-xs); min-height: var(--cx-size-target-min); padding: var(--cx-space-inset-xs) var(--cx-space-inset-md);
+  margin-bottom: var(--cx-space-inset-xs); border-bottom: var(--cx-border-width-hairline) solid var(--cx-color-border-subtle); color: var(--cx-color-link-rest);
+}
+/* The menu: a sheet under the bar, to the bottom of the screen. The page navigation scrolls; the links and settings
+   stay at the bottom. The page behind it doesn't scroll while it is open. */
+.cx-header__sheet {
+  position: fixed; top: var(--_header-height, calc(var(--cx-size-target-touch) + var(--cx-space-inset-sm))); left: 0; right: 0; bottom: 0;
+  display: flex; flex-direction: column; border-top: var(--cx-border-width-hairline) solid var(--cx-color-border-subtle); background: var(--cx-color-surface-base);
+}
+.cx-header__sheet-body.cx-docs-nav { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--cx-space-stack-md) var(--cx-space-gutter-page); }
+.cx-header__sheet-foot {
+  flex: none; display: flex; flex-direction: column; gap: var(--cx-space-stack-xs);
+  padding: var(--cx-space-stack-sm) var(--cx-space-gutter-page) max(var(--cx-space-stack-sm), env(safe-area-inset-bottom, 0px));
+  border-top: var(--cx-border-width-hairline) solid var(--cx-color-border-subtle); font-size: var(--cx-font-size-small);
+}
+.cx-header__sheet-foot .cx-header__version { margin-left: auto; min-height: 0; padding: 0; }
+.cx-header__setting { display: flex; align-items: center; justify-content: space-between; padding-left: var(--cx-space-inset-md); color: var(--cx-color-text-secondary); }
+:root:has(.cx-header__menu[open]) { overflow: hidden; }
+/* The bar under an open menu holds only what's needed to close it. */
+.cx-header__end:has(.cx-header__menu[open]) > .cx-header__toc { visibility: hidden; }
+/* One row at every width: from size.breakpoint.lg the search field gives way first, down to an icon's width with its
+   label, before the nav or the wordmark would wrap. */
+.cx-header--docs .cx-header__inner { flex-wrap: nowrap; }
+.cx-header--docs .cx-nav { flex: none; }
+.cx-header--docs .cx-wordmark { flex: none; }
+/* A docs header sticks, with its surface, even without dist/codex.js: its menu and "On this page" open from it. */
+.cx-backdrop-page .cx-header--docs:not([data-scrolled]) { position: sticky; background: var(--cx-color-surface-base); }
+@media (width < 64rem) {
+  .cx-header--docs .cx-header__end { gap: var(--cx-space-inline-xs); }
+  .cx-header--docs .cx-nav, .cx-header--docs .cx-header__end > .cx-header__version, .cx-header--docs .cx-header__end > .cx-theme-toggle { display: none; }
+  .cx-header--docs .cx-wordmark { font-size: var(--cx-font-size-body); }
+  .cx-header--docs .cx-wordmark__role { display: none; }
+  .cx-header--docs[data-scrolled="false"] .cx-wordmark { font-size: var(--cx-font-size-heading-4); }
+  .cx-header--docs[data-scrolled="false"] .cx-wordmark__role { display: inline; }
+  .cx-header--docs[data-scrolled="false"] .cx-header__toc { display: none; }
+}
+@media (width >= 64rem) {
+  .cx-header__toc, .cx-header__menu { display: none; }
+  .cx-header--docs[data-scrolled="true"] .cx-wordmark { font-size: var(--cx-font-size-body); }
+  .cx-header--docs[data-scrolled="true"] .cx-wordmark__role { display: none; }
+}
 
 /* ------------------------------------------------------------ component preview (a live example above its code) */
 /* The example runs in its own document (an iframe's srcdoc) with the system's stylesheet and script, so its ids,
@@ -1344,12 +1415,13 @@ body:not(.cx-backdrop-page):has(.cx-backdrop-page) { background: transparent; }
    so it stays beside the navigation as the page scrolls. It reaches the left edge of the docs' main column
    (--_side: the page container's margin and gutter, then the navigation column), and the page's surface fades in
    across it, so the contours show in the margin, keep color.backdrop.calm behind the navigation, and are gone before
-   the article. The header fades the same way, so there is no edge across the band. On a phone the foot takes over. */
+   the article. The header fades the same way, so there is no edge across the band. Below size.breakpoint.lg, where
+   the side column is hidden, the foot takes over. */
 .cx-backdrop--side { display: none; }
 .cx-backdrop-page--side {
   --_side: calc(max(0%, 50% - var(--cx-size-container-page) / 2 - var(--cx-space-gutter-page)) + var(--cx-space-gutter-page) + var(--cx-size-column-sidebar));
 }
-@media (width >= 48rem) {
+@media (width >= 64rem) {
   .cx-backdrop-page--side { background: linear-gradient(to right, transparent, var(--cx-color-surface-base) var(--_side)); }
   /* The header keeps the same fade when it sticks: what scrolls under it is the article, which is past --_side. */
   .cx-backdrop-page--side .cx-header, .cx-backdrop-page--side .cx-header[data-scrolled] { background: linear-gradient(to right, transparent, var(--cx-color-surface-base) var(--_side)); }

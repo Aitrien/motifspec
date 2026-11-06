@@ -1,11 +1,33 @@
 {{- /* site-header.md. A child page marks its section (a post marks Writing). A menu entry whose URL starts with
        "http" gets the outward arrow. Optional, from params.motifspec: search = true adds search (search.md);
-       version = "1.19.0" with changelog = "<url>" adds the version, linked to the changelog. */ -}}
+       version = "1.19.0" with changelog = "<url>" adds the version, linked to the changelog.
+       On a documentation site (params.motifspec.layout "documentation"), below size.breakpoint.lg the bar holds only
+       the wordmark, "On this page", search and the menu, whose sheet has the page navigation (docs-shell.md), the
+       menu's external links, the changelog and the theme toggle. */ -}}
 {{- $ms := site.Params.motifspec -}}
-<header class="cx-header">
+{{- $docs := eq $ms.layout "documentation" -}}
+{{- $external := where site.Menus.main "URL" "like" `^https?://` -}}
+<header class="cx-header{{ if $docs }} cx-header--docs{{ end }}">
   <div class="cx-container cx-header__inner">
     <a class="cx-wordmark" href="{{ site.Home.RelPermalink }}">{{ site.Title }} <span class="cx-wordmark__role">{{ site.Params.role }}</span></a>
     <div class="cx-header__end">
+      {{- if $docs }}
+      {{- /* "On this page", for a page whose article shows a table of contents: three or more h2s, and no toc: false. */}}
+      {{- $h2s := partial "motifspec/h2s.html" . }}
+      {{- if and (ge (len $h2s) 3) (ne .Params.toc false) }}
+      <details class="cx-header__toc" data-pagefind-ignore>
+        <summary>On this page<svg class="cx-icon cx-icon--sm cx-header__chevron" aria-hidden="true" focusable="false"><use href="#cx-icon-expand"></use></svg></summary>
+        <nav class="cx-header__panel cx-toc" aria-label="On this page">
+          <a class="cx-header__top" href="#top">Back to top<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-upward"></use></svg></a>
+          <ol>
+            {{- range $i, $h := $h2s }}
+            <li><a href="#{{ $h.ID }}"><span class="cx-toc__no">{{ printf "%02d" (add $i 1) }}</span>{{ $h.Title | plainify | htmlUnescape }}</a></li>
+            {{- end }}
+          </ol>
+        </nav>
+      </details>
+      {{- end }}
+      {{- end }}
       {{- if $ms.search }}
       {{ partial "motifspec/search.html" . }}
       {{- end }}
@@ -19,11 +41,28 @@
       {{- with $ms.version }}
       <a class="cx-header__version" href="{{ $ms.changelog | default "#" }}">v{{ . }}<span class="cx-visually-hidden">, changelog</span></a>
       {{- end }}
-      <button class="cx-theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch to dark theme">
-        <svg class="cx-icon" data-icon="to-dark" aria-hidden="true" focusable="false"><use href="#cx-icon-theme-dark"></use></svg>
-        <svg class="cx-icon" data-icon="to-light" aria-hidden="true" focusable="false"><use href="#cx-icon-theme-light"></use></svg>
-        <span class="cx-tooltip" aria-hidden="true">Switch to dark theme</span>
-      </button>
+      {{ partial "motifspec/theme-toggle.html" . }}
+      {{- if $docs }}
+      <details class="cx-header__menu">
+        <summary aria-label="Menu"><svg class="cx-icon" data-when="closed" aria-hidden="true" focusable="false"><use href="#cx-icon-menu"></use></svg><svg class="cx-icon" data-when="open" aria-hidden="true" focusable="false"><use href="#cx-icon-close"></use></svg></summary>
+        <div class="cx-header__sheet" data-pagefind-ignore>
+          <nav class="cx-header__sheet-body cx-docs-nav" aria-label="Documentation">
+            {{ partial "motifspec/docs-nav-groups.html" (dict "page" . "prefix" "menu") }}
+          </nav>
+          <div class="cx-header__sheet-foot">
+            <ul class="cx-docs-nav__list">
+              {{- range $external }}
+              <li><a href="{{ .URL }}">{{ .Name }}<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg></a></li>
+              {{- end }}
+              {{- with $ms.version }}
+              <li><a href="{{ $ms.changelog | default "#" }}">Changelog<span class="cx-header__version">v{{ . }}</span></a></li>
+              {{- end }}
+            </ul>
+            <div class="cx-header__setting">Theme{{ partial "motifspec/theme-toggle.html" . }}</div>
+          </div>
+        </div>
+      </details>
+      {{- end }}
     </div>
   </div>
 </header>

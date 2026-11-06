@@ -11,10 +11,10 @@ tokens:
   - color.border.subtle
   - color.focus.ring
   - color.scrim
-  - color.surface.base
   - color.surface.highlight
   - color.surface.hover
   - color.surface.raised
+  - color.surface.sunken
   - color.text.muted
   - color.text.primary
   - color.text.secondary
@@ -27,8 +27,11 @@ tokens:
   - font.size.small
   - font.tracking.ui
   - font.weight.strong
+  - radius.control
   - radius.pill
   - size.column.card
+  - size.column.sidebar
+  - size.target.control
   - size.target.touch
   - space.gutter.page
   - space.inline.sm
@@ -57,7 +60,7 @@ A search control in the header that opens a dialog of results as you type, from 
 
 ## Markup
 
-The trigger goes first in the header's end (`site-header.md`); the dialog can sit next to it.
+The trigger goes in the header's end (`site-header.md`); the dialog can sit next to it. It looks like the field it opens: square (`radius.control`), on `color.surface.sunken`, and as wide as `size.column.sidebar` allows, so it can't be mistaken for the nav's pills or the current section's outline. Below `size.breakpoint.lg` it is an icon.
 
 ```html {preview=true}
 <button class="cx-search-trigger" type="button" data-search-open aria-haspopup="dialog" aria-controls="cx-search" hidden>
@@ -99,11 +102,11 @@ A result, as the script writes it:
 
 ## Accessibility
 
-- The trigger is a button with visible text ("Search"); on a phone, the label hides and its name stays in the DOM. The shortcut keys are `aria-hidden`; the shortcut is a convenience, never the only way in.
+- The trigger is a button with visible text ("Search"); below `size.breakpoint.lg`, the label is visually hidden and stays its name. The shortcut keys are `aria-hidden`; the shortcut is a convenience, never the only way in.
 - The dialog is a modal `<dialog>`: focus moves into the field when it opens and returns to where it was when it closes; Escape closes it, even from the field; the page behind is inert.
 - The field is labelled by its visually hidden label, which also names the dialog, and described by the status line, a polite live region that says how many results there are.
 - Arrow keys move from the field into the results and between them; Up from the first result returns to the field.
-- Pairs: `color.text.primary` and `color.text.secondary` on `color.surface.raised` and `color.surface.hover` (7:1); `color.text.primary` on `color.surface.highlight` for matched words (7:1); the trigger's boundary `color.border.strong` on `color.surface.base` (3:1).
+- Pairs: `color.text.primary` and `color.text.secondary` on `color.surface.raised` and `color.surface.hover` (7:1); `color.text.primary` on `color.surface.highlight` for matched words (7:1); the trigger's boundary `color.border.strong` on `color.surface.base` (3:1), and its text `color.text.muted` on `color.surface.sunken` (4.5:1).
 
 ## Behaviour
 
