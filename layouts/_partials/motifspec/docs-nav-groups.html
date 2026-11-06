@@ -1,7 +1,7 @@
 {{- /* docs-shell.md: the documentation layout's page navigation, as groups. Pages at the top level of the site come
        first, ungrouped; then each top-level section is a group, in weight order, listing its pages in weight order.
        A section or page with `docs_nav: false` in its front matter is left out; one with `deprecated` set says so
-       after its title. Every group starts open; the current page is marked. Written twice on a page, in the side
+       after its title. The group holding the current page starts open and the rest start closed; the current page is marked. Written twice on a page, in the side
        column (docs-nav.html) and in the header's menu (site-header.html), so each copy's ids take a prefix.
        Context: dict "page" (the current page) "prefix". */ -}}
 {{- $current := .page -}}
@@ -17,7 +17,7 @@
   {{- end }}
   {{- range where site.Home.Sections.ByWeight "Params.docs_nav" "ne" false }}
   {{- $id := printf "%s-%s" $prefix (.Section | urlize) }}
-  <details class="cx-docs-nav__group" open>
+  <details class="cx-docs-nav__group"{{ if eq $current.Section .Section }} open{{ end }}>
     <summary id="{{ $id }}">{{ .LinkTitle }}<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-expand"></use></svg></summary>
     <ul class="cx-docs-nav__list" aria-labelledby="{{ $id }}">
       {{- range where .Pages.ByWeight "Params.docs_nav" "ne" false }}

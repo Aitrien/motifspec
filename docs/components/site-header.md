@@ -96,7 +96,7 @@ The bar at the top of every page: wordmark, primary nav and the theme toggle. On
 
 ### In a documentation site
 
-A documentation site's header (`cx-header--docs`) also carries search, a link out to the source repository, the version linking to the changelog, and two `<details>` that take over below `size.breakpoint.lg`: "On this page" and a menu.
+A documentation site's header (`cx-header--docs`) also carries search, a link out to the source repository, the version linking to the changelog, and two `<details>` that take over below `size.breakpoint.lg`: "On this page" and a menu. Its nav holds only links out, since the page navigation lists the pages. The bar is one row of `size.target.touch` with `space.inset.xs` above and below, at every width and whatever size the wordmark is, which sits centred in it.
 
 ```html
 <header class="cx-header cx-header--docs">
@@ -113,7 +113,6 @@ A documentation site's header (`cx-header--docs`) also carries search, a link ou
       <button class="cx-search-trigger" type="button" data-search-open aria-haspopup="dialog" aria-controls="cx-search" hidden>…</button>
       <nav class="cx-nav" aria-label="Main">
         <ul>
-          <li><a href="/guide/" aria-current="page">Guide</a></li>
           <li><a href="https://github.com/owner/repo">GitHub<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg></a></li>
         </ul>
       </nav>
@@ -140,7 +139,7 @@ A documentation site's header (`cx-header--docs`) also carries search, a link ou
 <!-- caption: The documentation header by width -->
 | | Below `size.breakpoint.lg` | From `size.breakpoint.lg` |
 |---|---|---|
-| At the top of the page | The wordmark in full, search (an icon) and the menu | The wordmark in full, search (a field), the nav, the version and the theme toggle |
+| At the top of the page | The wordmark in full, search (an icon) and the menu | The wordmark in full, search (a field), the links out, the version and the theme toggle |
 | Scrolled | A compact wordmark, "On this page", search and the menu | The same, with a compact wordmark |
 | The menu | A sheet under the bar: the page navigation scrolls; the external links, the changelog with the version, and the theme toggle stay at the bottom | Not shown: the side column has the navigation |
 | "On this page" | A panel under the bar, with Back to top and the page's sections | Not shown: the article has its own |
@@ -179,7 +178,8 @@ Copy the snippet as it is: the build fails if this doc and `js/theme-init.js` di
 - Don't hide a portfolio's nav behind a menu button at small widths; the list scrolls inside its row instead. A documentation site, whose navigation is a long list of pages, puts it in its menu below `size.breakpoint.lg`.
 - Don't add icons or ornaments to nav items. The theme toggle, and on a documentation site the search icon and the menu, are the only header controls that are icons.
 - Don't make the header sticky on a backdrop page without its surface; see-through, it would sit on the text below it. The `data-scrolled` rules keep the two together.
-- Don't animate the header on scroll beyond that surface fade and, on a documentation site, the compact wordmark: no hiding or revealing the bar.
+- Don't animate the header on scroll beyond that surface fade and, on a documentation site, the compact wordmark: no hiding or revealing the bar, and no change in its height.
+- Don't list a documentation site's sections in its header's nav; the page navigation beside the page, or in the menu, already lists them.
 
 ## Accessibility
 
