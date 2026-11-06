@@ -91,7 +91,7 @@ ${chroma.rules.map((r) => `/* ${r.role} */\n${r.classes.map((c) => `.chroma .${c
 // ------------------------------------------------------------------ fonts.css (for Hugo; files under /fonts/)
 const FONTS = [
   { family: 'National Park', file: 'national-park-latin-wght.woff2', weight: '200 800', display: 'swap' },
-  { family: 'JetBrains Mono', file: 'jetbrains-mono-latin-wght.woff2', weight: '100 800', display: 'swap' },
+  { family: 'Geist Mono', file: 'geist-mono-latin-wght.woff2', weight: '100 900', display: 'swap' },
   { family: 'Yarndings 12', file: 'yarndings-12-latin.woff2', weight: '400', display: 'block' },
 ];
 const fontFace = (f, src) => `@font-face { font-family: "${f.family}"; src: url(${src}) format("woff2"); font-weight: ${f.weight}; font-style: normal; font-display: ${f.display}; }`;

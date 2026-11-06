@@ -64,7 +64,7 @@ The closing band of every page: a knitted ornament band, grouped links, a coloph
       </div>
       <div>
         <h2>Colophon</h2>
-        <p>Set in National Park and JetBrains Mono, with ornaments from Yarndings 12. Built with Hugo.</p>
+        <p>Set in National Park and Geist Mono, with ornaments from Yarndings 12. Built with Hugo.</p>
       </div>
     </div>
   </div>
