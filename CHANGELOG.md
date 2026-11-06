@@ -2,6 +2,12 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.23.1] - 2026-11-06
+
+### Changed
+- The README, motifspec.com's landing page, and the npm and site descriptions say what MotifSpec is for: an experiment in turning a brand kit into tokens and layered rules that an AI assistant reads a layer at a time, with every decision written once and everything else generated and released by CI.
+- The MCP server's instructions tell an assistant that the rules come in layers, so it fetches only the ones its task needs.
+
 ## [1.23.0] - 2026-11-06
 
 ### Changed

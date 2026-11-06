@@ -1,6 +1,8 @@
 # MotifSpec
 
-Liam Marshall's design system: the single source of truth for aitrien.com and every project after it. The documentation is at [motifspec.com](https://motifspec.com), which renders this README's guide sections, the docs and the changelog from this repository. Tokens are [DTCG](https://www.designtokens.org/) JSON, components are documented rules with markup to copy, one checker holds every project that uses it to those rules, and an MCP server gives AI assistants all three.
+Liam Marshall's design system, which aitrien.com is built on, and an experiment: turning a brand kit into tokens and rules that an AI assistant follows reliably. Instead of one long rules file, the rules are layered (principles, then a layout, then the components it uses, then the tokens they name), so an assistant reads only the part its task needs. The aim is to avoid diluting its context, to get better instruction compliance than a monolithic `AGENTS.md`, and to spend fewer model tokens doing it.
+
+Every decision is written once, in this repository, and everything else is generated from it. Tokens are [DTCG](https://www.designtokens.org/) JSON; components are documented rules with markup to copy; a checker holds each project to those rules; and an MCP server serves them to AI assistants a layer at a time. CI checks every change, and each release builds the CSS, publishes the npm package, deploys the MCP server and rebuilds [motifspec.com](https://motifspec.com), which renders this README's guide sections, the docs and the changelog.
 
 
 ## Principles

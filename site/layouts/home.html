@@ -3,7 +3,9 @@
 {{ define "main" }}
 <div class="cx-container">
   <section class="cx-page-head" aria-labelledby="statement-title">
-    <p class="cx-eyebrow">{{ site.Title }} <span class="cx-sep" aria-hidden="true">|</span> {{ site.Params.role }}</p>
+    {{- with .Params.eyebrow }}
+    <p class="cx-eyebrow">{{ . }}</p>
+    {{- end }}
     <h1 class="cx-display" id="statement-title">{{ .Params.statement }}</h1>
     <p class="cx-lede">{{ .Description }}</p>
     <div class="cx-actions">
@@ -18,7 +20,7 @@
 
   <section class="cx-section" id="why" aria-labelledby="why-title">
     <div class="cx-section__head">
-      {{ partial "motifspec/section-heading.html" (dict "id" "why" "title" "Why a standardised design system") }}
+      {{ partial "motifspec/section-heading.html" (dict "id" "why" "title" "Why MotifSpec") }}
     </div>
     <div class="cx-prose">
       {{ .Content }}

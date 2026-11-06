@@ -1,7 +1,7 @@
 {
   "name": "@aitrien/motifspec",
-  "version": "1.23.0",
-  "description": "Liam Marshall's design system: DTCG tokens, component rules, generated CSS, Hugo templates and a rule checker.",
+  "version": "1.23.1",
+  "description": "Liam Marshall's design system: DTCG tokens and layered component rules that AI assistants read a layer at a time, with generated CSS, Hugo templates and a rule checker.",
   "keywords": [
     "design-system",
     "design-tokens",

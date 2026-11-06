@@ -10,7 +10,7 @@ enableRobotsTXT = true
 
 [params]
   role = "Brand guidelines"
-  description = "MotifSpec, a design system for sites, docs and dashboards: tokens, components, layouts and a checker, served to AI assistants over MCP."
+  description = "MotifSpec, an experiment in design systems AI assistants can follow: a brand kit as tokens and layered rules, served over MCP a layer at a time, with a checker and generated docs."
 
 [params.motifspec]
   layout = "documentation"
