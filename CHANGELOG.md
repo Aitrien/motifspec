@@ -2,6 +2,13 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.22.1] - 2026-11-06
+
+### Changed
+- A documentation site's header is one row of `size.target.touch` with `space.inset.xs` above and below, at every width. It no longer changes height when the wordmark compacts on scroll, and the wordmark stays centred in it.
+- The page navigation (`docs-nav-groups.html`) opens only the group that holds the current page; the others start closed.
+- A documentation site's header nav holds only links out (`site-header.md`); motifspec.com's header no longer lists Guide, Components and Reference, which the page navigation already lists.
+
 ## [1.22.0] - 2026-11-06
 
 ### Added

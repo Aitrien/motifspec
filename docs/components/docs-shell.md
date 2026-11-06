@@ -65,7 +65,7 @@ The site header (`site-header.md`) and footer (`site-footer.md`) go around it as
           <li><a href="/guide/layouts/">Choosing a layout</a></li>
         </ul>
       </details>
-      <details class="cx-docs-nav__group" open>
+      <details class="cx-docs-nav__group">
         <summary id="docs-nav-reference">Reference<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-expand"></use></svg></summary>
         <ul class="cx-docs-nav__list" aria-labelledby="docs-nav-reference">
           <li><a href="/reference/tokens/">Tokens</a></li>
@@ -96,7 +96,7 @@ In Hugo, `partial "motifspec/docs-nav.html" .` writes the navigation from the si
 - Keep group names to one or two words, and page titles short enough for one line in the column.
 - Mark the current page with `aria-current="page"`.
 - Say "(deprecated)" after the title of a page about something deprecated; `docs-nav.html` does when the page sets `deprecated`.
-- Leave every group open unless the navigation is long; a reader scans more easily than they click.
+- Open the group that holds the current page and close the rest, so a reader sees where they are and every other group's name at a glance. `docs-nav-groups.html` does this.
 
 ## Don't
 

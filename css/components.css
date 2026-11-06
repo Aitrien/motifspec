@@ -241,9 +241,11 @@ p, li, dd, figcaption { text-wrap: pretty; }
 .cx-header__end:has(.cx-header__menu[open]) > .cx-header__toc { visibility: hidden; }
 /* One row at every width: from size.breakpoint.lg the search field gives way first, down to an icon's width with its
    label, before the nav or the wordmark would wrap. */
-.cx-header--docs .cx-header__inner { flex-wrap: nowrap; }
+.cx-header--docs .cx-header__inner { flex-wrap: nowrap; padding-block: var(--cx-space-inset-xs); }
 .cx-header--docs .cx-nav { flex: none; }
-.cx-header--docs .cx-wordmark { flex: none; }
+/* The bar keeps its height while the wordmark changes size: the wordmark is a touch target high at any size, with its
+   text centred in it (align-content, as its line keeps the name and role on one baseline). */
+.cx-header--docs .cx-wordmark { flex: none; padding-block: 0; align-content: center; }
 /* A docs header sticks, with its surface, even without dist/codex.js: its menu and "On this page" open from it. */
 .cx-backdrop-page .cx-header--docs:not([data-scrolled]) { position: sticky; background: var(--cx-color-surface-base); }
 @media (width < token(size.breakpoint.lg)) {
