@@ -82,6 +82,7 @@ Pin an exact version, as a Hugo site pins a tag: the version you install is the 
 | `@aitrien/motifspec/theme-init.js` | Inline it in `<head>` before the stylesheet so a stored theme applies before first paint. |
 | `@aitrien/motifspec/plate.js`, `backdrop.html`, `backdrop-foot.html`, `backdrop-side.html` | The contour backdrop and its motion (`backdrop.md`). |
 | `@aitrien/motifspec/icons.svg` | The icon sprite. Inline it once in `<body>`. |
+| `@aitrien/motifspec/favicon.svg` | The mark, the acorn, as a favicon: link it with `<link rel="icon" type="image/svg+xml">`. It is `color.ornament.rest` in each theme. |
 | `@aitrien/motifspec/tokens.js`, `tokens.json` | Every token with its value, tier and CSS name, for build tools. |
 | `@aitrien/motifspec/check` | `checkText` and `checkProject` from the rule checker. |
 | `@aitrien/motifspec/fonts/*` | The WOFF2 files, for preloading. |
@@ -174,7 +175,7 @@ site/               motifspec.com: a Hugo site whose pages are made from this RE
 mcp/                The MCP server (server.mjs), its Lambda handler, bundle step and tests
 infra/mcp.yml       The server's AWS stack and deploy role (CloudFormation, applied by hand)
 hugo.toml, go.mod   Hugo module definition and its mounts
-dist/               Generated: tokens.css, components in codex.css, chroma.css, fonts.css, icons.svg (sprite), tokens.json, tokens.js (ES module export), codex.js and theme-init.js (behaviour), backdrop.html, backdrop-foot.html and backdrop-side.html, plate.html and plate.js (backdrop and specimen plate), contrast.md
+dist/               Generated: tokens.css, components in codex.css, chroma.css, fonts.css, icons.svg (sprite), tokens.json, tokens.js (ES module export), codex.js and theme-init.js (behaviour), backdrop.html, backdrop-foot.html and backdrop-side.html, plate.html and plate.js (backdrop and specimen plate), favicon.svg (the mark), contrast.md
 ```
 
 ## Commands

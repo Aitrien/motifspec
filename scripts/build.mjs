@@ -1,8 +1,8 @@
-// npm run build — tokens -> dist/*.css, dist/tokens.json, dist/tokens.js, dist/codex.js, dist/theme-init.js, dist/plate.*, dist/backdrop.html, dist/backdrop-foot.html, dist/backdrop-side.html, dist/contrast.md, the docs' token lists and syntax table
+// npm run build — tokens -> dist/*.css, dist/tokens.json, dist/tokens.js, dist/codex.js, dist/theme-init.js, dist/plate.*, dist/backdrop.html, dist/backdrop-foot.html, dist/backdrop-side.html, dist/favicon.svg, dist/contrast.md, the docs' token lists and syntax table
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import vm from 'node:vm';
-import { ROOT, loadTokens, validate, resolve, resolveIn, isAlias, aliasTarget, cssVar, contrastReport, hexOf, DOC_SELECTORS } from './lib.mjs';
+import { ROOT, loadTokens, validate, resolve, resolveIn, isAlias, aliasTarget, cssVar, contrastReport, hexOf, stitchPath, DOC_SELECTORS } from './lib.mjs';
 
 const { tokens, errors } = loadTokens();
 const ruleErrors = [...errors, ...validate(tokens)];
@@ -218,5 +218,12 @@ writeFileSync(join(DIST, 'backdrop-foot.html'), BACKDROP_FOOT + '\n');
 writeFileSync(join(DIST, 'backdrop-side.html'), plateCtx.cxPlate.backdrop('side') + '\n');
 writeFileSync(join(DIST, 'plate.js'), plateJs);
 
-console.log('Built dist/: tokens.css, chroma.css, fonts.css, codex.css, codex.js, theme-init.js, icons.svg, tokens.json, tokens.js, plate.html, plate.js, backdrop.html, backdrop-foot.html, backdrop-side.html, contrast.md.');
+// ------------------------------------------------------------------ the mark
+// The favicon: the mark's stitches with two stitches of margin, so each stitch is a whole pixel at 16, 32 and 48px,
+// in color.ornament.rest for the browser's theme.
+const mark = tokens.get('font.family.ornament').extensions['codex.glyphs'].mark;
+const ink = (mode) => hexOf(resolveIn(tokens, 'color.ornament.rest', mode));
+writeFileSync(join(DIST, 'favicon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 16 16" shape-rendering="crispEdges"><title>${mark.name}</title><style>path{fill:${ink('light')}}@media (prefers-color-scheme:dark){path{fill:${ink('dark')}}}</style><path d="${stitchPath(mark.stitches)}"/></svg>\n`);
+
+console.log('Built dist/: tokens.css, chroma.css, fonts.css, codex.css, codex.js, theme-init.js, icons.svg, tokens.json, tokens.js, plate.html, plate.js, backdrop.html, backdrop-foot.html, backdrop-side.html, favicon.svg, contrast.md.');
 console.log(`${tokens.size} tokens, ${pairs.length} pairs, fonts ${(fontBytes.reduce((a, b) => a + b, 0) / 1024).toFixed(1)} KB.`);

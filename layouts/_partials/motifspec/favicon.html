@@ -1,0 +1,5 @@
+{{- /* hugo.md: the mark as the site's favicon. dist/favicon.svg is built from codex.glyphs.mark in the pinned
+       release's color.accent.fill.rest, light and dark. Call it in <head> after head.html. */ -}}
+{{- with resources.Get "motifspec/favicon.svg" | resources.Copy "cx/favicon.svg" | fingerprint }}
+<link rel="icon" href="{{ .RelPermalink }}" type="image/svg+xml">
+{{- end }}

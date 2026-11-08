@@ -1267,7 +1267,7 @@
     "ornament": {
       "rest": {
         "$value": "{primitive.color.sap.600}",
-        "$description": "Yarndings ornaments and the specimen plate's contour lines. Decorative only: always aria-hidden, never carries meaning.",
+        "$description": "Yarndings ornaments, the mark (the favicon) and the specimen plate's contour lines. Decorative only: always aria-hidden, never carries meaning.",
         "$extensions": {
           "codex.modes": {
             "dark": "{primitive.color.sap.400}"

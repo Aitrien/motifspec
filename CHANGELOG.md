@@ -2,6 +2,14 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.24.0] - 2026-11-08
+
+### Added
+- The mark: an acorn, drawn on the Yarndings 12 grid (a checked cup over a tapering nut), in `codex.glyphs.mark` on `font.family.ornament` as 12 rows of stitches. The validator checks its shape.
+- `dist/favicon.svg` (npm: `@aitrien/motifspec/favicon.svg`), built from those rows with two stitches of margin, so each stitch is a whole pixel at 16, 32 and 48px. It is `color.ornament.rest` in each theme, whose description now names the mark.
+- `motifspec/favicon.html`, which publishes it at `/cx/` and links it as the site's icon (`hugo.md`). motifspec.com uses it.
+- The Ornaments page shows the mark at 16, 32, 48 and 96px.
+
 ## [1.23.1] - 2026-11-06
 
 ### Changed
