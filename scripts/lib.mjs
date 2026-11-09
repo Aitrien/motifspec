@@ -148,6 +148,13 @@ export function validate(tokens) {
 }
 
 // ------------------------------------------------------------------ contrast (WCAG 2.x)
+// The mark's stitches (rows of "#" and ".") as one SVG path on a one-unit-per-stitch grid: a rectangle per run.
+export function stitchPath(rows) {
+  const d = [];
+  rows.forEach((r, y) => { for (const m of r.matchAll(/#+/g)) d.push(`M${m.index} ${y}h${m[0].length}v1h-${m[0].length}z`); });
+  return d.join('');
+}
+
 export const hexOf = (c) => c.hex ?? '#' + c.components.map((x) => Math.round(x * 255).toString(16).padStart(2, '0')).join('');
 function luminance(c) {
   const [r, g, b] = c.components.map((x) => (x <= 0.04045 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4));

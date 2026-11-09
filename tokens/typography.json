@@ -731,6 +731,24 @@
               "end-mark": "flower (after an article's last sentence)",
               "empty-state": "sprout (404 and empty lists)"
             },
+            "mark": {
+              "name": "acorn",
+              "use": "An acorn on the same 12-stitch grid as the glyphs: a checked cup over a tapering nut. It is every site's favicon, from `motifspec/favicon.html` in Hugo or `favicon.svg` from npm, in `color.ornament.rest` for each theme. Use those; never redraw or recolour it.",
+              "stitches": [
+                ".....##.....",
+                ".....##.....",
+                "..########..",
+                ".##.#..#.##.",
+                ".#.#.##.#.#.",
+                ".##########.",
+                "..########..",
+                "..########..",
+                "..########..",
+                "...######...",
+                "....####....",
+                ".....##....."
+              ]
+            },
             "forbidden": {
               "chars": "uvwxyz[]{}",
               "reason": "Faces, a robot, hearts and animals read as emoji. Never use them."

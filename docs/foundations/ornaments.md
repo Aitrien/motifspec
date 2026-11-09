@@ -16,6 +16,10 @@ The system's own ornaments always use these glyphs.
 
 *Generated from `tokens/typography.json`: approved glyphs.*
 
+## The mark
+
+*Generated from `tokens/typography.json`: the mark.*
+
 ## Never used
 
 *Generated from `tokens/typography.json`: forbidden glyphs.*

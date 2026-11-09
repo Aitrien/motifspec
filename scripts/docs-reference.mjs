@@ -7,7 +7,7 @@
 // are set in style attributes here, the one place MotifSpec writes them (token-table.md says why).
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { ROOT, loadTokens, isAlias, aliasTarget, resolve, resolveIn, cssVar, hexOf, ratio, contrastReport } from './lib.mjs';
+import { ROOT, loadTokens, isAlias, aliasTarget, resolve, resolveIn, cssVar, hexOf, ratio, contrastReport, stitchPath } from './lib.mjs';
 import { RULES, WARNINGS } from './check.mjs';
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -144,6 +144,10 @@ export function referencePages() {
       const name = g[0].toUpperCase() + g.slice(1);
       return `### ${name}\n\n${text(desc)}\n\n${table(`${name} glyphs${sep}${items.length}`, ['Name', 'Glyph', 'Key'], items.map(([k, v]) => [code(k), glyph(v.char), code(keyOf(v.char))]))}`;
     }).join('\n\n') },
+    'the mark': { from: ['tokens/typography.json'], render: () => {
+      const mark = (px) => `<span class="cx-ornament" aria-hidden="true"><svg width="${px}" height="${px}" viewBox="-2 -2 16 16" shape-rendering="crispEdges" focusable="false"><path fill="currentColor" d="${stitchPath(glyphs.mark.stitches)}"/></svg></span>`;
+      return `${text(glyphs.mark.use)}\n\n${table(`The mark${sep}${glyphs.mark.name}`, ['Size', 'Mark'], [16, 32, 48, 96].map((px) => [`${px}px`, mark(px)]))}`;
+    } },
     'forbidden glyphs': { from: ['tokens/typography.json'], render: () => `${text(glyphs.forbidden.reason)}\n\n${table('Forbidden glyphs', ['Key', 'Glyph'], [...glyphs.forbidden.chars].map((c) => [code(keyOf(c)), glyph(c)]))}` },
     'deprecated tokens': { from: ['tokens/'], render: () => {
       const list = semantic.filter((t) => t.deprecated);

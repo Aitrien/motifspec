@@ -45,6 +45,9 @@ if (glyphs) {
     if (seen.has(g.char)) errors.push(`codex.glyphs: ${key} and ${seen.get(g.char)} share "${g.char}"`);
     seen.set(g.char, key);
   }
+  // The mark: 12 rows of 12 stitches, "#" worked and "." open.
+  const rows = glyphs.mark?.stitches;
+  if (!Array.isArray(rows) || rows.length !== 12 || rows.some((r) => !/^[#.]{12}$/.test(r))) errors.push('codex.glyphs: mark.stitches must be 12 rows of 12 "#" or "." characters');
 }
 // Deprecated tokens stay published but nothing in the system may use them.
 const deprecated = [...tokens.values()].filter((t) => t.deprecated !== undefined);

@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   {{ partial "motifspec/head.html" . }}
+  {{ partial "motifspec/favicon.html" . }}
   <title>{{ if .IsHome }}{{ site.Title }}: {{ site.Params.role }}{{ else }}{{ .Title }} | {{ site.Title }}{{ end }}</title>
   <meta name="description" content="{{ .Description | default site.Params.description }}">
   {{- with .OutputFormats.Get "markdown" }}

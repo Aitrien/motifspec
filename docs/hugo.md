@@ -29,7 +29,8 @@ Pin a release with `hugo mod get github.com/aitrien/motifspec@vX.Y.Z`. The modul
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   {{ partial "motifspec/head.html" . }}
-  {{/* the site's own <title>, meta description, favicon */}}
+  {{ partial "motifspec/favicon.html" . }}
+  {{/* the site's own <title> and meta description */}}
 </head>
 <body class="cx-backdrop-page">
   {{ partial "motifspec/body-start.html" . }}
@@ -45,6 +46,7 @@ Pin a release with `hugo mod get github.com/aitrien/motifspec@vX.Y.Z`. The modul
 | Partial | What it writes |
 |---|---|
 | `motifspec/head.html` | The stored-theme snippet, font preloads, `codex.css` and `codex.js`, in that order. |
+| `motifspec/favicon.html` | The mark, the acorn, as the site's favicon: `dist/favicon.svg`, published at `/cx/` and fingerprinted. It is `color.ornament.rest` in each theme. |
 | `motifspec/body-start.html` | Call with the page. On the home page, the head of the backdrop (on a documentation site's other pages, the side); then the icon sprite and the skip link to `#main`. |
 | `motifspec/site-header.html` | `site-header.md`: wordmark from `site.Title` and `site.Params.role`, nav from `site.Menus.main` and the theme toggle. A menu entry is current when its `identifier` is the page's section; one whose URL starts with `http` gets the outward arrow. With `params.motifspec.search = true`, search comes first (`search.md`); with `params.motifspec.version` (and `changelog`, a URL), the version comes before the theme toggle. With `params.motifspec.layout = "documentation"`, it adds "On this page" and the menu, which take over below `size.breakpoint.lg` (`site-header.md`, In a documentation site). |
 | `motifspec/body-end.html` | The foot of the backdrop, behind the footer, and `plate.js`, which settles the home page's contours and lets the pointer warm them. |
