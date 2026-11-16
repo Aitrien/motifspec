@@ -2,6 +2,12 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.24.2] - 2026-11-16
+
+### Changed
+- A rule for eyebrows in the README's rules for AI assistants, which the MCP server's `get_rules` serves: use one only when it says what the heading can't at a glance (a category, an audience, a feature, a stage or a theme), never to repeat the heading, in vague words, or above every section by habit.
+- The portfolio home page's statement (`docs/layouts/portfolio.md`) has an eyebrow only if it adds something.
+
 ## [1.24.1] - 2026-11-16
 
 ### Changed
