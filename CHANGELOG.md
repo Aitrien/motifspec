@@ -6,6 +6,7 @@ Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entri
 
 ### Changed
 - A documentation site's header shows its version beside the wordmark, in the role's place (`cx-header__brand`), still linking to the changelog. Like a role, it shows at the top of the page and goes when the wordmark compacts. It no longer sits with the controls, and the docs header shows no role. The menu's changelog row still carries the version.
+- The search trigger (`search.md`) is a pill (`radius.pill`, was `radius.control`), with `space.inset.md` after the keys (was `space.inset.xs`).
 
 ## [1.24.0] - 2026-11-08
 

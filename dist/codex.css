@@ -603,12 +603,11 @@ p, li, dd, figcaption { text-wrap: pretty; }
 .cx-page-footer .cx-meta a:hover { color: var(--cx-color-link-hover); text-decoration-thickness: var(--cx-border-width-emphasis); }
 
 /* ------------------------------------------------------------ search (a dialog over the page, from the header) */
-/* The trigger looks like the field it opens: square, sunken and wide, so it doesn't read as the current section's
-   outlined pill in the nav beside it. */
+/* The trigger looks like the field it opens: sunken, outlined and wide, a pill with room after the keys. */
 .cx-search-trigger {
   flex: 0 1 var(--cx-size-column-sidebar); min-width: 0; display: inline-flex; align-items: center; gap: var(--cx-space-inline-sm);
-  min-height: var(--cx-size-target-control); padding-inline: var(--cx-space-inset-sm) var(--cx-space-inset-xs);
-  border: var(--cx-border-width-hairline) solid var(--cx-color-border-strong); border-radius: var(--cx-radius-control);
+  min-height: var(--cx-size-target-control); padding-inline: var(--cx-space-inset-sm) var(--cx-space-inset-md);
+  border: var(--cx-border-width-hairline) solid var(--cx-color-border-strong); border-radius: var(--cx-radius-pill);
   background: var(--cx-color-surface-sunken); color: var(--cx-color-text-muted); font: inherit; font-size: var(--cx-font-size-small); cursor: text;
 }
 .cx-search-trigger:hover { color: var(--cx-color-text-secondary); }
