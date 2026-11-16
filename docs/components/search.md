@@ -27,7 +27,6 @@ tokens:
   - font.size.small
   - font.tracking.ui
   - font.weight.strong
-  - radius.control
   - radius.pill
   - size.column.card
   - size.column.sidebar
@@ -60,7 +59,7 @@ A search control in the header that opens a dialog of results as you type, from 
 
 ## Markup
 
-The trigger goes in the header's end (`site-header.md`); the dialog can sit next to it. It looks like the field it opens: square (`radius.control`), on `color.surface.sunken`, and as wide as `size.column.sidebar` allows, so it can't be mistaken for the nav's pills or the current section's outline. Below `size.breakpoint.lg` it is an icon.
+The trigger goes in the header's end (`site-header.md`); the dialog can sit next to it. It looks like the field it opens: a pill (`radius.pill`) on `color.surface.sunken` with a `color.border.strong` outline, as wide as `size.column.sidebar` allows, with `space.inset.md` after the keys. Below `size.breakpoint.lg` it is an icon.
 
 ```html {preview=true}
 <button class="cx-search-trigger" type="button" data-search-open aria-haspopup="dialog" aria-controls="cx-search" hidden>

@@ -96,12 +96,15 @@ The bar at the top of every page: wordmark, primary nav and the theme toggle. On
 
 ### In a documentation site
 
-A documentation site's header (`cx-header--docs`) also carries search, a link out to the source repository, the version linking to the changelog, and two `<details>` that take over below `size.breakpoint.lg`: "On this page" and a menu. Its nav holds only links out, since the page navigation lists the pages. The bar is one row of `size.target.touch` with `space.inset.xs` above and below, at every width and whatever size the wordmark is, which sits centred in it.
+A documentation site's header (`cx-header--docs`) also carries search, a link out to the source repository, and two `<details>` that take over below `size.breakpoint.lg`: "On this page" and a menu. Its nav holds only links out, since the page navigation lists the pages. The bar is one row of `size.target.touch` with `space.inset.xs` above and below, at every width and whatever size the wordmark is, which sits centred in it. The version, linking to the changelog, takes the role's place beside the wordmark (`cx-header__brand`): it shows at the top of the page and goes when the wordmark compacts, as a role does.
 
 ```html
 <header class="cx-header cx-header--docs">
   <div class="cx-container cx-header__inner">
-    <a class="cx-wordmark" href="/">MotifSpec <span class="cx-wordmark__role">Brand guidelines</span></a>
+    <div class="cx-header__brand">
+      <a class="cx-wordmark" href="/">MotifSpec</a>
+      <a class="cx-header__version" href="/reference/changelog/">v1.22.0<span class="cx-visually-hidden">, changelog</span></a>
+    </div>
     <div class="cx-header__end">
       <details class="cx-header__toc" data-pagefind-ignore>
         <summary>On this page<svg class="cx-icon cx-icon--sm cx-header__chevron" aria-hidden="true" focusable="false"><use href="#cx-icon-expand"></use></svg></summary>
@@ -116,7 +119,6 @@ A documentation site's header (`cx-header--docs`) also carries search, a link ou
           <li><a href="https://github.com/owner/repo">GitHub<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg></a></li>
         </ul>
       </nav>
-      <a class="cx-header__version" href="/reference/changelog/">v1.22.0<span class="cx-visually-hidden">, changelog</span></a>
       <button class="cx-theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch to dark theme">…</button>
       <details class="cx-header__menu">
         <summary aria-label="Menu"><svg class="cx-icon" data-when="closed" aria-hidden="true" focusable="false"><use href="#cx-icon-menu"></use></svg><svg class="cx-icon" data-when="open" aria-hidden="true" focusable="false"><use href="#cx-icon-close"></use></svg></summary>
@@ -139,8 +141,8 @@ A documentation site's header (`cx-header--docs`) also carries search, a link ou
 <!-- caption: The documentation header by width -->
 | | Below `size.breakpoint.lg` | From `size.breakpoint.lg` |
 |---|---|---|
-| At the top of the page | The wordmark in full, search (an icon) and the menu | The wordmark in full, search (a field), the links out, the version and the theme toggle |
-| Scrolled | A compact wordmark, "On this page", search and the menu | The same, with a compact wordmark |
+| At the top of the page | The wordmark in full with the version, search (an icon) and the menu | The wordmark in full with the version, search (a field), the links out and the theme toggle |
+| Scrolled | A compact wordmark, "On this page", search and the menu | The same, with a compact wordmark and no version |
 | The menu | A sheet under the bar: the page navigation scrolls; the external links, the changelog with the version, and the theme toggle stay at the bottom | Not shown: the side column has the navigation |
 | "On this page" | A panel under the bar, with Back to top and the page's sections | Not shown: the article has its own |
 
