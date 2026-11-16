@@ -2,6 +2,11 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.24.1] - 2026-11-16
+
+### Changed
+- A documentation site's header shows its version beside the wordmark, in the role's place (`cx-header__brand`), still linking to the changelog. Like a role, it shows at the top of the page and goes when the wordmark compacts. It no longer sits with the controls, and the docs header shows no role. The menu's changelog row still carries the version.
+
 ## [1.24.0] - 2026-11-08
 
 ### Added

@@ -1,6 +1,7 @@
 {{- /* site-header.md. A child page marks its section (a post marks Writing). A menu entry whose URL starts with
        "http" gets the outward arrow. Optional, from params.motifspec: search = true adds search (search.md);
-       version = "1.19.0" with changelog = "<url>" adds the version, linked to the changelog.
+       version = "1.19.0" with changelog = "<url>" adds the version, linked to the changelog. On a documentation site the
+       version sits beside the wordmark in place of the role, and shows and hides as the role does.
        On a documentation site (params.motifspec.layout "documentation"), below size.breakpoint.lg the bar holds only
        the wordmark, "On this page", search and the menu, whose sheet has the page navigation (docs-shell.md), the
        menu's external links, the changelog and the theme toggle. */ -}}
@@ -9,7 +10,14 @@
 {{- $external := where site.Menus.main "URL" "like" `^https?://` -}}
 <header class="cx-header{{ if $docs }} cx-header--docs{{ end }}">
   <div class="cx-container cx-header__inner">
+    {{- if and $docs $ms.version }}
+    <div class="cx-header__brand">
+      <a class="cx-wordmark" href="{{ site.Home.RelPermalink }}">{{ site.Title }}</a>
+      <a class="cx-header__version" href="{{ $ms.changelog | default "#" }}">v{{ $ms.version }}<span class="cx-visually-hidden">, changelog</span></a>
+    </div>
+    {{- else }}
     <a class="cx-wordmark" href="{{ site.Home.RelPermalink }}">{{ site.Title }} <span class="cx-wordmark__role">{{ site.Params.role }}</span></a>
+    {{- end }}
     <div class="cx-header__end">
       {{- if $docs }}
       {{- /* "On this page", for a page whose article shows a table of contents: three or more h2s, and no toc: false. */}}
@@ -38,8 +46,8 @@
           {{- end }}
         </ul>
       </nav>
-      {{- with $ms.version }}
-      <a class="cx-header__version" href="{{ $ms.changelog | default "#" }}">v{{ . }}<span class="cx-visually-hidden">, changelog</span></a>
+      {{- if and $ms.version (not $docs) }}
+      <a class="cx-header__version" href="{{ $ms.changelog | default "#" }}">v{{ $ms.version }}<span class="cx-visually-hidden">, changelog</span></a>
       {{- end }}
       {{ partial "motifspec/theme-toggle.html" . }}
       {{- if $docs }}
