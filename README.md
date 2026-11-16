@@ -54,6 +54,7 @@ An à la carte project also lists the components it uses, by doc name: `componen
 - JavaScript is enhancement. In a site that renders without script, anything a reader needs must work without it; controls that need script ship `hidden` and are revealed by it. In an app that needs script to render at all, MotifSpec's components add no script of their own: native elements (`<details>`, `<meter>`, `<dialog>`, radio buttons) do the work.
 - Serve MotifSpec's own files (CSS, fonts, icons, scripts) from the project, never from a CDN. Where an app gets its data is the project's decision, not a MotifSpec rule.
 - Use plain, functional labels: Work, Writing, About.
+- Use an eyebrow (`cx-eyebrow`) only when it tells the reader something the heading can't say at a glance: a category, an audience, a feature, a stage or a theme. One that repeats the heading, says something vague, or sits above every section out of habit is noise, so leave it out. Most headings need none.
 - Write sample and placeholder content from scratch. Never copy wording from reference or competitor sites; quote only with a named person and a traceable source in the blockquote footer.
 - Give every section `<h2>` in reading text an id and a `cx-anchor` link (see `docs/components/heading-anchor.md`). Dashboard sections have an id and no anchor.
 

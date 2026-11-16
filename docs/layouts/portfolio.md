@@ -13,7 +13,7 @@ Every template sits on the backdrop (`backdrop.md`): its contours show behind th
 <!-- caption: Page templates -->
 | Template | Order | Dominant | Secondary |
 |---|---|---|---|
-| **Home** | Header → statement (eyebrow, display h1, lede, primary + secondary button) on the frost, inside the top fade → selected work (2–3 project cards) → recent writing (5 post rows) → capabilities table → footer | Statement and selected work | Writing rows, capabilities, the backdrop |
+| **Home** | Header → statement (display h1 with an eyebrow only if it adds something, lede, primary + secondary button) on the frost, inside the top fade → selected work (2–3 project cards) → recent writing (5 post rows) → capabilities table → footer | Statement and selected work | Writing rows, capabilities, the backdrop |
 | **Project index** | Header → page head (h1 "Work", entry count, one-line intro) → tag filter → project cards or ledger, newest first → footer | The list of projects | Filter and intro |
 | **Case study** | Header → back link "← All work" → accession label (`cx-label--lead`; on a phone, number, date and status only) → h1 and lede → hero figure (Plate 1) → article layout: TOC + prose (Problem, Constraints, Approach, Outcome with a data table, What I'd change) → on a phone, the full label as a card (`cx-label--card`) → pagination → footer | Title and hero, then prose | Label, TOC |
 | **Writing list** | Header → page head (h1 "Writing", description, RSS link) → tag filter → post rows grouped by year → pagination → footer | Post titles | Numbers, dates, tags |
