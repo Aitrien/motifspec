@@ -2,6 +2,7 @@
 name: accession-label
 status: stable
 layouts: [portfolio]
+group: labels
 tokens:
   - border.width.emphasis
   - border.width.hairline
@@ -109,3 +110,20 @@ Store the number in front matter (`accession: LM-W-004`) rather than deriving it
 - Status is a word plus a dot, never colour alone.
 - The ticks are a background on a pseudo-element and are invisible to assistive tech.
 - Pairs: `color.text.accent` on `color.surface.raised` (4.5:1); `color.text.muted` on `color.surface.raised` (4.5:1); `color.status.*.text` on `color.surface.raised` (4.5:1).
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Label"}
+<dl class="cx-label" aria-label="Accession label">
+  <div class="cx-label__id"><dt>No.</dt><dd>LM-W-001</dd></div>
+  <div><dt>Filed</dt><dd><time datetime="2026-03-14">2026-03-14</time></dd></div>
+  <div><dt>Role</dt><dd>Sole engineer</dd></div>
+  <div><dt>Status</dt><dd><span class="cx-status cx-status--live">Live</span></dd></div>
+</dl>
+```
+
+```html {specimen="Compact"}
+<p class="cx-id"><span class="cx-id__no">LM-P-031</span><time datetime="2026-10-02">2026-10-02</time><span>6 min read</span></p>
+```

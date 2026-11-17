@@ -2,6 +2,7 @@
 name: token-table
 status: stable
 layouts: [documentation]
+group: data
 tokens:
   - border.width.hairline
   - color.accent.fill.rest
@@ -69,7 +70,7 @@ A token shown as it looks, beside its name, value and rule: colour tiles, a prim
 | `cx-swatch--tile` | A colour tile: the colour as the background, with its name and value written on it | `--_swatch`, and `--_ink` for the text |
 | `cx-palette` | One hue's steps as a grid of tiles, lightest first | Each tile's |
 | `cx-pair-sample` | "Aa" in a foreground on a background, beside the pair's ratio | `--_fg` and `--_bg` |
-| `cx-token-sample` | Text at a size or in a family | `--_size`, `--_family` |
+| `cx-token-sample` | Text in a type style: its size, family, weight, leading and tracking | `--_size`, `--_family`, `--_weight`, `--_leading`, `--_tracking` |
 | `cx-token-bar` | A length, as a bar | `--_width` |
 
 The value each part shows comes from a private custom property on the element, set in a `style` attribute by MotifSpec's docs generator (`scripts/docs-reference.mjs`) from `dist/tokens.json`. That's the only place MotifSpec writes a style attribute, and only in generated pages, which the checker doesn't read. Hand-written markup can't set them (the checker fails any `style` attribute), so it shows the neutral fallback, as above.
@@ -94,3 +95,18 @@ The value each part shows comes from a private custom property on the element, s
 - A tile's text is in whichever of the darkest and lightest neutral contrasts more with the tile. Against black or white, the better of the two is at least 4.5:1 on any colour, so every tile's label meets the label size's target.
 - A pair sample's own contrast is the pair's: it is drawn in the colours it measures, so a failing pair looks like one.
 - Pairs: the text around each sample is `color.text.primary` and `color.text.muted` on `color.surface.raised` (7:1 and 4.5:1); a chip's edge is `color.border.default`.
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Palette"}
+<ol class="cx-palette" aria-label="ash">
+  <li><span class="cx-swatch cx-swatch--tile"><b>50</b><span>value</span></span></li>
+  <li><span class="cx-swatch cx-swatch--tile"><b>100</b><span>value</span></span></li>
+</ol>
+```
+
+```html {specimen="Samples"}
+<p><span class="cx-pair-sample">Aa</span> <span class="cx-token-sample">Type sample</span></p>
+```

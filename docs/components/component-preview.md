@@ -2,6 +2,7 @@
 name: component-preview
 status: stable
 layouts: [documentation]
+group: data
 tokens:
   - border.width.hairline
   - color.border.default
@@ -67,3 +68,7 @@ The frame's document has the theme snippet (`dist/theme-init.js`), `codex.css`, 
 - **Theme:** the frame's document reads the stored theme like any page, and when the page's theme toggle is used, `data-theme` is set on the frame's root too.
 - **Links:** inside a preview (`body.cx-preview-body`), clicks on links don't navigate.
 - **Scripts:** the example's own behaviour, such as a theme toggle or a copy button, runs inside the frame from `codex.js`.
+
+## Specimens
+
+None: a preview is a live example above its code, in a frame of its own. Every component page opens with one.

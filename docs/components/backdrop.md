@@ -2,6 +2,7 @@
 name: backdrop
 status: stable
 layouts: [portfolio, documentation, dashboard]
+group: decoration
 tokens:
   - border.width.emphasis
   - border.width.hairline
@@ -103,3 +104,7 @@ Where text sits on the frost, the contours keep only `color.backdrop.calm` of th
 - WCAG 2.2.2 (Pause, Stop, Hide) doesn't apply: the settle is over in under five seconds, and every other change follows the reader's own pointer. So there is no pause control.
 - Under `prefers-reduced-motion: reduce` the contours never move: no settle and no warming.
 - Reading text between the fades sits on `color.surface.base`, so the declared pairs apply. Text over the frost (the header, the footer, the home page's statement, a documentation site's navigation, and all of a short page) is measured against `color.surface.base` too: by design, contrast is not checked against the contour lines beneath it, which are faint there by the calm side.
+
+## Specimens
+
+None: the backdrop is the contours behind a whole page, under the header and above the footer. This site shows it on its home page.

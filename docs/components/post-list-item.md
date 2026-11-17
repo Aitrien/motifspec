@@ -2,6 +2,7 @@
 name: post-list-item
 status: stable
 layouts: [portfolio]
+group: collections
 tokens:
   - border.focus.offset
   - border.focus.width
@@ -90,3 +91,19 @@ One ledger row in a list of writing: catalogue number, date and reading time bes
 - Focus on the title draws the ring around the row.
 - Dates use `<time datetime>`.
 - Pairs: `color.text.accent` number on `color.surface.base` (4.5:1); `color.text.muted` meta (4.5:1); `color.text.primary` title on `color.surface.hover` (7:1).
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Post"}
+<ol class="cx-posts">
+  <li class="cx-post">
+    <p class="cx-post__meta"><span class="cx-id__no">LM-P-031</span><time datetime="2026-10-02">2026-10-02</time><span>6 min</span></p>
+    <div class="cx-post__main">
+      <h3 class="cx-post__title"><a href="/guide/">Serving design tokens to AI assistants</a></h3>
+      <p class="cx-post__summary">Why every token carries a usage rule.</p>
+    </div>
+  </li>
+</ol>
+```

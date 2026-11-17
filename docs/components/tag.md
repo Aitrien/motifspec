@@ -2,6 +2,7 @@
 name: tag
 status: stable
 layouts: [shared]
+group: labels
 tokens:
   - border.focus.offset
   - border.focus.width
@@ -69,3 +70,19 @@ A small mono label for a topic or technology, optionally linking to its index.
 - Wrap groups in `<ul>` so the count is announced.
 - The current filter uses `aria-current="page"` as well as the accent border.
 - Pairs: `color.text.secondary` on `color.surface.sunken` (7:1); hover border `color.accent.border` (3:1).
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="With a count"}
+<ul class="cx-tags"><li><a class="cx-tag" href="/components/">webgl<span class="cx-tag__count">4</span></a></li></ul>
+```
+
+```html {specimen="Current"}
+<ul class="cx-tags"><li><a class="cx-tag" href="/components/" aria-current="page">accessibility</a></li></ul>
+```
+
+```html {specimen="Plain"}
+<ul class="cx-tags"><li><span class="cx-tag">draft</span></li></ul>
+```

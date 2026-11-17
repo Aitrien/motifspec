@@ -2,6 +2,20 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.25.0] - 2026-11-16
+
+### Added
+- Catalogue grid (`catalogue-grid.md`, documentation layout): specimens in a hairline grid, each above a caption with its variant in `color.text.accent` and its name in the label voice, linking to its page through an arrow in a hairline circle. `--wide` cells take a whole row. In Hugo, `motifspec/catalogue-item.html` writes one cell.
+- Every component doc ends with a `## Specimens` section: each variant as the smallest markup that shows it, or "None:" and why. Its front matter names a `group` from `docs/components/_groups.json` (Actions, Navigation, Content, Cards and lists, Labels and status, Data, Decoration). The validator checks both, and that specimen ids start "sp-" and are unique.
+- The token sample (`token-table.md`) takes `--_weight`, `--_leading` and `--_tracking` as well as `--_size` and `--_family`.
+
+### Changed
+- motifspec.com's Components page shows every component's variants in a catalogue grid under its group, and its Foundations page shows the colour, type, space, icons and ornaments at a glance, each linking to its full page.
+- The MCP server's `get_component` leaves out the specimens, so a component costs the same to fetch as before.
+
+### Fixed
+- The tooltip doc's theme toggle names its icons (`data-icon`), so its preview shows them.
+
 ## [1.24.3] - 2026-11-16
 
 ### Changed

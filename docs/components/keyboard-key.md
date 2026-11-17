@@ -2,6 +2,7 @@
 name: keyboard-key
 status: stable
 layouts: [shared]
+group: content
 tokens:
   - border.width.emphasis
   - border.width.hairline
@@ -51,3 +52,11 @@ One `<kbd>` per key, with a space between keys that are pressed together.
 - `<kbd>` is announced as text, so the keys read in order.
 - A shortcut is never the only way in: the control it opens has its own visible label.
 - Pairs: `color.text.primary` on `color.surface.sunken` (7:1).
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Shortcut"}
+<p><kbd class="cx-kbd">Ctrl</kbd> <kbd class="cx-kbd">K</kbd></p>
+```

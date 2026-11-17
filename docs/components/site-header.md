@@ -2,6 +2,7 @@
 name: site-header
 status: stable
 layouts: [shared]
+group: navigation
 tokens:
   - border.focus.offset
   - border.focus.width
@@ -203,3 +204,25 @@ Copy the snippet as it is: the build fails if this doc and `js/theme-init.js` di
 - **Header height:** `--_header-height` on `<html>` is kept equal to the header's height, for scroll padding and the docked table of contents. When the nav wraps below the wordmark, the header gets `data-wrapped`.
 - **On a backdrop page:** the header sticks once script runs, and `data-scrolled="true"` fades its surface in as soon as the page leaves the top. Without script it scrolls away with the page.
 - **On a documentation site:** the header always sticks with its surface, and gets `data-scrolled` too, which compacts the wordmark and (below `size.breakpoint.lg`) shows "On this page" once the page leaves the top. Without script the bar stays compact, with "On this page" shown. Only one of the menu and "On this page" is open at a time; each closes on Escape, a click outside it, or a link followed inside it. The current section is marked in "On this page", as in the article's table of contents.
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Portfolio header" wide=true}
+<header class="cx-header">
+  <div class="cx-container cx-header__inner">
+    <a class="cx-wordmark" href="/">Liam Marshall <span class="cx-wordmark__role">Web engineer</span></a>
+    <div class="cx-header__end">
+      <nav class="cx-nav" aria-label="Main">
+        <ul>
+          <li><a href="/guide/" aria-current="page">Guide</a></li>
+          <li><a href="/components/">Components</a></li>
+          <li><a href="/reference/">Reference</a></li>
+        </ul>
+      </nav>
+      <button class="cx-theme-toggle" type="button" aria-label="Switch theme"><svg class="cx-icon" data-icon="to-dark" aria-hidden="true" focusable="false"><use href="#cx-icon-theme-dark"></use></svg><svg class="cx-icon" data-icon="to-light" aria-hidden="true" focusable="false"><use href="#cx-icon-theme-light"></use></svg></button>
+    </div>
+  </div>
+</header>
+```

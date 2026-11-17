@@ -123,6 +123,20 @@ export function referencePages() {
     return `<span class="cx-pair-sample" style="--_fg: var(${v(tokens.get(p.fg))}); --_bg: var(${v(tokens.get(p.bg))})" aria-hidden="true">Aa</span>`;
   };
 
+  // The Foundations overview: samples in a catalogue grid (catalogue-grid.md), each linking to its full page. The
+  // samples are inert pictures; the caption is what a reader hears.
+  const ARROW = '<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg>';
+  const cell = (variant, name, href, specimen, { wide = false, note = false } = {}) => `<li class="cx-catalogue__item${wide ? ' cx-catalogue__item--wide' : ''}">`
+    + `<div class="cx-catalogue__specimen${note ? ' cx-catalogue__specimen--note' : ''}"${note ? '' : ' inert'}>${specimen}</div>`
+    + `<div class="cx-catalogue__caption"><p class="cx-catalogue__variant">${esc(variant)}</p><a class="cx-catalogue__name" href="${href}">${esc(name)}${ARROW}</a></div></li>`;
+  const catalogue = (cells) => `<div class="cx-catalogue"><ul class="cx-catalogue__list">${cells.join('')}</ul></div>`;
+  const tv = (path) => `var(${cssVar(path)})`;
+  const oTile = (path, inkPath, label) => `<span class="cx-swatch cx-swatch--tile" style="--_swatch: ${tv(path)}; --_ink: ${tv(inkPath)}"><b>${esc(label)}</b></span>`;
+  const oTiles = (list) => `<ol class="cx-palette" aria-label="Colours">${list.map((t) => `<li>${oTile(...t)}</li>`).join('')}</ol>`;
+  const oInk = (fg, bg, label) => `<span class="cx-pair-sample" style="--_fg: ${tv(fg)}; --_bg: ${tv(bg)}">${esc(label)}</span>`;
+  const typeSample = (label, s) => `<span class="cx-token-sample" style="--_size: ${tv(`font.size.${s.size}`)}; --_family: ${tv(`font.family.${s.family}`)}; --_weight: ${tv(`font.weight.${s.weight}`)}; --_leading: ${tv(`font.line-height.${s.leading}`)}; --_tracking: ${tv(`font.tracking.${s.tracking}`)}">${esc(label)}</span>`;
+  const bars = (paths) => `<div>${paths.map((p) => `<p class="cx-meta"><code>${p.split('.').pop()}</code> ${esc(valueOf(tokens.get(p)))}</p><span class="cx-token-bar" style="--_width: ${tv(p)}"></span>`).join('')}</div>`;
+
   // Each element a page can ask for, by the name its marker line gives, with the files it is generated from. A
   // marker that names other files fails the build, so the line on GitHub always says where the element comes from.
   const ELEMENTS = {
@@ -144,6 +158,39 @@ export function referencePages() {
       const name = g[0].toUpperCase() + g.slice(1);
       return `### ${name}\n\n${text(desc)}\n\n${table(`${name} glyphs${sep}${items.length}`, ['Name', 'Glyph', 'Key'], items.map(([k, v]) => [code(k), glyph(v.char), code(keyOf(v.char))]))}`;
     }).join('\n\n') },
+    'colour at a glance': { from: ['tokens/color.json'], render: () => catalogue([
+      cell('Surfaces', 'Colour', '/foundations/colour/#semantic-colours', oTiles([['color.surface.base', 'color.text.primary', 'Base'], ['color.surface.raised', 'color.text.primary', 'Raised'], ['color.surface.sunken', 'color.text.primary', 'Sunken'], ['color.surface.inverse', 'color.text.inverse', 'Inverse']])),
+      cell('Text', 'Colour', '/foundations/colour/#semantic-colours', `<p>${[['color.text.primary', 'Primary'], ['color.text.secondary', 'Secondary'], ['color.text.muted', 'Muted'], ['color.text.accent', 'Accent'], ['color.link.rest', 'Link']].map(([p, l]) => oInk(p, 'color.surface.base', l)).join(' ')}</p>`),
+      cell('Accent', 'Colour', '/foundations/colour/#semantic-colours', oTiles([['color.accent.fill.rest', 'color.text.on-accent', 'Rest'], ['color.accent.fill.hover', 'color.text.on-accent', 'Hover']])),
+      cell('Status', 'Colour', '/foundations/colour/#semantic-colours', oTiles(['success', 'warning', 'danger', 'info'].map((s) => [`color.status.${s}.surface`, `color.status.${s}.text`, s[0].toUpperCase() + s.slice(1)]))),
+      cell('Borders', 'Colour', '/foundations/colour/#semantic-colours', oTiles(['subtle', 'default', 'strong'].map((s) => [`color.border.${s}`, 'color.text.primary', s[0].toUpperCase() + s.slice(1)]))),
+    ]) },
+    'type at a glance': { from: ['tokens/typography.json'], render: () => {
+      const heading = { family: 'display', weight: 'heading', leading: 'heading', tracking: 'heading' };
+      const reading = { family: 'body', weight: 'body', leading: 'body', tracking: 'body' };
+      return catalogue([
+        cell('Display', 'Type', '/foundations/type/', typeSample('Decisions, made once', { size: 'display', family: 'display', weight: 'display', leading: 'display', tracking: 'display' }), { wide: true }),
+        ...[1, 2, 3, 4].map((n) => cell(`Heading ${n}`, 'Type', '/foundations/type/', typeSample(`Heading ${n}`, { size: `heading-${n}`, ...heading }))),
+        cell('Lede', 'Type', '/foundations/type/', typeSample('A lede opens a page', { size: 'lede', ...reading })),
+        cell('Body', 'Type', '/foundations/type/', typeSample('Text for reading', { size: 'body', ...reading })),
+        cell('Small', 'Type', '/foundations/type/', typeSample('Captions and notes', { size: 'small', ...reading })),
+        cell('Label', 'Type', '/foundations/type/', typeSample('LABELS AND TABLE HEADS', { size: 'label', family: 'mono', weight: 'ui', leading: 'ui', tracking: 'label' })),
+        cell('Code', 'Type', '/foundations/type/', typeSample('const count = 6;', { size: 'small', family: 'mono', weight: 'body', leading: 'body', tracking: 'body' })),
+      ]);
+    } },
+    'space at a glance': { from: ['tokens/space.json'], render: () => catalogue(['inset', 'stack', 'inline'].map((k) => cell(k[0].toUpperCase() + k.slice(1), 'Space and size', '/foundations/space-and-size/',
+      bars(semantic.filter((t) => t.path.startsWith(`space.${k}.`)).map((t) => t.path))))) },
+    'icons at a glance': { from: ['icons/manifest.json'], render: () => catalogue([cell(`${icons.length} icons`, 'Icons', '/foundations/icons/',
+      `<p>${icons.map(([k]) => `<svg class="cx-icon" aria-hidden="true" focusable="false"><use href="#cx-icon-${k}"></use></svg>`).join(' ')}</p>`, { wide: true })]) },
+    'ornaments at a glance': { from: ['tokens/typography.json'], render: () => {
+      const botanical = Object.values(glyphs.glyphs).filter((g) => g.group === 'botanical').map((g) => glyph(g.char)).join(' ');
+      const mark = `<span class="cx-ornament" aria-hidden="true"><svg width="96" height="96" viewBox="-2 -2 16 16" shape-rendering="crispEdges" focusable="false"><path fill="currentColor" d="${stitchPath(glyphs.mark.stitches)}"/></svg></span>`;
+      return catalogue([
+        cell('Botanical glyphs', 'Ornaments', '/foundations/ornaments/', `<p>${botanical}</p>`),
+        cell('The mark', 'Ornaments', '/foundations/ornaments/#the-mark', mark),
+        cell('Motion', 'Motion', '/foundations/motion/', 'Durations from fast to the plate draw-in, and the easing each kind of movement uses.', { note: true }),
+      ]);
+    } },
     'the mark': { from: ['tokens/typography.json'], render: () => {
       const mark = (px) => `<span class="cx-ornament" aria-hidden="true"><svg width="${px}" height="${px}" viewBox="-2 -2 16 16" shape-rendering="crispEdges" focusable="false"><path fill="currentColor" d="${stitchPath(glyphs.mark.stitches)}"/></svg></span>`;
       return `${text(glyphs.mark.use)}\n\n${table(`The mark${sep}${glyphs.mark.name}`, ['Size', 'Mark'], [16, 32, 48, 96].map((px) => [`${px}px`, mark(px)]))}`;

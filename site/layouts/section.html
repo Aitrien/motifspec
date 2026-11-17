@@ -1,20 +1,44 @@
 {{ define "main" }}
+{{- /* The Foundations page is docs/foundations/_overview.md, with its samples generated (scripts/docs-reference.mjs). */ -}}
+{{- $overview := cond (eq .Section "foundations") (resources.Get "generated/foundations/_overview.md") nil -}}
+{{- $doc := cond (not $overview) dict (partial "src/doc.html" ($overview.Content | default "")) -}}
 <div class="cx-page-head">
   <h1>{{ .Title }}</h1>
-  {{- with .Description }}<p class="cx-lede">{{ . }}</p>{{ end }}
+  {{- with $doc.lede | default .Description }}<p class="cx-lede">{{ . | $.RenderString }}</p>{{ end }}
 </div>
-<div class="cx-article"><div class="cx-article__main cx-prose">
-{{- if eq .Section "components" }}
-  {{- range slice (slice "shared" "Shared") (slice "portfolio" "Portfolio") (slice "documentation" "Documentation") (slice "dashboard" "Dashboard") }}
-  {{- $key := index . 0 }}{{ $label := index . 1 }}{{ $pages := slice }}
-  {{- range $.Pages.ByWeight }}{{ if eq (index .Params.layouts 0) $key }}{{ $pages = $pages | append . }}{{ end }}{{ end }}
+{{- if $overview }}
+<div class="cx-prose">
+  {{ .RenderString (dict "display" "block") $doc.body }}
+</div>
+{{- else if eq .Section "components" }}
+{{- /* Every component's specimens in a catalogue grid (catalogue-grid.md), under the purpose groups of
+       docs/components/_groups.json; each cell links to its component's page. */ -}}
+{{- range resources.Get "src/docs/components/_groups.json" | transform.Unmarshal }}
+  {{- $group := . }}{{ $pages := where $.Pages "Params.group" .key }}
   {{- with $pages }}
-  <h2 id="{{ $key }}">{{ $label }}</h2>
-  {{ partial "page-list.html" . }}
+<section class="cx-section" id="{{ $group.key }}" aria-labelledby="{{ $group.key }}-title">
+  {{ partial "motifspec/section-heading.html" (dict "id" $group.key "title" $group.title) }}
+  <div class="cx-catalogue">
+    <ul class="cx-catalogue__list">
+      {{- /* Cells that share a row first, then the ones a row wide, so no row is left part-empty mid-group. */}}
+      {{- range $wide := slice false true }}
+        {{- range $pages.ByTitle }}
+          {{- $page := . }}
+          {{- range .Params.specimens }}{{ if eq .wide $wide }}
+      {{ partial "motifspec/catalogue-item.html" (dict "variant" .variant "name" $page.LinkTitle "href" $page.RelPermalink "specimen" .html "wide" .wide "live" .live) }}
+          {{- end }}{{ else }}{{ if not $wide }}
+      {{ partial "motifspec/catalogue-item.html" (dict "variant" $page.LinkTitle "name" "See the page" "href" $page.RelPermalink "note" $page.Params.specimen_note) }}
+          {{- end }}{{ end }}
+        {{- end }}
+      {{- end }}
+    </ul>
+  </div>
+</section>
   {{- end }}
-  {{- end }}
-{{- else }}
-  {{ partial "page-list.html" .Pages.ByWeight }}
 {{- end }}
+{{- else }}
+<div class="cx-article"><div class="cx-article__main cx-prose">
+  {{ partial "page-list.html" .Pages.ByWeight }}
 </div></div>
+{{- end }}
 {{ end }}

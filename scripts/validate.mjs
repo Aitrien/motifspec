@@ -7,7 +7,10 @@ const { tokens, errors: loadErrors } = loadTokens();
 const errors = [...loadErrors, ...validate(tokens)];
 
 // Component docs follow docs/components/_template.md and only list semantic tokens that exist.
-const SECTIONS = ['## When to use', '## When not to use', '## Markup', '```html {preview=true}', '## Do', "## Don't", '## Accessibility'];
+const SECTIONS = ['## When to use', '## When not to use', '## Markup', '```html {preview=true}', '## Do', "## Don't", '## Accessibility', '## Specimens'];
+// The purpose groups the Components page sorts components into, in order.
+const GROUPS = JSON.parse(readFileSync(join(ROOT, 'docs', 'components', '_groups.json'), 'utf8')).map((g) => g.key);
+const specimenIds = new Map();
 const docsDir = join(ROOT, 'docs', 'components');
 // The layouts a component can belong to: one file each in docs/layouts/, except à la carte, which has no components of its own.
 const LAYOUTS = readdirSync(join(ROOT, 'docs', 'layouts')).filter((f) => f.endsWith('.md') && f !== 'a-la-carte.md').map((f) => f.replace(/\.md$/, ''));
@@ -33,6 +36,23 @@ for (const file of readdirSync(docsDir).filter((f) => f.endsWith('.md') && !f.st
     if (i < 0) errors.push(`docs/components/${file}: missing or out-of-order "${s}"`); else at = i;
   }
   if (!/^# .+/m.test(doc)) errors.push(`docs/components/${file}: missing title`);
+  const group = fm[1].match(/^group: (\S+)$/m)?.[1];
+  if (!GROUPS.includes(group)) errors.push(`docs/components/${file}: group must be one of ${GROUPS.join(', ')} (docs/components/_groups.json)`);
+  // Specimens: the last section, one html block per variant, or a sentence saying why there are none. Their ids
+  // start "sp-" and are unique across every doc, since the Components page shows them all together.
+  const specimens = doc.slice(doc.indexOf('## Specimens'));
+  if (/\n## /.test(specimens.slice(1))) errors.push(`docs/components/${file}: "## Specimens" must be the last section`);
+  const blocks = [...specimens.matchAll(/```html \{specimen="([^"]+)"( wide=true)?( live=true)?\}\n([\s\S]*?)```/g)];
+  const fences = (specimens.match(/^```html/gm) ?? []).length;
+  if (fences !== blocks.length) errors.push(`docs/components/${file}: a specimen block must open with \`\`\`html {specimen="Name"}, then wide=true or live=true if needed`);
+  if (!blocks.length && !/^None: \S/m.test(specimens)) errors.push(`docs/components/${file}: "## Specimens" needs specimen blocks, or "None: " and why`);
+  const names = blocks.map((b) => b[1]);
+  if (new Set(names).size !== names.length) errors.push(`docs/components/${file}: two specimens share a name`);
+  for (const [, , , , html] of blocks) for (const [, id] of html.matchAll(/\sid="([^"]+)"/g)) {
+    if (!id.startsWith('sp-')) errors.push(`docs/components/${file}: specimen id "${id}" must start with "sp-"`);
+    else if (specimenIds.has(id)) errors.push(`docs/components/${file}: specimen id "${id}" is also used in ${specimenIds.get(id)}`);
+    else specimenIds.set(id, file);
+  }
 }
 // Ornament glyph catalogue: unique, kebab-case keys, never a forbidden glyph.
 const glyphs = tokens.get('font.family.ornament')?.extensions['codex.glyphs'];

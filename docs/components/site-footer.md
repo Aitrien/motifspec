@@ -2,6 +2,7 @@
 name: site-footer
 status: stable
 layouts: [shared]
+group: navigation
 tokens:
   - border.width.hairline
   - color.border.subtle
@@ -99,3 +100,33 @@ The closing band of every page: a knitted ornament band, grouped links, a coloph
 - The band is `aria-hidden="true"` and has no text alternative because it carries no meaning.
 - Links are at least 24px tall (`size.target.min`).
 - Pairs: `color.text.secondary` on `color.surface.raised` (7:1); `color.text.muted` on `color.surface.raised` (4.5:1, labels only). On a backdrop page the frost is measured as `color.surface.base`; the contour lines beneath it are not part of the check.
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Footer" wide=true}
+<footer class="cx-footer">
+  <div class="cx-container">
+    <div class="cx-footer__grid">
+      <div>
+        <h2>Pages</h2>
+        <ul>
+          <li><a href="/guide/">Guide</a></li>
+          <li><a href="/components/">Components</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Colophon</h2>
+        <p>Set in National Park and Geist Mono, with ornaments from Yarndings 12.</p>
+      </div>
+    </div>
+  </div>
+  <div class="cx-container">
+    <div class="cx-footer__base">
+      <span>© 2026 Liam Marshall</span>
+      <a href="/">Back to top<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-upward"></use></svg></a>
+    </div>
+  </div>
+</footer>
+```

@@ -16,7 +16,13 @@
   {{- $more := slice -}}
   {{- with $partials }}{{ $more = $more | append (printf "**Hugo:** %s, in `layouts/_partials/motifspec/` (`docs/hugo.md`)." (delimit (apply . "printf" "`%s`" ".") ", ")) }}{{ end -}}
   {{- with $d.front.tokens }}{{ $more = $more | append (printf "**Tokens:** %s ([Tokens](/reference/tokens/))." (delimit (apply . "printf" "`%s`" ".") ", ")) }}{{ end -}}
-  {{- $body := $d.body -}}
+  {{- /* Specimens (the last section) are for the Components page's catalogue, not the component's own page. */ -}}
+  {{- $specimens := slice -}}
+  {{- range findRESubmatch "(?s)```html \\{specimen=\"([^\"]+)\"( wide=true)?( live=true)?\\}\n(.*?)\n```" $r.Content -1 -}}
+    {{- $specimens = $specimens | append (dict "variant" (index . 1) "wide" (ne (index . 2) "") "live" (ne (index . 3) "") "html" (index . 4)) -}}
+  {{- end -}}
+  {{- $note := "" }}{{ with findRESubmatch `(?m)^## Specimens\n\nNone: (.+)$` $r.Content 1 }}{{ $note = index (index . 0) 1 }}{{ end -}}
+  {{- $body := replaceRE `(?s)\n## Specimens\n.*\z` "" $d.body -}}
   {{- with $more }}{{ $body = printf "%s\n\n## Partials and tokens\n\n%s" $body (delimit . "\n\n") }}{{ end -}}
-  {{- $.AddPage (partial "src/page.html" (dict "path" $n "title" $d.title "lede" $d.lede "body" $body "source" (printf "docs/components/%s.md" $n) "weight" (add (mul $g 100) $i) "params" (dict "layouts" $layouts "status" $d.front.status "deprecated" $d.front.deprecated "name" $n))) -}}
+  {{- $.AddPage (partial "src/page.html" (dict "path" $n "title" $d.title "lede" $d.lede "body" $body "source" (printf "docs/components/%s.md" $n) "weight" (add (mul $g 100) $i) "params" (dict "layouts" $layouts "status" $d.front.status "deprecated" $d.front.deprecated "name" $n "group" $d.front.group "specimens" $specimens "specimen_note" $note))) -}}
 {{- end -}}

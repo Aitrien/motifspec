@@ -2,14 +2,20 @@
 name: icon
 status: stable
 layouts: [shared]
+group: content
 tokens:
+  - border.width.hairline
+  - color.border.strong
+  - color.surface.hover
   - color.text.muted
   - motion.duration.base
   - motion.easing.standard
+  - radius.pill
   - size.icon.lg
   - size.icon.md
   - size.icon.sm
   - space.inline.xs
+  - space.inset.xs
 ---
 
 # Icon
@@ -66,3 +72,15 @@ Sizes: `cx-icon--sm` (16px, beside label-size mono text), default (20px, in butt
 - An icon-only control carries `aria-label` and uses `cx-icon--lg` inside a 44px target (`size.target.touch`).
 - Icons share their text's contrast pair, because they inherit `currentColor`.
 - Material Symbols is licensed under Apache-2.0 (`icons/LICENSE`); keep the licence with the sprite.
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Beside text"}
+<p class="cx-callout__title"><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-warning"></use></svg>Warning</p>
+```
+
+```html {specimen="In a button"}
+<a class="cx-button cx-button--primary" href="/components/">View all <svg class="cx-icon cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg></a>
+```

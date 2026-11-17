@@ -2,6 +2,7 @@
 name: button-and-link
 status: stable
 layouts: [shared]
+group: actions
 tokens:
   - border.focus.offset
   - border.focus.width
@@ -94,3 +95,31 @@ Add `cx-button--sm` for a compact button in a table row or a toolbar, where full
 - Buttons are 40px tall (`size.target.control`); links at least 24px.
 - Focus shows `color.focus.ring` 2px off the element, so it never sits on the green fill.
 - Pairs: `color.text.on-accent` on `color.accent.fill.rest` and `.hover` (4.5:1); `color.accent.fill.rest` against the page (3:1); secondary border `color.border.strong` (3:1); `color.link.rest` (7:1).
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Primary"}
+<a class="cx-button cx-button--primary" href="/guide/getting-started/">Get started <svg class="cx-icon cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg></a>
+```
+
+```html {specimen="Secondary"}
+<a class="cx-button" href="/components/">Browse components</a>
+```
+
+```html {specimen="Small"}
+<a class="cx-button cx-button--sm" href="/reference/changelog/">Changelog</a>
+```
+
+```html {specimen="Disabled"}
+<button class="cx-button" type="button" disabled>Not yet published</button>
+```
+
+```html {specimen="Text link"}
+<a class="cx-link" href="/components/">All components <svg class="cx-icon cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg></a>
+```
+
+```html {specimen="Back link"}
+<a class="cx-back" href="/guide/"><svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-back"></use></svg>Guide</a>
+```

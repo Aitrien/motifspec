@@ -2,6 +2,7 @@
 name: code-block
 status: stable
 layouts: [shared]
+group: content
 tokens:
   - border.focus.offset
   - border.focus.width
@@ -117,3 +118,18 @@ Hugo render hook (`layouts/_default/_markup/render-codeblock.html`):
 - A click copies the code's text (each line's `.cl` span when Chroma wrote them, otherwise the whole `<code>`) with the Clipboard API. The label becomes "Copied", the icon `check`, and `data-state="copied"`.
 - If the clipboard is unavailable or refused, the code is selected instead, the label becomes "Selected, press Ctrl+C" and `data-state="selected"`.
 - After `motion.duration.plate`, the button returns to "Copy" with the `content-copy` icon.
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="With a file name"}
+<figure class="cx-code">
+  <figcaption class="cx-code__bar">
+    <span>css</span>
+    <span class="cx-code__file">css/site.css</span>
+  </figcaption>
+  <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-css" data-lang="css"><span class="line"><span class="cl"><span class="nt">h1</span> <span class="p">{</span> <span class="k">margin</span><span class="p">:</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
+</span></span></code></pre></div>
+</figure>
+```

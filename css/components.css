@@ -38,7 +38,7 @@ p, li, dd, figcaption { text-wrap: pretty; }
 .cx-skip-link:focus { transform: none; }
 
 /* Shared label voice: mono, uppercase, tracked. */
-.cx-eyebrow, .cx-label dt, .cx-table thead th, .cx-toc summary, .cx-code__bar, .cx-callout__title, .cx-footer h2, .cx-figure__plate {
+.cx-eyebrow, .cx-label dt, .cx-table thead th, .cx-toc summary, .cx-code__bar, .cx-callout__title, .cx-footer h2, .cx-figure__plate, .cx-catalogue__name {
   font-family: var(--cx-font-family-mono);
   font-size: var(--cx-font-size-label);
   font-weight: var(--cx-font-weight-ui);
@@ -703,7 +703,7 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 /* ------------------------------------------------------------ token table (token-table.md, documentation layout) */
 /* What a token looks like, beside its name and rule, on the reference pages that MotifSpec's docs generator writes
    from dist/tokens.json. Each shows a value from a private custom property the generator sets on the element
-   (--_swatch; --_fg and --_bg; --_size and --_family; --_width). That is the one place MotifSpec writes a style
+   (--_swatch; --_fg and --_bg; --_size, --_family, --_weight, --_leading and --_tracking; --_width). That is the one place MotifSpec writes a style
    attribute, and only in generated pages; without it each falls back to a neutral look. */
 .cx-swatch {
   display: inline-block; flex: none; vertical-align: middle;
@@ -733,7 +733,8 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 .cx-token-table th[scope="row"] code { white-space: nowrap; }
 .cx-token-sample {
   display: block; margin: 0; white-space: nowrap; font-size: var(--_size, inherit); font-family: var(--_family, inherit);
-  line-height: var(--cx-font-line-height-heading); color: var(--cx-color-text-primary); overflow-wrap: anywhere;
+  font-weight: var(--_weight, inherit); line-height: var(--_leading, var(--cx-font-line-height-heading));
+  letter-spacing: var(--_tracking, normal); color: var(--cx-color-text-primary); overflow-wrap: anywhere;
 }
 .cx-token-bar { display: block; width: var(--_width, 0%); height: var(--cx-space-inset-sm); background: var(--cx-color-accent-fill-rest); }
 .cx-pair-sample {
@@ -742,6 +743,50 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
   border: var(--cx-border-width-hairline) solid var(--cx-color-border-subtle);
   color: var(--_fg, var(--cx-color-text-primary)); background: var(--_bg, var(--cx-color-surface-base));
   font-family: var(--cx-font-family-body); font-weight: var(--cx-font-weight-strong);
+}
+
+/* ------------------------------------------------------------ catalogue grid (catalogue-grid.md, documentation layout) */
+/* Specimens in a hairline grid, each above its caption, like a printed catalogue: rules between cells and under each,
+   none on the outer sides. Each cell draws its own end and bottom rule; the list runs one hairline past the frame,
+   which clips the last column's. */
+.cx-catalogue { overflow: hidden; border-block-start: var(--cx-border-width-hairline) solid var(--cx-color-border-default); }
+.cx-catalogue__list, .cx-prose .cx-catalogue__list {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--cx-size-column-sidebar)), 1fr));
+  margin: 0 calc(var(--cx-border-width-hairline) * -1) 0 0; padding: 0; list-style: none;
+}
+.cx-catalogue__item, .cx-prose .cx-catalogue__item {
+  display: flex; flex-direction: column; min-width: 0; margin: 0; padding: 0;
+  border-inline-end: var(--cx-border-width-hairline) solid var(--cx-color-border-default);
+  border-block-end: var(--cx-border-width-hairline) solid var(--cx-color-border-default);
+}
+.cx-catalogue__item::marker { content: none; }
+.cx-catalogue__item--wide { grid-column: 1 / -1; }
+/* The specimen, centred in its cell. contain keeps anything it positions (a sticky header, say) inside the cell. */
+.cx-catalogue__specimen {
+  flex: 1; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--cx-space-stack-sm);
+  min-height: calc(var(--cx-size-target-touch) * 3.5); padding: var(--cx-space-inset-lg); overflow: hidden; contain: layout paint;
+}
+.cx-catalogue__specimen > * { max-width: 100%; }
+.cx-catalogue__item--wide .cx-catalogue__specimen > * { flex: 1 1 100%; }
+.cx-catalogue__specimen--note { justify-content: flex-start; color: var(--cx-color-text-muted); font-size: var(--cx-font-size-small); }
+.cx-catalogue__caption {
+  display: flex; flex-direction: column; gap: var(--cx-space-stack-xs); padding: var(--cx-space-inset-sm) var(--cx-space-inset-md);
+  border-block-start: var(--cx-border-width-hairline) solid var(--cx-color-border-subtle);
+}
+.cx-catalogue__variant, .cx-prose .cx-catalogue__variant { margin: 0; color: var(--cx-color-text-accent); font-weight: var(--cx-font-weight-strong); line-height: var(--cx-font-line-height-ui); }
+/* The name, in the label voice, links to the full page; its arrow sits in a hairline circle at the end of the row. */
+.cx-catalogue__name, .cx-prose .cx-catalogue__name {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--cx-space-inline-sm);
+  min-height: var(--cx-size-target-min); color: var(--cx-color-text-primary); text-decoration: none;
+}
+.cx-catalogue__name .cx-icon {
+  flex: none; box-sizing: content-box; padding: var(--cx-space-inset-xs);
+  border: var(--cx-border-width-hairline) solid var(--cx-color-border-strong); border-radius: var(--cx-radius-pill);
+}
+.cx-catalogue__name:focus-visible { outline: var(--cx-border-focus-width) solid var(--cx-color-focus-ring); outline-offset: var(--cx-border-focus-offset); }
+@media (hover: hover) {
+  .cx-catalogue__name:hover { text-decoration: underline; text-underline-offset: var(--cx-space-inline-xs); }
+  .cx-catalogue__name:hover .cx-icon { background: var(--cx-color-surface-hover); }
 }
 
 /* ------------------------------------------------------------ project card */

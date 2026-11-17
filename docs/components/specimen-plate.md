@@ -2,6 +2,7 @@
 name: specimen-plate
 status: stable
 layouts: [shared]
+group: decoration
 tokens:
   - border.focus.offset
   - border.focus.width
@@ -135,3 +136,21 @@ MotifSpec's own plate: simplex-noise height lines drawn as a static SVG, which s
 - WCAG 2.3.1 (Three Flashes): nothing flashes more than three times a second.
 - The contour survey stops drawing while it is off screen or the tab is hidden.
 - The drawing classes are decorative: `color.ornament.rest` has no text-contrast requirement.
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Plate"}
+<figure class="cx-plate-frame">
+  <div class="cx-plate" aria-hidden="true">
+    <svg class="cx-plate__map" viewBox="0 0 240 240" focusable="false">
+      <path class="cx-plate__grid" d="M80 0V240M160 0V240M0 80H240M0 160H240"/>
+      <path class="cx-plate__line" pathLength="1" d="M0 200C60 150 90 190 130 120S200 60 240 70"/>
+      <path class="cx-plate__line cx-plate__line--index" pathLength="1" d="M0 220C70 180 100 210 150 150S210 100 240 110"/>
+      <path class="cx-plate__line" pathLength="1" d="M60 240C90 200 140 220 170 180S220 150 240 150"/>
+    </svg>
+  </div>
+  <figcaption>Plate 0 <span class="cx-sep" aria-hidden="true">|</span> Contours</figcaption>
+</figure>
+```
