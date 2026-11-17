@@ -96,7 +96,7 @@ In Hugo, `motifspec/catalogue-item.html` writes one cell (`docs/hugo.md`).
 
 ## Do
 
-- Show the smallest markup that makes each variant recognisable, one variant to a cell.
+- Show the smallest markup that makes each variant recognisable. Small variants of one component that read best side by side (buttons, statuses, tags) share a cell, and its caption names them all; otherwise, one variant to a cell.
 - Make a specimen `inert` when it is a picture of something interactive: it then takes no clicks or tab stops, and assistive technology skips it, so the caption is what a reader hears. The page it links to has the working version.
 - Leave out `inert` only for what shows on hover or focus, such as a tooltip.
 - Give a cell `--wide` for something page-wide, such as a header, a footer or a table.

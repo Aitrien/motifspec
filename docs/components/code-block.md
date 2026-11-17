@@ -123,11 +123,12 @@ Hugo render hook (`layouts/_default/_markup/render-codeblock.html`):
 
 For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
 
-```html {specimen="With a file name"}
+```html {specimen="With a file name" wide=true}
 <figure class="cx-code">
   <figcaption class="cx-code__bar">
     <span>css</span>
     <span class="cx-code__file">css/site.css</span>
+    <button class="cx-code__copy" type="button"><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use data-copy-icon href="#cx-icon-content-copy"></use></svg><span class="cx-code__copy-label">Copy</span></button>
   </figcaption>
   <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-css" data-lang="css"><span class="line"><span class="cl"><span class="nt">h1</span> <span class="p">{</span> <span class="k">margin</span><span class="p">:</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
 </span></span></code></pre></div>

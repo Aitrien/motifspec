@@ -45,7 +45,7 @@ Only for a component with behaviour: what changes on interaction, what script (i
 
 ## Specimens
 
-Last: each variant at a glance, for the Components page's catalogue. One block per variant, named in `specimen="…"`; `wide=true` gives it a whole row, `live=true` keeps it interactive (only for what shows on hover or focus, like a tooltip). Ids start "sp-" and are unique across every doc. Links go to real pages. A component that can't be shown in a snippet says "None: " and why, in a sentence.
+Last: each variant at a glance, for the Components page's catalogue. One block per variant, named in `specimen="…"`, or one block for small variants that read best side by side, such as buttons or statuses, named together ("Primary, secondary, disabled"); `wide=true` gives it a whole row, `live=true` keeps it interactive (only for what shows on hover or focus, like a tooltip). Ids start "sp-" and are unique across every doc. Links go to real pages. A component that can't be shown in a snippet says "None: " and why, in a sentence.
 
 ```html {specimen="Default"}
 <!-- the smallest markup that shows this variant -->

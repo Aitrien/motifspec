@@ -79,34 +79,13 @@ A portfolio's project statuses are named variants of these: `cx-status--live` (s
 
 For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
 
-```html {specimen="Live"}
+```html {specimen="Every state"}
 <span class="cx-status cx-status--live">Live</span>
-```
-
-```html {specimen="Building"}
 <span class="cx-status cx-status--building">Building</span>
-```
-
-```html {specimen="Archived"}
 <span class="cx-status cx-status--archived">Archived</span>
-```
-
-```html {specimen="Online"}
 <span class="cx-status cx-status--success">Online</span>
-```
-
-```html {specimen="Degraded"}
 <span class="cx-status cx-status--warning">Degraded</span>
-```
-
-```html {specimen="Down"}
 <span class="cx-status cx-status--danger">Down</span>
-```
-
-```html {specimen="Updating"}
 <span class="cx-status cx-status--info">Updating</span>
-```
-
-```html {specimen="Scheduled"}
 <span class="cx-status cx-status--muted">Scheduled</span>
 ```

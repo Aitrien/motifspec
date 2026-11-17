@@ -6,7 +6,7 @@ Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entri
 
 ### Added
 - Catalogue grid (`catalogue-grid.md`, documentation layout): specimens in a hairline grid, each above a caption with its variant in `color.text.accent` and its name in the label voice, linking to its page through an arrow in a hairline circle. `--wide` cells take a whole row. In Hugo, `motifspec/catalogue-item.html` writes one cell.
-- Every component doc ends with a `## Specimens` section: each variant as the smallest markup that shows it, or "None:" and why. Its front matter names a `group` from `docs/components/_groups.json` (Actions, Navigation, Content, Cards and lists, Labels and status, Data, Decoration). The validator checks both, and that specimen ids start "sp-" and are unique.
+- Every component doc ends with a `## Specimens` section: each variant as the smallest markup that shows it (small variants that read best side by side, such as buttons, statuses and tags, share one), or "None:" and why. Its front matter names a `group` from `docs/components/_groups.json` (Actions, Navigation, Content, Cards and lists, Labels and status, Data, Decoration). The validator checks both, and that specimen ids start "sp-" and are unique.
 - The token sample (`token-table.md`) takes `--_weight`, `--_leading` and `--_tracking` as well as `--_size` and `--_family`.
 
 ### Changed

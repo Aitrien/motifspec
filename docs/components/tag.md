@@ -75,14 +75,10 @@ A small mono label for a topic or technology, optionally linking to its index.
 
 For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
 
-```html {specimen="With a count"}
-<ul class="cx-tags"><li><a class="cx-tag" href="/components/">webgl<span class="cx-tag__count">4</span></a></li></ul>
-```
-
-```html {specimen="Current"}
-<ul class="cx-tags"><li><a class="cx-tag" href="/components/" aria-current="page">accessibility</a></li></ul>
-```
-
-```html {specimen="Plain"}
-<ul class="cx-tags"><li><span class="cx-tag">draft</span></li></ul>
+```html {specimen="With a count, current, plain"}
+<ul class="cx-tags">
+  <li><a class="cx-tag" href="/components/">webgl<span class="cx-tag__count">4</span></a></li>
+  <li><a class="cx-tag" href="/components/" aria-current="page">accessibility</a></li>
+  <li><span class="cx-tag">draft</span></li>
+</ul>
 ```
