@@ -2,6 +2,12 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.25.1] - 2026-11-18
+
+### Changed
+- The catalogue grid (`catalogue-grid.md`) keeps a specimen's wrapped rows together in the middle of the cell (`align-content: center`), instead of spreading them over its height.
+- The status doc's specimens show its five tones and its three project statuses in a cell each, named as the doc names them, in place of one cell of all eight.
+
 ## [1.25.0] - 2026-11-16
 
 ### Added
