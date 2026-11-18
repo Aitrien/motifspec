@@ -33,7 +33,7 @@ A short mono label with a dot that names a state: online, degraded, down, live, 
 
 - For a topic or technology; that is a tag (`tag.md`).
 - For a message the reader must read in full; that is a callout (`callout.md`).
-- As the only sign of a problem on a page. A problem that needs action also gets a callout.
+- As the only sign of a problem on a page. A problem that needs action also gets an alert (`alert.md`).
 
 ## Markup
 

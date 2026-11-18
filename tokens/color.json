@@ -922,7 +922,7 @@
       },
       "inverse": {
         "$value": "{primitive.color.ash.900}",
-        "$description": "Background of tooltips and other small transient labels that must stand out from every surface. Never for panels or cards.",
+        "$description": "Background of tooltips, toasts and other small transient labels that must stand out from every surface. Never for panels or cards.",
         "$extensions": {
           "codex.modes": {
             "dark": "{primitive.color.ash.100}"
@@ -1062,7 +1062,7 @@
       },
       "inverse": {
         "$value": "{primitive.color.ash.50}",
-        "$description": "Text on color.surface.inverse (tooltips). Only there.",
+        "$description": "Text on color.surface.inverse (tooltips and toasts), and the focus ring inside a toast. Only there.",
         "$extensions": {
           "codex.modes": {
             "dark": "{primitive.color.ash.900}"

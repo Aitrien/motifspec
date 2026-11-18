@@ -283,4 +283,7 @@ export const DOC_SELECTORS = {
   'tabs': ['.cx-tabs'],
   'token-table': ['.cx-token-table', '.cx-swatch', '.cx-palette', '.cx-token-sample', '.cx-token-bar', '.cx-pair-sample'],
   'catalogue-grid': ['.cx-catalogue'],
+  'alert': ['.cx-alert'],
+  'toast': ['.cx-toasts', '.cx-toast'],
+  'breadcrumb': ['.cx-breadcrumb'],
 };

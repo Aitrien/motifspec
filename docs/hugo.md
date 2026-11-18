@@ -72,7 +72,7 @@ A site using the documentation layout (`docs/layouts/documentation.md`) puts the
 
 With `params.motifspec.layout = "documentation"`, `body-start.html` writes the side of the backdrop on every page but the home page, and `cx-backdrop-page--side` puts it down the left edge; below `size.breakpoint.lg` the foot shows instead (`backdrop.md`). The home page is the landing page: full width, outside the docs shell, with `<body class="cx-backdrop-page">` and the head of the backdrop, as in the page shell above.
 
-An article page's `main` block, in order: the page head with `page-actions.html` after the lede, `article.html`, `page-footer.html`, then `pagination-docs.html`.
+An article page's `main` block, in order: the page head, with `breadcrumb.html` before the h1 and `page-actions.html` after the lede; any alerts (`alert.html`); `article.html`, `page-footer.html`, then `pagination-docs.html`.
 
 ### A Markdown copy of each page
 
@@ -142,6 +142,8 @@ Every partial below is called as `partial "motifspec/<name>.html" <context>`.
 | `search.html` | `search.md` | A page. The search trigger and dialog; `site-header.html` calls it when `params.motifspec.search` is true. |
 | `theme-toggle.html` | `site-header.md` | A page. The theme toggle; `site-header.html` writes it in the bar and, on a documentation site, in the menu. |
 | `back-link.html` | `button-and-link.md` | `dict "href" "…" "label" "All work"`. |
+| `alert.html` | `alert.md` | `dict "kind" "warning" "title" "…" "text" "…"`: kind `info` (the default), `success`, `warning` or `danger`; text in Markdown; optional `"dismiss" true`, or a key to keep it dismissed on later pages. |
+| `breadcrumb.html` | `breadcrumb.md` | A page. The trail from the home page to its parent, in a documentation site's page head; nothing when its parent is the home page. |
 | `section-heading.html` | `heading-anchor.md` | `dict "id" "work" "title" "Selected work"`, inside a `<section id="work" aria-labelledby="work-title">`. |
 | `tokens.html` | | Call with `partialCached "motifspec/tokens.html" "tokens"`. A map from token name to its entry in `dist/tokens.json`, for templates that need a token's value at build time. |
 | `h2s.html` | | A page. Its h2 headings with their h3 children; used by the article and the TOC. |

@@ -50,7 +50,7 @@ The frame of a documentation page: grouped page navigation on the left, the page
 
 ## Markup
 
-The site header (`site-header.md`) and footer (`site-footer.md`) go around it as on any page. The main column holds the page head and a `cx-article`, whose table of contents (`table-of-contents.md`) is "On this page".
+The site header (`site-header.md`) and footer (`site-footer.md`) go around it as on any page. The main column holds the page head, which starts with the breadcrumb (`breadcrumb.md`), and a `cx-article`, whose table of contents (`table-of-contents.md`) is "On this page".
 
 ```html {preview=true}
 <div class="cx-container cx-docs">
@@ -77,6 +77,12 @@ The site header (`site-header.md`) and footer (`site-footer.md`) go around it as
   </nav>
   <main id="main" class="cx-docs__main" tabindex="-1" data-pagefind-body>
     <div class="cx-page-head">
+      <nav class="cx-breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore>
+        <ol class="cx-breadcrumb__list">
+          <li><a href="/">MotifSpec</a></li>
+          <li><a href="/guide/">Guide</a></li>
+        </ol>
+      </nav>
       <h1>Getting started</h1>
       <p class="cx-lede">Install the module, import it, and check your site.</p>
     </div>
