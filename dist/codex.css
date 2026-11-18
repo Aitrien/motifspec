@@ -2,7 +2,7 @@
 @font-face { font-family: "Geist Mono"; src: url("../fonts/geist-mono-latin-wght.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; }
 @font-face { font-family: "Yarndings 12"; src: url("../fonts/yarndings-12-latin.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
 
-/* MotifSpec 1.24.2 — generated from tokens/*.json. Do not edit.
+/* MotifSpec 1.24.3 — generated from tokens/*.json. Do not edit.
    Themes: semantic colours use light-dark(); color-scheme follows the system unless
    <html data-theme="light|dark"> pins it. --cx-primitive-* are for this file only. */
 :root {
@@ -724,10 +724,11 @@ p, li, dd, figcaption { text-wrap: pretty; }
 /* The bar keeps its height while the wordmark changes size: the wordmark is a touch target high at any size, with its
    text centred in it (align-content, as its line keeps the name and role on one baseline). */
 .cx-header--docs .cx-wordmark { flex: none; padding-block: 0; align-content: center; }
-/* A docs header's version sits beside the wordmark, in the role's place, on the wordmark's baseline. Its pill padding
-   is the gap between them. It is size.target.min high there, so lining up with the wordmark can't make the bar taller. */
+/* A docs header's version sits beside the wordmark, in the role's place, on the wordmark's baseline, with space.inline.sm
+   between them so its hover pill doesn't touch the wordmark. It is size.target.min high there, so lining up with the
+   wordmark can't make the bar taller. */
 .cx-header__brand { flex: none; display: flex; align-items: baseline; }
-.cx-header__brand > .cx-header__version { min-height: var(--cx-size-target-min); }
+.cx-header__brand > .cx-header__version { min-height: var(--cx-size-target-min); margin-inline-start: var(--cx-space-inline-sm); }
 /* A docs header sticks, with its surface, even without dist/codex.js: its menu and "On this page" open from it. */
 .cx-backdrop-page .cx-header--docs:not([data-scrolled]) { position: sticky; background: var(--cx-color-surface-base); }
 @media (width < 64rem) {
