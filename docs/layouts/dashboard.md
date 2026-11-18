@@ -20,7 +20,7 @@ Planned: a side navigation column (wordmark, grouped links, the theme toggle and
 <!-- caption: Page templates -->
 | Template | Order | Dominant | Secondary |
 |---|---|---|---|
-| **Overview** | Page head (title, when the readings were last updated, page-wide controls) → alerts as callouts → headline figures → the main column and a side column of sections | Alerts and headline figures | Detail sections |
+| **Overview** | Page head (title, when the readings were last updated, page-wide controls) → alerts (`alert.md`) → headline figures → the main column and a side column of sections | Alerts and headline figures | Detail sections |
 | **List** | Page head → filters → a data table with row actions → pagination | The table | Filters |
 | **Detail** | Page head with the item's status → its facts → its readings → related lists | Status and readings | Related lists |
 | **Form** | Page head → grouped fields → actions at the end of the form | The fields | Help text |
@@ -44,7 +44,7 @@ Every shared component, plus the components whose doc lists `dashboard` under `l
 
 MotifSpec doesn't fetch data; where an app gets its readings is the project's decision. How readings appear:
 
-- Readings that update on a schedule aren't live regions, so a screen reader isn't interrupted on every update. New alerts and state changes are announced once, through one polite live region (`role="status"`) per page.
+- Readings that update on a schedule aren't live regions, so a screen reader isn't interrupted on every update. New alerts and state changes are announced once, through one polite live region (`role="status"`) per page; an alert added after the page loads has it (`alert.md`).
 - The page says when its readings were last updated, as a `<time>`. A source that has gone quiet says so ("No readings since 13:58"); old numbers are never shown as current.
 - Values change in place, with no counting animation and nothing flashing.
 - A section whose source fails says so and when it last worked; the rest of the page keeps working.

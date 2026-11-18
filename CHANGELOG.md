@@ -2,6 +2,19 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.26.0] - 2026-11-18
+
+### Added
+- Alert (`alert.md`, shared): a message about the page or the system at the top of the main column, in four kinds (info, success, warning and danger) with an optional dismiss button. With a key, a dismissed alert stays dismissed on later pages. In Hugo, `motifspec/alert.html` writes one.
+- Toast (`toast.md`, shared): a short confirmation at the bottom of the screen, sent with a `cx-toast` event and shown by `codex.js` in one polite live region per page. It stays for the new `motion.duration.toast` (6 seconds), and the time starts again while the pointer or focus is on it.
+- Breadcrumb (`breadcrumb.md`, documentation layout): the trail from the home page to the page's section, first in the page head. In Hugo, `motifspec/breadcrumb.html` writes it from the page's ancestors.
+- A Messages group on the Components page, with the callout, alert and toast.
+
+### Changed
+- The dashboard layout's alerts are alerts (`alert.md`), not callouts. motifspec.com shows a deprecated page's notice as an alert, and the breadcrumb on every page below a section.
+- `color.surface.inverse` and `color.text.inverse` are for toasts as well as tooltips.
+- The primitive behind `motion.duration.drift` is now `primitive.motion.duration.7`; its value hasn't changed.
+
 ## [1.25.1] - 2026-11-18
 
 ### Changed

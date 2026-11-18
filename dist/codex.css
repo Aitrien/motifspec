@@ -2,7 +2,7 @@
 @font-face { font-family: "Geist Mono"; src: url("../fonts/geist-mono-latin-wght.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; }
 @font-face { font-family: "Yarndings 12"; src: url("../fonts/yarndings-12-latin.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
 
-/* MotifSpec 1.25.1 — generated from tokens/*.json. Do not edit.
+/* MotifSpec 1.26.0 — generated from tokens/*.json. Do not edit.
    Themes: semantic colours use light-dark(); color-scheme follows the system unless
    <html data-theme="light|dark"> pins it. --cx-primitive-* are for this file only. */
 :root {
@@ -194,7 +194,8 @@
   --cx-primitive-motion-duration-3: 320ms;
   --cx-primitive-motion-duration-4: 1600ms;
   --cx-primitive-motion-duration-5: 3200ms;
-  --cx-primitive-motion-duration-6: 60000ms;
+  --cx-primitive-motion-duration-6: 6000ms;
+  --cx-primitive-motion-duration-7: 60000ms;
 
   /* primitive.motion.easing */
   --cx-primitive-motion-easing-out-strong: cubic-bezier(0.2, 0, 0, 1);
@@ -212,8 +213,9 @@
   --cx-motion-duration-base: var(--cx-primitive-motion-duration-2);
   --cx-motion-duration-slow: var(--cx-primitive-motion-duration-3);
   --cx-motion-duration-plate: var(--cx-primitive-motion-duration-4);
-  --cx-motion-duration-drift: var(--cx-primitive-motion-duration-6);
+  --cx-motion-duration-drift: var(--cx-primitive-motion-duration-7);
   --cx-motion-duration-settle: var(--cx-primitive-motion-duration-5);
+  --cx-motion-duration-toast: var(--cx-primitive-motion-duration-6);
   --cx-motion-duration-pulse: var(--cx-primitive-motion-duration-5); /* Deprecated: Unused since the contour plate; removed in 2.0.0. */
 
   /* motion.easing */
@@ -517,7 +519,7 @@ p, li, dd, figcaption { text-wrap: pretty; }
 .cx-skip-link:focus { transform: none; }
 
 /* Shared label voice: mono, uppercase, tracked. */
-.cx-eyebrow, .cx-label dt, .cx-table thead th, .cx-toc summary, .cx-code__bar, .cx-callout__title, .cx-footer h2, .cx-figure__plate, .cx-catalogue__name {
+.cx-eyebrow, .cx-label dt, .cx-table thead th, .cx-toc summary, .cx-code__bar, .cx-callout__title, .cx-footer h2, .cx-figure__plate, .cx-catalogue__name, .cx-breadcrumb {
   font-family: var(--cx-font-family-mono);
   font-size: var(--cx-font-size-label);
   font-weight: var(--cx-font-weight-ui);
@@ -1018,6 +1020,18 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 .cx-link:hover, .cx-back:hover { color: var(--cx-color-link-hover); text-decoration-thickness: var(--cx-border-width-emphasis); }
 .cx-back { font-family: var(--cx-font-family-mono); font-size: var(--cx-font-size-label); font-weight: var(--cx-font-weight-ui); letter-spacing: var(--cx-font-tracking-label); text-transform: uppercase; text-decoration: none; }
 
+/* ------------------------------------------------------------ breadcrumb (breadcrumb.md, documentation layout) */
+/* The trail from the home page to the page's parent, above the h1. The separators are hidden from assistive
+   technology (the alternative text after the slash is empty); the list already says how the links relate. */
+.cx-breadcrumb__list { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--cx-space-inline-sm); margin: 0; padding: 0; list-style: none; }
+.cx-breadcrumb__list > li { display: inline-flex; align-items: center; gap: var(--cx-space-inline-sm); margin: 0; }
+.cx-breadcrumb__list > li + li::before { content: "/"; content: "/" / ""; color: var(--cx-color-text-muted); }
+.cx-breadcrumb a {
+  display: inline-flex; align-items: center; min-height: var(--cx-size-target-min); color: var(--cx-color-text-secondary);
+  text-decoration: none; text-underline-offset: var(--cx-space-inline-xs);
+}
+.cx-breadcrumb a:hover { color: var(--cx-color-text-primary); text-decoration: underline; text-decoration-thickness: var(--cx-border-width-hairline); }
+
 /* ------------------------------------------------------------ prose */
 .cx-prose { min-width: 0; }
 .cx-prose > * { margin-block: 0; }
@@ -1163,6 +1177,57 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 .cx-callout--tip { --_border: var(--cx-color-status-success-border); --_bg: var(--cx-color-status-success-surface); --_title: var(--cx-color-status-success-text); }
 .cx-callout--warning { --_border: var(--cx-color-status-warning-border); --_bg: var(--cx-color-status-warning-surface); --_title: var(--cx-color-status-warning-text); }
 .cx-callout--danger { --_border: var(--cx-color-status-danger-border); --_bg: var(--cx-color-status-danger-surface); --_title: var(--cx-color-status-danger-text); }
+
+/* ------------------------------------------------------------ alert (alert.md) */
+/* A message about the page or the system, at the top of the main column: icon, body, and an optional dismiss button
+   that codex.js shows. The emphasis rule along the top sets it apart from a callout, which sits in the running text. */
+.cx-alert {
+  --_border: var(--cx-color-status-info-border); --_bg: var(--cx-color-status-info-surface); --_ink: var(--cx-color-status-info-text);
+  display: flex; align-items: flex-start; gap: var(--cx-space-inline-md); padding: var(--cx-space-inset-md);
+  border: var(--cx-border-width-hairline) solid var(--_border); border-block-start-width: var(--cx-border-width-emphasis);
+  background: var(--_bg); color: var(--cx-color-text-primary); line-height: var(--cx-font-line-height-ui);
+  flex: 1 1 100%; /* a whole row, in a flex container too */
+}
+.cx-alert[hidden] { display: none; }
+:where(main) > .cx-alert { margin-block-end: var(--cx-space-stack-lg); }
+.cx-alert__icon { flex: none; color: var(--_ink); margin-block-start: calc((1lh - var(--cx-size-icon-md)) / 2); } /* centred on the first line */
+.cx-alert__body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--cx-space-stack-xs); }
+.cx-alert__body > * { margin: 0; max-width: var(--cx-size-measure-prose); }
+.cx-alert__title { font-weight: var(--cx-font-weight-strong); }
+.cx-alert--success { --_border: var(--cx-color-status-success-border); --_bg: var(--cx-color-status-success-surface); --_ink: var(--cx-color-status-success-text); }
+.cx-alert--warning { --_border: var(--cx-color-status-warning-border); --_bg: var(--cx-color-status-warning-surface); --_ink: var(--cx-color-status-warning-text); }
+.cx-alert--danger { --_border: var(--cx-color-status-danger-border); --_bg: var(--cx-color-status-danger-surface); --_ink: var(--cx-color-status-danger-text); }
+.cx-alert__dismiss, .cx-toast__dismiss {
+  flex: none; display: inline-grid; place-items: center; inline-size: var(--cx-size-target-min); block-size: var(--cx-size-target-min);
+  margin: calc(var(--cx-space-inset-xs) * -1); padding: 0; border: 0; border-radius: var(--cx-radius-control);
+  background: transparent; color: inherit; cursor: pointer;
+}
+.cx-alert__dismiss[hidden] { display: none; }
+.cx-alert__dismiss:hover { background: var(--cx-color-surface-hover); }
+.cx-alert__dismiss:focus-visible { outline: var(--cx-border-focus-width) solid var(--cx-color-focus-ring); outline-offset: var(--cx-border-focus-offset); }
+
+/* ------------------------------------------------------------ toast (toast.md) */
+/* codex.js keeps one region per page, fixed at the end of the viewport, and adds a toast to it on a cx-toast event.
+   The region is a polite live region, so each toast is read once without moving focus. */
+.cx-toasts {
+  position: fixed; z-index: 40; inset-block-end: var(--cx-space-gutter-page); inset-inline: var(--cx-space-gutter-page);
+  display: flex; flex-direction: column; align-items: flex-end; gap: var(--cx-space-stack-sm); pointer-events: none;
+}
+.cx-toast {
+  display: flex; align-items: center; gap: var(--cx-space-inline-sm); max-width: var(--cx-size-column-card);
+  padding: var(--cx-space-inset-sm) var(--cx-space-inset-sm) var(--cx-space-inset-sm) var(--cx-space-inset-md);
+  border-radius: var(--cx-radius-control); background: var(--cx-color-surface-inverse); color: var(--cx-color-text-inverse);
+  font-size: var(--cx-font-size-small); line-height: var(--cx-font-line-height-ui); pointer-events: auto;
+}
+.cx-toast__text { flex: 1; min-width: 0; margin: 0; }
+.cx-toast__dismiss { margin: 0; }
+.cx-toast__dismiss:focus-visible { outline: var(--cx-border-focus-width) solid var(--cx-color-text-inverse); outline-offset: calc(var(--cx-border-focus-width) * -2); }
+.cx-toasts .cx-toast {
+  opacity: 0; transform: translateY(var(--cx-motion-distance-nudge));
+  transition: opacity var(--cx-motion-duration-base) var(--cx-motion-easing-enter), transform var(--cx-motion-duration-base) var(--cx-motion-easing-enter);
+}
+.cx-toasts .cx-toast.is-shown { opacity: 1; transform: none; }
+.cx-toasts .cx-toast.is-leaving { transition-timing-function: var(--cx-motion-easing-exit); }
 
 /* ------------------------------------------------------------ data table */
 .cx-table { position: relative; min-width: 0; overflow-x: auto; border: var(--cx-border-width-hairline) solid var(--cx-color-border-default); background: var(--cx-color-surface-raised); }

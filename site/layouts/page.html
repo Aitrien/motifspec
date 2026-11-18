@@ -1,15 +1,13 @@
 {{ define "main" }}
 <div class="cx-page-head">
+  {{- partial "motifspec/breadcrumb.html" . }}
   <h1>{{ .Title }}</h1>
   {{- with .Description }}<p class="cx-lede">{{ . }}</p>{{ end }}
   {{- partial "page-meta.html" . }}
   {{ partial "motifspec/page-actions.html" . }}
 </div>
 {{- with .Params.deprecated }}
-<div class="cx-callout cx-callout--warning" role="note">
-  <p class="cx-callout__title"><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-warning"></use></svg>Deprecated</p>
-  <p>{{ . | markdownify }}</p>
-</div>
+{{ partial "motifspec/alert.html" (dict "kind" "warning" "title" "Deprecated" "text" .) }}
 {{- end }}
 {{ partial "motifspec/article.html" (dict "page" . "toc" (cond (eq .Params.toc false) "never" "auto")) }}
 {{ partial "motifspec/page-footer.html" . }}

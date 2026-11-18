@@ -18,7 +18,7 @@ The site header and footer, and between them, on every page but the landing page
 | Template | Order | Dominant | Secondary |
 |---|---|---|---|
 | **Landing** | Header → statement (display h1, lede, a primary button to Getting started and a secondary one) on the frost → why the product exists → entry points to each section → footer. Full width, outside the docs shell. | The statement and its call to action | Why, entry points, the backdrop |
-| **Article** | Header → title and lede → TOC + prose with figures, code blocks, callouts and tables → edit link and last updated → previous and next → footer | The prose column | TOC, page actions |
+| **Article** | Header → breadcrumb, title and lede → any alerts about the page, such as a deprecation (`alert.md`) → TOC + prose with figures, code blocks, callouts and tables → edit link and last updated → previous and next → footer | The prose column | TOC, page actions |
 | **Reference table** | Header → title and one-line intro → the table (tokens, icons, rules) → footer | The table | Intro |
 | **Changelog** | Header → title → releases, newest first, each with its version, date and changes → footer | The releases | Dates |
 | **404** | Header → h1 "Page not found" → links to the docs home and search → footer | Heading and the routes out | |

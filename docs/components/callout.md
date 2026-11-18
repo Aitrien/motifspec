@@ -2,7 +2,7 @@
 name: callout
 status: stable
 layouts: [shared]
-group: content
+group: messages
 tokens:
   - border.width.emphasis
   - border.width.hairline
@@ -45,6 +45,7 @@ A tinted note set apart from running text, in four kinds: note, tip, warning and
 - More than twice per article. Callouts lose force when repeated.
 - For quotations; use `<blockquote>`.
 - For decoration or to make a paragraph "pop".
+- For a message about the page or the system rather than the text around it; use an alert (`alert.md`) at the top of the main column.
 
 ## Markup
 

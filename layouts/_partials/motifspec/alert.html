@@ -1,0 +1,21 @@
+{{- /* alert.md. Context: dict "kind" ("info", the default, "success", "warning" or "danger") "title" "…" "text" "…"
+       (Markdown, one or two sentences), plus "dismiss" true for a dismiss button, or a key ("maintenance-0412") to
+       keep it dismissed on later pages. */ -}}
+{{- $icons := dict "info" "note" "success" "check" "warning" "warning" "danger" "danger" }}
+{{- $kind := .kind | default "info" }}
+{{- $icon := index $icons $kind }}
+{{- if not $icon }}{{ errorf "motifspec/alert.html: kind %q isn't an alert. Use info, success, warning or danger." $kind }}{{ end }}
+{{- if not .text }}{{ errorf "motifspec/alert.html: an alert needs \"text\"." }}{{ end }}
+<div class="cx-alert{{ if ne $kind "info" }} cx-alert--{{ $kind }}{{ end }}">
+  <svg class="cx-icon cx-alert__icon" aria-hidden="true" focusable="false"><use href="#cx-icon-{{ $icon }}"></use></svg>
+  <div class="cx-alert__body">
+    {{- with .title }}
+    <p class="cx-alert__title">{{ . }}</p>
+    {{- end }}
+    {{- $text := .text | markdownify | strings.TrimSpace | safeHTML }}
+    {{ if strings.HasPrefix $text "<p>" }}{{ $text }}{{ else }}<p>{{ $text }}</p>{{ end }}
+  </div>
+  {{- with .dismiss }}
+  <button class="cx-alert__dismiss" type="button" data-alert-dismiss{{ if not (eq . true) }}="{{ . }}"{{ end }} aria-label="Dismiss" hidden><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-close"></use></svg></button>
+  {{- end }}
+</div>

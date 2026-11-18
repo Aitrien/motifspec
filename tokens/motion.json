@@ -59,6 +59,15 @@
         },
         "6": {
           "$value": {
+            "value": 6000,
+            "unit": "ms"
+          },
+          "$extensions": {
+            "codex.tier": "primitive"
+          }
+        },
+        "7": {
+          "$value": {
             "value": 60000,
             "unit": "ms"
           },
@@ -163,12 +172,16 @@
         "$description": "The specimen plate's single draw-in on load. Decoration only; never for content."
       },
       "drift": {
-        "$value": "{primitive.motion.duration.6}",
+        "$value": "{primitive.motion.duration.7}",
         "$description": "Time the specimen plate's terrain takes to drift one noise unit, so its lines reshape slowly and continuously. The only looping motion in the system: one plate per page, with a visible pause control, stopped under prefers-reduced-motion. The backdrop doesn't drift."
       },
       "settle": {
         "$value": "{primitive.motion.duration.5}",
         "$description": "The backdrop's response time. The home page's contours settle into place over it on arrival and then stay still, and a hill the pointer warms takes about two-thirds of it to rise and twice it to flatten. Under five seconds, so nothing runs long enough to need a pause control; none of it happens under prefers-reduced-motion."
+      },
+      "toast": {
+        "$value": "{primitive.motion.duration.6}",
+        "$description": "How long a toast (toast.md) stays before it goes on its own. The time starts again while the pointer or focus is on it, and isn't shortened under prefers-reduced-motion: it is time to read, not motion."
       },
       "pulse": {
         "$value": "{primitive.motion.duration.5}",
@@ -184,7 +197,7 @@
       },
       "enter": {
         "$value": "{primitive.motion.easing.decelerate}",
-        "$description": "Elements appearing: disclosures opening, a toast arriving."
+        "$description": "Elements appearing: disclosures opening, a toast arriving (toast.md)."
       },
       "exit": {
         "$value": "{primitive.motion.easing.accelerate}",

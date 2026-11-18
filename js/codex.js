@@ -1,5 +1,5 @@
 // MotifSpec behaviour: theme toggle, the backdrop header's scroll state, tooltip dismissal, code copy buttons,
-// TOC docking and active section.
+// TOC docking and active section, alert dismissal and toasts.
 // Shipped as dist/codex.js (@aitrien/motifspec/codex.js).
 // Enhancement only. Without this script: themes follow the system, code is selectable, the TOC is a plain open list,
 // and every control that needs script stays hidden. Load it with `defer`; it also works inline at the end of <body>.
@@ -280,6 +280,68 @@
           : text.then(function (t) { return navigator.clipboard.writeText(t); });
         copied.then(function () { done(true); }, function () { done(false); });
       });
+    });
+
+    // Alerts (alert.md): show each dismiss button, and hide its alert when pressed. With a key, data-alert-dismiss="x",
+    // the alert stays hidden on later pages too (localStorage "cx-alert:x"). Focus moves to the main column, since the
+    // button it was on has gone. One listener on the document, so an alert an app adds later works the same way.
+    var dismissed = function (key) { try { return Boolean(key) && localStorage.getItem('cx-alert:' + key) === 'dismissed'; } catch (e) { return false; } };
+    document.querySelectorAll('.cx-alert [data-alert-dismiss]').forEach(function (btn) {
+      var alert = btn.closest('.cx-alert');
+      if (dismissed(btn.dataset.alertDismiss)) alert.hidden = true; else btn.hidden = false;
+    });
+    document.addEventListener('click', function (e) {
+      var btn = e.target.closest && e.target.closest('.cx-alert [data-alert-dismiss]');
+      if (!btn) return;
+      var key = btn.dataset.alertDismiss;
+      btn.closest('.cx-alert').hidden = true;
+      if (key) { try { localStorage.setItem('cx-alert:' + key, 'dismissed'); } catch (err) { /* storage blocked: hidden for this view only */ } }
+      var main = document.getElementById('main');
+      if (main) main.focus({ preventScroll: true });
+    });
+
+    // Toasts (toast.md): document.dispatchEvent(new CustomEvent('cx-toast', { detail: { text: 'Saved', kind: 'success' } })).
+    // One polite live region per page, made here if the page has none, holds up to three; each goes after
+    // motion.duration.toast, a time that starts again while the pointer or focus is on it. Escape inside one, or its
+    // button, closes it. The text is set as text, never as HTML.
+    var region = document.querySelector('.cx-toasts');
+    if (!region) {
+      region = document.createElement('div'); region.className = 'cx-toasts'; region.setAttribute('role', 'status');
+      document.body.appendChild(region);
+    }
+    var toastIcon = function (id, cls) {
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('class', 'cx-icon cx-icon--sm' + (cls ? ' ' + cls : '')); svg.setAttribute('aria-hidden', 'true'); svg.setAttribute('focusable', 'false');
+      var use = document.createElementNS('http://www.w3.org/2000/svg', 'use'); use.setAttribute('href', '#cx-icon-' + id);
+      svg.appendChild(use); return svg;
+    };
+    var closeToast = function (toast) {
+      if (toast.classList.contains('is-leaving')) return;
+      clearTimeout(toast._cxTimer);
+      var hadFocus = toast.contains(document.activeElement);
+      toast.classList.add('is-leaving'); toast.classList.remove('is-shown');
+      setTimeout(function () { toast.remove(); }, ms('--cx-motion-duration-base'));
+      if (hadFocus) { var main = document.getElementById('main'); if (main) main.focus({ preventScroll: true }); }
+    };
+    document.addEventListener('cx-toast', function (e) {
+      var d = e.detail || {};
+      if (!d.text) return;
+      var toast = document.createElement('div'); toast.className = 'cx-toast';
+      if (d.kind === 'success') toast.appendChild(toastIcon('check'));
+      var p = document.createElement('p'); p.className = 'cx-toast__text'; p.textContent = d.text; toast.appendChild(p);
+      var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'cx-toast__dismiss'; btn.setAttribute('aria-label', 'Dismiss');
+      btn.appendChild(toastIcon('close')); btn.addEventListener('click', function () { closeToast(toast); }); toast.appendChild(btn);
+      var wait = function () { clearTimeout(toast._cxTimer); toast._cxTimer = setTimeout(function () { closeToast(toast); }, ms('--cx-motion-duration-toast')); };
+      var hold = function () { clearTimeout(toast._cxTimer); };
+      toast.addEventListener('mouseenter', hold); toast.addEventListener('focusin', hold);
+      toast.addEventListener('mouseleave', function () { if (!toast.contains(document.activeElement)) wait(); });
+      toast.addEventListener('focusout', function (ev) { if (!toast.contains(ev.relatedTarget) && !toast.matches(':hover')) wait(); });
+      toast.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') { ev.stopPropagation(); closeToast(toast); } });
+      var live = region.querySelectorAll('.cx-toast:not(.is-leaving)');
+      if (live.length >= 3) closeToast(live[0]);
+      region.appendChild(toast);
+      window.requestAnimationFrame(function () { window.requestAnimationFrame(function () { toast.classList.add('is-shown'); }); });
+      wait();
     });
 
     // Docs navigation: dock it (sticky, scrolling on its own) while it sits beside the main column, as the TOC does.
