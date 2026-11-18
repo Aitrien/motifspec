@@ -2,6 +2,7 @@
 name: tabs
 status: stable
 layouts: [shared]
+group: navigation
 tokens:
   - border.focus.offset
   - border.focus.width
@@ -79,3 +80,14 @@ The same content in two to four forms, such as Hugo and npm, with one shown at a
 - **Building:** in each `.cx-tabs` with two or more `.cx-tabs__panel` children, a tab list is inserted before the first panel, with one button per panel, named by its `.cx-tabs__label`. The set gets `is-tabbed`, which hides the labels.
 - **Choosing:** a click, or the arrow keys, Home and End, selects a tab and shows its panel; the others get `hidden`. Selection follows focus.
 - **Keeping in step:** choosing in a set with `data-tabs` selects the same label in every other set with that name, and stores it as `cx-tabs:<name>` in `localStorage`, which the next page reads. Storage that's blocked is ignored.
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Two panels"}
+<div class="cx-tabs" data-tabs="sp-stack" aria-label="Stack">
+  <section class="cx-tabs__panel"><h3 class="cx-tabs__label">Hugo</h3><p>Import the module and call the partials.</p></section>
+  <section class="cx-tabs__panel"><h3 class="cx-tabs__label">npm</h3><p>Install the package and copy the markup.</p></section>
+</div>
+```

@@ -2,6 +2,7 @@
 name: figure
 status: stable
 layouts: [shared]
+group: content
 tokens:
   - border.width.emphasis
   - border.width.hairline
@@ -101,3 +102,26 @@ A framed image or diagram with a numbered plate label and a caption.
 - Informative images need `alt`, or `role="img"` and an accessible name for SVG. In Hugo the Markdown alt text becomes that name, so the `.svg` file sets no `role`, `aria-label` or `<title>` of its own. The caption doesn't replace alt text.
 - The plate number is plain text inside `<figcaption>`.
 - Pairs: `color.text.secondary` caption on `color.surface.base` (7:1); `color.text.accent` plate label (4.5:1); data series on `color.surface.raised` (3:1). Diagrams, all on `color.surface.raised`: `color.border.strong` nodes, groups and edges (3:1); `color.accent.border` accents (3:1); `color.text.primary` and `color.text.secondary` text (7:1); `color.text.muted` and `color.text.accent` labels (4.5:1).
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Diagram" wide=true}
+<figure class="cx-figure cx-figure--diagram">
+  <div class="cx-figure__frame">
+    <svg class="cx-diagram" viewBox="0 0 720 120" role="img" aria-label="Tokens go through the build, which writes CSS for sites.">
+      <defs><marker id="sp-pipeline-head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path class="cx-diagram__head" d="M0 0 10 5 0 10z"/></marker></defs>
+      <rect class="cx-diagram__node" x="20" y="30" width="180" height="60"/>
+      <text class="cx-diagram__title" x="110" y="66" text-anchor="middle">tokens/*.json</text>
+      <path class="cx-diagram__edge" d="M200 60 H268" marker-end="url(#sp-pipeline-head)"/>
+      <rect class="cx-diagram__node cx-diagram__node--accent" x="270" y="30" width="180" height="60"/>
+      <text class="cx-diagram__title" x="360" y="66" text-anchor="middle">npm run build</text>
+      <path class="cx-diagram__edge" d="M450 60 H518" marker-end="url(#sp-pipeline-head)"/>
+      <rect class="cx-diagram__node" x="520" y="30" width="180" height="60"/>
+      <text class="cx-diagram__title" x="610" y="66" text-anchor="middle">dist/codex.css</text>
+    </svg>
+  </div>
+  <figcaption><span class="cx-figure__plate">Plate 2</span>One build feeds every consumer.</figcaption>
+</figure>
+```

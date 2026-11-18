@@ -2,6 +2,7 @@
 name: ornament
 status: stable
 layouts: [portfolio, documentation]
+group: decoration
 tokens:
   - border.width.hairline
   - color.border.subtle
@@ -78,3 +79,19 @@ Yarndings 12 knitting-chart glyphs: the footer band, the prose divider, the arti
 - Every ornament is `aria-hidden="true"` or generated content with no text equivalent.
 - `<hr>` keeps its separator role.
 - Pair: `color.ornament.rest` on `color.surface.base` (3:1) so the band is visible, although it carries no information.
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Single"}
+<span class="cx-ornament cx-ornament--lg" aria-hidden="true">f</span>
+```
+
+```html {specimen="Band" wide=true}
+<span class="cx-band" aria-hidden="true"></span>
+```
+
+```html {specimen="End mark"}
+<p>Last sentence of the article.<span class="cx-end-mark" aria-hidden="true">g</span></p>
+```

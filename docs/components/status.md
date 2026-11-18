@@ -2,6 +2,7 @@
 name: status
 status: stable
 layouts: [shared]
+group: labels
 tokens:
   - border.width.emphasis
   - color.status.danger.text
@@ -73,3 +74,18 @@ A portfolio's project statuses are named variants of these: `cx-status--live` (s
 - `--muted` draws a ring instead of a solid dot, so it differs in shape as well as colour.
 - Pairs: each tone's `color.status.*.text` on `color.surface.base`, `color.surface.raised` and `color.surface.hover` (4.5:1); `color.text.muted` on the same surfaces (4.5:1).
 - A status that changes while the page is open isn't a live region on its own. Announce changes once, as `docs/layouts/dashboard.md` (Live data) says.
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Every state"}
+<span class="cx-status cx-status--live">Live</span>
+<span class="cx-status cx-status--building">Building</span>
+<span class="cx-status cx-status--archived">Archived</span>
+<span class="cx-status cx-status--success">Online</span>
+<span class="cx-status cx-status--warning">Degraded</span>
+<span class="cx-status cx-status--danger">Down</span>
+<span class="cx-status cx-status--info">Updating</span>
+<span class="cx-status cx-status--muted">Scheduled</span>
+```

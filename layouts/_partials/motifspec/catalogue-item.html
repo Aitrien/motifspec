@@ -1,0 +1,14 @@
+{{- /* catalogue-grid.md: one cell. Context: dict "variant", "name", "href", and either "specimen" (its HTML) or "note"
+       (a sentence in place of a specimen). Optional "wide" takes a whole row; "live" leaves the specimen interactive,
+       for what shows on hover or focus. Every other specimen is inert: a picture, which the caption's link explains. */ -}}
+<li class="cx-catalogue__item{{ if .wide }} cx-catalogue__item--wide{{ end }}">
+  {{- with .note }}
+  <div class="cx-catalogue__specimen cx-catalogue__specimen--note">{{ strings.FirstUpper . }}</div>
+  {{- else }}
+  <div class="cx-catalogue__specimen"{{ if not $.live }} inert{{ end }}>{{ $.specimen | safeHTML }}</div>
+  {{- end }}
+  <div class="cx-catalogue__caption">
+    <p class="cx-catalogue__variant">{{ .variant }}</p>
+    <a class="cx-catalogue__name" href="{{ .href }}">{{ .name }}<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg></a>
+  </div>
+</li>

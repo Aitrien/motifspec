@@ -2,12 +2,14 @@
 name: prose
 status: stable
 layouts: [shared]
+group: content
 tokens:
   - border.focus.offset
   - border.focus.width
   - border.width.emphasis
   - border.width.hairline
   - color.accent.border
+  - color.border.default
   - color.border.strong
   - color.border.subtle
   - color.focus.ring
@@ -45,11 +47,13 @@ tokens:
   - font.weight.strong
   - font.weight.ui
   - radius.control
+  - size.column.sidebar
   - size.container.breakout
   - size.measure.caption
   - size.measure.code
   - size.measure.prose
   - size.ornament.sm
+  - size.target.min
   - size.target.touch
   - space.inline.md
   - space.inline.sm
@@ -122,3 +126,23 @@ Styles for Markdown-rendered long-form content: headings, paragraphs, lists, blo
 - Heading anchors name their section in `aria-label` and appear on hover or focus (always on touch screens).
 - `<hr>` keeps its separator role; the stitches are generated content with no text.
 - Pairs: `color.text.primary` (7:1), `color.link.rest` and `color.link.hover` (7:1), `color.text.secondary` blockquotes (7:1) on `color.surface.base`.
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Reading text"}
+<div class="cx-prose">
+  <p>A token without a rule is a colour with a name, so the <a href="/reference/tokens/">description is the contract</a>.</p>
+  <ul>
+    <li>Name the role, never the page.</li>
+    <li>Say when not to use it.</li>
+  </ul>
+</div>
+```
+
+```html {specimen="Quotation"}
+<div class="cx-prose">
+  <blockquote><p>Every piece of knowledge must have a single, unambiguous, authoritative representation within a system.</p><footer>Andy Hunt and Dave Thomas <span class="cx-sep" aria-hidden="true">|</span> <cite>The Pragmatic Programmer</cite></footer></blockquote>
+</div>
+```

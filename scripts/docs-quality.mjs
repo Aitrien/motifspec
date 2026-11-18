@@ -13,7 +13,7 @@ const run = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PUBLIC = join(ROOT, 'site', 'public');
 const LIGHTHOUSE = 'lighthouse@13.5.0';
-const PAGES = ['/', '/guide/getting-started/', '/components/status/', '/reference/tokens/'];
+const PAGES = ['/', '/guide/getting-started/', '/foundations/', '/components/', '/components/status/', '/reference/tokens/'];
 const TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.md': 'text/markdown', '.txt': 'text/plain' };
 
 if (!existsSync(join(PUBLIC, 'index.html'))) { console.error('No site/public: run npm run docs first.'); process.exit(1); }

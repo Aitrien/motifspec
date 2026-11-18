@@ -2,6 +2,7 @@
 name: docs-shell
 status: stable
 layouts: [documentation]
+group: navigation
 tokens:
   - border.focus.offset
   - border.focus.width
@@ -118,3 +119,27 @@ In Hugo, `partial "motifspec/docs-nav.html" .` writes the navigation from the si
 - **Without script:** from `size.breakpoint.lg` up, the navigation is shown beside the page and scrolls with it. Narrower, it is in the header's menu, and the article's own "On this page" is hidden, since the header has one.
 - **With `dist/codex.js`:** while the navigation sits beside the main column, it gets `is-docked`: it sticks below the header and scrolls on its own, sized from `--_viewport-height` and `--_header-height`, which the script keeps up to date. The current page is scrolled into the middle of the docked navigation on load. Docking is checked again on resize.
 - An app that renders the shell itself does the same, or leaves it undocked.
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Side navigation"}
+<nav class="cx-docs-nav" aria-label="Documentation">
+  <div class="cx-docs-nav__groups">
+    <details class="cx-docs-nav__group" open>
+      <summary id="sp-docs-guide">Guide<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-expand"></use></svg></summary>
+      <ul class="cx-docs-nav__list" aria-labelledby="sp-docs-guide">
+        <li><a href="/guide/getting-started/" aria-current="page">Getting started</a></li>
+        <li><a href="/guide/">Overview</a></li>
+      </ul>
+    </details>
+    <details class="cx-docs-nav__group">
+      <summary id="sp-docs-reference">Reference<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-expand"></use></svg></summary>
+      <ul class="cx-docs-nav__list" aria-labelledby="sp-docs-reference">
+        <li><a href="/reference/tokens/">Tokens</a></li>
+      </ul>
+    </details>
+  </div>
+</nav>
+```

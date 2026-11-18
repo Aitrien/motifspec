@@ -2,6 +2,7 @@
 name: tooltip
 status: stable
 layouts: [shared]
+group: actions
 tokens:
   - color.surface.inverse
   - color.text.inverse
@@ -40,7 +41,8 @@ The tooltip is a child of the control, so hover and focus on the control reveal 
 
 ```html {preview=true}
 <button class="cx-theme-toggle" type="button" aria-label="Switch to dark theme">
-  <svg class="cx-icon" aria-hidden="true" focusable="false"><use href="#cx-icon-theme-dark"></use></svg>
+  <svg class="cx-icon" data-icon="to-dark" aria-hidden="true" focusable="false"><use href="#cx-icon-theme-dark"></use></svg>
+  <svg class="cx-icon" data-icon="to-light" aria-hidden="true" focusable="false"><use href="#cx-icon-theme-light"></use></svg>
   <span class="cx-tooltip" aria-hidden="true">Switch to dark theme</span>
 </button>
 ```
@@ -71,3 +73,15 @@ It opens below the control, aligned to its right edge. Add `cx-tooltip--start` t
 
 - Showing is CSS: the tooltip appears while its control is hovered or has `:focus-visible`.
 - `dist/codex.js` adds dismissal: Escape adds `is-tooltip-dismissed` to every tooltip's control, hiding it without moving the pointer or focus. The class is removed when the pointer leaves the control or focus moves away. An app that renders tooltips itself does the same.
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="On hover" live=true}
+<button class="cx-theme-toggle" type="button" aria-label="Switch theme">
+  <svg class="cx-icon" data-icon="to-dark" aria-hidden="true" focusable="false"><use href="#cx-icon-theme-dark"></use></svg>
+  <svg class="cx-icon" data-icon="to-light" aria-hidden="true" focusable="false"><use href="#cx-icon-theme-light"></use></svg>
+  <span class="cx-tooltip" aria-hidden="true">Switch theme</span>
+</button>
+```

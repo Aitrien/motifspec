@@ -2,6 +2,7 @@
 name: table-of-contents
 status: stable
 layouts: [portfolio, documentation]
+group: navigation
 tokens:
   - border.focus.offset
   - border.focus.width
@@ -90,3 +91,21 @@ A numbered list of an article's sections, beside the text on wide screens and ab
 - **Docking:** when the article is wide enough for the table of contents to sit beside the text, it gets `is-docked` and sticks below the header (`--_header-height`). It's checked again on resize.
 - **Current section:** as the reader scrolls, the link to the section that enters the top 30% of the view gets `aria-current="true"` and the others `"false"` (an IntersectionObserver with a bottom margin of -70%).
 - Without script, the table of contents is a plain open list, and its `<details>` opens and closes natively.
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="On this page"}
+<nav class="cx-toc" aria-labelledby="sp-toc-title">
+  <details open>
+    <summary id="sp-toc-title">On this page<svg class="cx-icon cx-icon--sm cx-toc__chevron" aria-hidden="true" focusable="false"><use href="#cx-icon-expand"></use></svg></summary>
+    <ol>
+      <li><a href="/foundations/colour/"><span class="cx-toc__no">01</span>Colour</a></li>
+      <li><a href="/foundations/type/"><span class="cx-toc__no">02</span>Type</a>
+        <ol><li><a href="/foundations/space-and-size/"><span class="cx-toc__no">2.1</span>Space and size</a></li></ol>
+      </li>
+    </ol>
+  </details>
+</nav>
+```

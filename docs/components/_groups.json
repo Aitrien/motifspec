@@ -1,0 +1,9 @@
+[
+  {"key": "actions", "title": "Actions"},
+  {"key": "navigation", "title": "Navigation"},
+  {"key": "content", "title": "Content"},
+  {"key": "collections", "title": "Cards and lists"},
+  {"key": "labels", "title": "Labels and status"},
+  {"key": "data", "title": "Data"},
+  {"key": "decoration", "title": "Decoration"}
+]

@@ -2,6 +2,7 @@
 name: callout
 status: stable
 layouts: [shared]
+group: content
 tokens:
   - border.width.emphasis
   - border.width.hairline
@@ -74,3 +75,35 @@ Kinds and their icons: no modifier with `note` (info hues), `--tip` with `tip`, 
 - `role="note"` exposes the callout without adding a landmark.
 - The kind is in text, so colour is a second signal.
 - Pairs: `color.status.*.text` on `color.status.*.surface` (4.5:1); `color.text.primary` body on each status surface (7:1); `color.status.*.border` (3:1).
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Note"}
+<div class="cx-callout" role="note">
+  <p class="cx-callout__title"><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-note"></use></svg>Note</p>
+  <p>The checker reads the release a project pins.</p>
+</div>
+```
+
+```html {specimen="Tip"}
+<div class="cx-callout cx-callout--tip" role="note">
+  <p class="cx-callout__title"><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-tip"></use></svg>Tip</p>
+  <p>Run the checker before you push.</p>
+</div>
+```
+
+```html {specimen="Warning"}
+<div class="cx-callout cx-callout--warning" role="note">
+  <p class="cx-callout__title"><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-warning"></use></svg>Warning</p>
+  <p>Renaming a semantic token is a major version bump.</p>
+</div>
+```
+
+```html {specimen="Danger"}
+<div class="cx-callout cx-callout--danger" role="note">
+  <p class="cx-callout__title"><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-danger"></use></svg>Danger</p>
+  <p>Never move a release tag.</p>
+</div>
+```

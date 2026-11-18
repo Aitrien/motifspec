@@ -2,6 +2,7 @@
 name: pagination
 status: stable
 layouts: [shared]
+group: navigation
 tokens:
   - border.focus.offset
   - border.focus.width
@@ -78,3 +79,21 @@ A three-cell bar: previous with its title, current position, and next with its t
 - Disabled ends are not links, so they're skipped by Tab.
 - Cells are at least 44px tall.
 - Pairs: `color.text.primary` titles on `color.surface.raised` and `color.surface.hover` (7:1); `color.text.muted` labels (4.5:1).
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Previous and next" wide=true}
+<nav class="cx-pagination" aria-label="Pages">
+  <a class="cx-pagination__link" href="/guide/" rel="prev">
+    <span class="cx-pagination__dir"><svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-back"></use></svg>Previous</span>
+    <span class="cx-pagination__title">Guide</span>
+  </a>
+  <p class="cx-pagination__status">Guide<strong>2 / 12</strong></p>
+  <a class="cx-pagination__link" href="/guide/getting-started/" rel="next">
+    <span class="cx-pagination__dir">Next<svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg></span>
+    <span class="cx-pagination__title">Getting started</span>
+  </a>
+</nav>
+```

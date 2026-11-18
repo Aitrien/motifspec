@@ -2,6 +2,7 @@
 name: search
 status: stable
 layouts: [shared]
+group: navigation
 tokens:
   - border.focus.offset
   - border.focus.width
@@ -117,3 +118,15 @@ A result, as the script writes it:
 - **Failing:** if Pagefind's script can't load, the status says "Search isn't available right now." and searching stops.
 - **Closing:** Escape (handled on the dialog, because a search field would otherwise spend the first Escape clearing itself), the close button, or a click on the scrim. Focus returns to the element that had it before opening. Following a result navigates as a link does.
 - **What's indexed:** Pagefind indexes the element with `data-pagefind-body` (the docs shell's `<main>`), skipping anything inside marked `data-pagefind-ignore`; the table of contents, page actions, page footer and pagination are marked.
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Trigger"}
+<button class="cx-search-trigger" type="button">
+  <svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-search"></use></svg>
+  <span class="cx-search-trigger__label">Search</span>
+  <span class="cx-search-trigger__keys" aria-hidden="true"><kbd class="cx-kbd">Ctrl</kbd><kbd class="cx-kbd">K</kbd></span>
+</button>
+```

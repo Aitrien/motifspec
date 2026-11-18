@@ -26,7 +26,8 @@ export function load() {
     readdirSync(join(ROOT, 'docs', 'components'))
       .filter((f) => f.endsWith('.md') && !f.startsWith('_'))
       .map((f) => {
-        const md = read('docs', 'components', f);
+        // The specimens (the last section) are for the docs site's Components page, not for building with.
+        const md = read('docs', 'components', f).replace(/\n## Specimens\n[\s\S]*$/, '\n');
         const name = f.replace(/\.md$/, '');
         const body = md.replace(/^---\n[\s\S]*?\n---\n/, '').trim();
         const title = body.match(/^# (.+)$/m)?.[1] ?? name;

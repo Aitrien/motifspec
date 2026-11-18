@@ -2,6 +2,7 @@
 name: disclosure
 status: stable
 layouts: [shared]
+group: content
 tokens:
   - border.focus.offset
   - border.focus.width
@@ -71,3 +72,21 @@ Add `open` to `<details>` to start it open. Disclosures that follow each other s
 - No script. The browser opens and closes it, and keeps the `open` attribute in step.
 - In a framework, render `<details>` and `<summary>` as they are. If the app needs to know the state, listen for the `toggle` event; don't control it from app state, because the browser already owns it.
 - The chevron's turn uses `motion.duration.base` and stops under reduced motion.
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Closed"}
+<details class="cx-disclosure">
+  <summary>Show as a table<svg class="cx-icon cx-icon--sm cx-disclosure__chevron" aria-hidden="true" focusable="false"><use href="#cx-icon-expand"></use></svg></summary>
+  <div class="cx-disclosure__body"><p>The content that opens.</p></div>
+</details>
+```
+
+```html {specimen="Open"}
+<details class="cx-disclosure" open>
+  <summary>Show as a table<svg class="cx-icon cx-icon--sm cx-disclosure__chevron" aria-hidden="true" focusable="false"><use href="#cx-icon-expand"></use></svg></summary>
+  <div class="cx-disclosure__body"><p>The content that opens.</p></div>
+</details>
+```

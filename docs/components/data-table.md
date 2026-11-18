@@ -2,6 +2,7 @@
 name: data-table
 status: stable
 layouts: [shared]
+group: data
 tokens:
   - border.focus.offset
   - border.focus.width
@@ -93,3 +94,20 @@ A table of things to act on gives each row a state cell (`td.is-state`, with a s
 - Header cells use `scope`.
 - Visually hidden text in a cell, such as a hidden column heading or the rest of a button's name, stays inside the scroll box, so a wide table never widens the page on a phone.
 - Pairs: `color.text.secondary` headers on `color.surface.sunken` (7:1); `color.text.primary` cells on `color.surface.raised` and `color.surface.hover` (7:1).
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Table" wide=true}
+<div class="cx-table" role="region" aria-labelledby="sp-tbl-fonts" tabindex="0">
+  <table>
+    <caption id="sp-tbl-fonts">Font budget <span class="cx-sep" aria-hidden="true">|</span> Latin subset</caption>
+    <thead><tr><th scope="col">Family</th><th scope="col">Role</th><th scope="col" class="is-num">KB</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">National Park</th><td>Display, body</td><td class="is-num">38.1</td></tr>
+      <tr><th scope="row">Geist Mono</th><td>Labels, code</td><td class="is-num">33.7</td></tr>
+    </tbody>
+  </table>
+</div>
+```

@@ -2,6 +2,7 @@
 name: project-card
 status: stable
 layouts: [portfolio]
+group: collections
 tokens:
   - border.focus.offset
   - border.focus.width
@@ -81,3 +82,18 @@ A framed summary of one project that links to its case study.
 - Focus on the title link draws the focus ring around the whole card (`:has(:focus-visible)`).
 - Tags stay keyboard-reachable after the title link.
 - Pairs: `color.text.primary` on `color.surface.raised` (7:1); `color.text.secondary` summary (7:1); hover border `color.border.strong` (3:1).
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Project"}
+<article class="cx-card">
+  <div class="cx-card__media"><svg class="cx-plate__map" viewBox="0 0 160 100" aria-hidden="true" focusable="false"><path class="cx-plate__line" pathLength="1" d="M0 80C40 55 64 75 88 45S136 20 160 30"/><path class="cx-plate__line cx-plate__line--index" pathLength="1" d="M0 95C48 75 72 90 99.2 62S140.8 40 160 48"/></svg></div>
+  <div class="cx-card__body">
+    <p class="cx-id"><span class="cx-id__no">LM-W-001</span><span>2026</span><span class="cx-status cx-status--live">Live</span></p>
+    <h3 class="cx-card__title"><a class="cx-card__link" href="/layouts/">Interactive WebGL globe</a></h3>
+    <p class="cx-card__summary">A React app that renders live routes on a 3D globe.</p>
+  </div>
+</article>
+```

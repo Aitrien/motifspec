@@ -2,6 +2,7 @@
 name: page-footer
 status: stable
 layouts: [documentation]
+group: collections
 tokens:
   - border.width.emphasis
   - border.width.hairline
@@ -84,3 +85,14 @@ A page with no file of its own, such as one a content adapter makes from another
 - The pagination is a `<nav>` named "Documentation pages", separate from the navigation's "Documentation". Pairs and targets as `pagination.md`.
 - The generated-from links are underlined, like links in prose, so they read as links in the mono line without relying on colour.
 - Pairs: `color.text.muted` on `color.surface.base` (4.5:1) for the date; `color.link.rest` on `color.surface.base` (7:1).
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Last updated" wide=true}
+<footer class="cx-page-footer">
+  <p class="cx-meta">Last updated <time datetime="2026-11-04">4 November 2026</time></p>
+  <a class="cx-link" href="/reference/changelog/">View source<svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-outward"></use></svg></a>
+</footer>
+```

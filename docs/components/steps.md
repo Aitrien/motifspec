@@ -2,6 +2,7 @@
 name: steps
 status: stable
 layouts: [shared]
+group: content
 tokens:
   - border.width.hairline
   - color.border.subtle
@@ -68,3 +69,15 @@ In Markdown, write an ordered list whose items start with a bold lead-in, and pu
 - It is an `<ol>`, so the count and each step's position are announced.
 - The visible numbers are generated, so they're not read twice.
 - Pairs: `color.text.accent` on `color.surface.base` (4.5:1) for the numbers; `color.text.primary` on `color.surface.base` (7:1).
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Three steps"}
+<ol class="cx-steps">
+  <li><h3 class="cx-steps__title">Import the module</h3><p>Add it to your site's config.</p></li>
+  <li><h3 class="cx-steps__title">Pin a version</h3><p>Choose the release you want.</p></li>
+  <li><h3 class="cx-steps__title">Check the site</h3><p>Run the checker before you push.</p></li>
+</ol>
+```

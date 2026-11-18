@@ -2,6 +2,7 @@
 name: page-actions
 status: stable
 layouts: [documentation]
+group: actions
 tokens:
   - space.inline.xs
 ---
@@ -54,3 +55,14 @@ In Hugo, `partial "motifspec/page-actions.html" .` writes it for a page that has
 - **Without script:** only "View as Markdown" shows.
 - **With `dist/codex.js`:** when the browser has a clipboard, the copy button is shown. A click fetches the address in `data-copy-page` and copies it as plain text. With `ClipboardItem`, the copy is written with a promise, so it still counts as part of the click while the file loads (Safari needs this); without it, the text is fetched first and written with `writeText`. The label becomes "Copied" with the `check` icon, or "Couldn't copy", and `data-state` is `copied` or `failed`; after `motion.duration.plate` it returns to "Copy page".
 - An app that renders it itself does the same, or leaves only the link.
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Copy and view"}
+<div class="cx-page-actions">
+  <button class="cx-button cx-button--sm" type="button"><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-content-copy"></use></svg><span class="cx-page-actions__label">Copy page</span></button>
+  <a class="cx-button cx-button--sm" href="/guide/getting-started/index.md" type="text/markdown">View as Markdown</a>
+</div>
+```

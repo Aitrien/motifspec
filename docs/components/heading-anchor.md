@@ -2,6 +2,7 @@
 name: heading-anchor
 status: stable
 layouts: [portfolio, documentation]
+group: navigation
 tokens:
   - border.focus.offset
   - border.focus.width
@@ -76,3 +77,13 @@ Hugo heading render hook (`layouts/_default/_markup/render-heading.html`):
 - Its accessible name is the `aria-label`, not "#".
 - The hit area is 44 × 44px, well above the 24px minimum.
 - Pairs: `color.text.muted` on `color.surface.base` (4.5:1); on hover `color.text.primary` on `color.surface.hover` (7:1).
+
+## Specimens
+
+For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` takes a whole row, `live=true` keeps it interactive.
+
+```html {specimen="Section heading"}
+<div class="cx-prose">
+  <h2 id="sp-approach">Approach <a class="cx-anchor" href="#sp-approach" aria-label="Link to Approach">#</a></h2>
+</div>
+```
