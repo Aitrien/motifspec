@@ -763,7 +763,7 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 .cx-catalogue__item--wide { grid-column: 1 / -1; }
 /* The specimen, centred in its cell. contain keeps anything it positions (a sticky header, say) inside the cell. */
 .cx-catalogue__specimen {
-  flex: 1; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--cx-space-stack-sm);
+  flex: 1; display: flex; flex-wrap: wrap; align-items: center; align-content: center; justify-content: center; gap: var(--cx-space-stack-sm);
   min-height: calc(var(--cx-size-target-touch) * 3.5); padding: var(--cx-space-inset-lg); overflow: hidden; contain: layout paint;
 }
 .cx-catalogue__specimen > * { max-width: 100%; }
