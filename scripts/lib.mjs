@@ -286,4 +286,8 @@ export const DOC_SELECTORS = {
   'alert': ['.cx-alert'],
   'toast': ['.cx-toasts', '.cx-toast'],
   'breadcrumb': ['.cx-breadcrumb'],
+  'field': ['.cx-field', '.cx-fieldset'],
+  'choice': ['.cx-choice', '.cx-choices'],
+  'date-picker': ['.cx-date__button', '.cx-calendar'],
+  'dialog': ['.cx-dialog'],
 };

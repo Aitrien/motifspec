@@ -937,6 +937,15 @@
             "dark": "{primitive.color.sap.800}"
           }
         }
+      },
+      "selected": {
+        "$value": "{primitive.color.sap.100}",
+        "$description": "The chosen item among options the reader picks from: a calendar's date, month or year (date-picker.md). With color.text.primary. Never for large areas or decoration.",
+        "$extensions": {
+          "codex.modes": {
+            "dark": "{primitive.color.sap.800}"
+          }
+        }
       }
     },
     "text": {
@@ -966,6 +975,10 @@
             },
             {
               "token": "color.surface.highlight",
+              "min": 7
+            },
+            {
+              "token": "color.surface.selected",
               "min": 7
             },
             {
@@ -1089,6 +1102,25 @@
             },
             {
               "token": "color.accent.fill.hover",
+              "min": 4.5
+            }
+          ]
+        }
+      },
+      "on-danger": {
+        "$value": "{primitive.color.ash.0}",
+        "$description": "Text and icons on color.status.danger.fill and its hover, such as a danger button’s label. Only there.",
+        "$extensions": {
+          "codex.modes": {
+            "dark": "{primitive.color.ash.1000}"
+          },
+          "codex.pairsWith": [
+            {
+              "token": "color.status.danger.fill",
+              "min": 4.5
+            },
+            {
+              "token": "color.status.danger.fill-hover",
               "min": 4.5
             }
           ]
@@ -1453,6 +1485,48 @@
             "codex.pairsWith": [
               {
                 "token": "color.status.danger.surface",
+                "min": 3
+              }
+            ]
+          }
+        },
+        "fill": {
+          "$value": "{primitive.color.madder.700}",
+          "$description": "Fill of a button that deletes or stops something, in a dialog asking to confirm it (cx-button--danger, button-and-link.md). Its label says what it does; never the only sign.",
+          "$extensions": {
+            "codex.modes": {
+              "dark": "{primitive.color.madder.300}"
+            },
+            "codex.pairsWith": [
+              {
+                "token": "color.surface.base",
+                "min": 3
+              },
+              {
+                "token": "color.surface.raised",
+                "min": 3
+              },
+              {
+                "token": "color.surface.sunken",
+                "min": 3
+              }
+            ]
+          }
+        },
+        "fill-hover": {
+          "$value": "{primitive.color.madder.800}",
+          "$description": "Fill of a danger button while hovered or pressed.",
+          "$extensions": {
+            "codex.modes": {
+              "dark": "{primitive.color.madder.200}"
+            },
+            "codex.pairsWith": [
+              {
+                "token": "color.surface.raised",
+                "min": 3
+              },
+              {
+                "token": "color.surface.sunken",
                 "min": 3
               }
             ]

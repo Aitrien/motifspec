@@ -1,5 +1,5 @@
 // MotifSpec behaviour: theme toggle, the backdrop header's scroll state, tooltip dismissal, code copy buttons,
-// TOC docking and active section, alert dismissal and toasts.
+// TOC docking and active section, alert dismissal, toasts, date pickers and dialogs.
 // Shipped as dist/codex.js (@aitrien/motifspec/codex.js).
 // Enhancement only. Without this script: themes follow the system, code is selectable, the TOC is a plain open list,
 // and every control that needs script stays hidden. Load it with `defer`; it also works inline at the end of <body>.
@@ -31,7 +31,16 @@
   function ms(name) {
     var v = getComputedStyle(root).getPropertyValue(name).trim();
     return v.endsWith('ms') ? parseFloat(v) : parseFloat(v) * 1000;
+  }  // A length token in pixels, measured by the browser, so rem, clamp() and calc() values all resolve.
+  function px(name) {
+    var probe = document.createElement('div');
+    probe.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none;inline-size:var(' + name + ')';
+    (document.body || document.documentElement).appendChild(probe);
+    var w = probe.getBoundingClientRect().width;
+    probe.remove();
+    return w;
   }
+
 
   var theme = read();
   apply(theme);
@@ -128,14 +137,34 @@
     });
 
     // Component previews: size each frame to its document's body (the root is never shorter than the frame), and keep
-    // its theme. Inside a preview, links don't navigate.
+    // its theme. An open dialog or popover (a calendar) sits above the body, so while one is open the frame also grows
+    // to hold it, and shrinks back when it closes. Inside a preview, links don't navigate.
     document.querySelectorAll('.cx-preview__frame').forEach(function (f) {
       var fit = function () {
-        try { var d = f.contentDocument; if (d && d.body) f.style.setProperty('--_frame-height', d.body.offsetHeight + 'px'); } catch (e) { /* cross-origin: keep the default height */ }
+        try {
+          var d = f.contentDocument; if (!d || !d.body) return;
+          var need = d.body.offsetHeight, room = px('--cx-space-section-sm');
+          d.querySelectorAll('dialog[open], [popover]').forEach(function (o) {
+            if (o.matches('dialog[open]')) {
+              // its parts' full heights, since a dialog with too little room scrolls its body and reports less
+              var h = 0;
+              o.querySelectorAll(':scope > :not(form), :scope > form > *').forEach(function (c) { h += c.scrollHeight; });
+              need = Math.max(need, h + 2 * room);
+            }
+            else if (o.matches(':popover-open')) need = Math.max(need, o.offsetTop + o.offsetHeight + room);
+          });
+          f.style.setProperty('--_frame-height', need + 'px');
+        } catch (e) { /* cross-origin: keep the default height */ }
       };
       var start = function () {
         apply(theme); fit();
         try { if ('ResizeObserver' in window) new ResizeObserver(fit).observe(f.contentDocument.body); } catch (e) { /* keep the measured height */ }
+        try {
+          var d = f.contentDocument, later = function () { window.requestAnimationFrame(fit); };
+          d.addEventListener('toggle', later, true);
+          d.addEventListener('close', later, true);
+          if ('MutationObserver' in window) new MutationObserver(later).observe(d.body, { subtree: true, attributes: true, attributeFilter: ['open'] });
+        } catch (e) { /* keep the measured height */ }
       };
       f.addEventListener('load', start);
       try { if (f.contentDocument && f.contentDocument.readyState === 'complete' && f.contentDocument.body && f.contentDocument.body.childNodes.length) start(); } catch (e) { /* wait for load */ }
@@ -343,6 +372,213 @@
       window.requestAnimationFrame(function () { window.requestAnimationFrame(function () { toast.classList.add('is-shown'); }); });
       wait();
     });
+
+    // Dialogs (dialog.md): [data-dialog-open="id"] opens a .cx-dialog with showModal(), which moves focus in, closes on
+    // Escape and returns focus when closed. [data-dialog-close] inside one closes it, and so does a click on the
+    // backdrop, unless the dialog has data-dialog-keep (a form, whose typing a stray click would lose).
+    document.addEventListener('click', function (e) {
+      var t = e.target.closest ? e.target : null;
+      if (!t) return;
+      var opener = t.closest('[data-dialog-open]');
+      if (opener) {
+        var d = document.getElementById(opener.dataset.dialogOpen);
+        if (d && d.showModal && !d.open) d.showModal();
+        return;
+      }
+      var dialog = t.closest('dialog.cx-dialog');
+      if (!dialog) return;
+      if (t.closest('[data-dialog-close]')) { dialog.close(); return; }
+      if (t === dialog && !dialog.hasAttribute('data-dialog-keep')) {
+        var r = dialog.getBoundingClientRect();
+        if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dialog.close();
+      }
+    });
+
+    // Date pickers (date-picker.md): each [data-date-picker] box gets its calendar button, and the page gets one
+    // calendar, made the first time it's opened. Dates are day first (DD/MM/YYYY) and weeks start on Monday. The
+    // calendar sits under its field, or above it when there's more room there, in page coordinates so it scrolls
+    // with the field. Days, months and years are each a grid with one tab stop, moved by the arrow keys.
+    var pickers = document.querySelectorAll('[data-date-picker]');
+    if (pickers.length) {
+      var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      var PAGE = 20;
+      var cal = null, calBody, calDays, calList, calTitle, monthBtn, yearBtn, navs;
+      var field = null, opener = null, selected = null, focusDay = null, view = 'days';
+      var today = function () { var n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); };
+      var same = function (a, b) { return a && b && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); };
+      var pad = function (n) { return String(n).padStart(2, '0'); };
+      var parse = function (v) {
+        var m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(v.trim());
+        if (!m) return null;
+        var d = new Date(+m[3], +m[2] - 1, +m[1]);
+        return d.getMonth() === +m[2] - 1 ? d : null;
+      };
+      var clampDay = function (y, m, d) { return new Date(y, m, Math.min(d, new Date(y, m + 1, 0).getDate())); };
+      var icon = function (id) {
+        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('class', 'cx-icon'); svg.setAttribute('aria-hidden', 'true'); svg.setAttribute('focusable', 'false');
+        var use = document.createElementNS('http://www.w3.org/2000/svg', 'use'); use.setAttribute('href', '#cx-icon-' + id);
+        svg.appendChild(use); return svg;
+      };
+      var el = function (tag, cls, attrs) {
+        var n = document.createElement(tag); if (cls) n.className = cls;
+        Object.keys(attrs || {}).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+        return n;
+      };
+      var build = function () {
+        cal = el('div', 'cx-calendar', { popover: '', role: 'dialog', 'aria-label': 'Choose a date' });
+        var head = el('div', 'cx-calendar__head');
+        var prev = el('button', 'cx-calendar__nav', { type: 'button', 'data-step': '-1' }); prev.appendChild(icon('arrow-back'));
+        var next = el('button', 'cx-calendar__nav', { type: 'button', 'data-step': '1' }); next.appendChild(icon('arrow-forward'));
+        var pick = el('div', 'cx-calendar__pickers');
+        monthBtn = el('button', 'cx-calendar__pick', { type: 'button', 'aria-expanded': 'false' });
+        yearBtn = el('button', 'cx-calendar__pick', { type: 'button', 'aria-expanded': 'false' });
+        [monthBtn, yearBtn].forEach(function (b) { b.appendChild(document.createElement('span')); b.appendChild(icon('expand')); pick.appendChild(b); });
+        head.appendChild(prev); head.appendChild(pick); head.appendChild(next);
+        calTitle = el('p', 'cx-visually-hidden', { 'aria-live': 'polite' });
+        calDays = el('table', 'cx-calendar__grid', { role: 'grid' });
+        var thead = el('thead'), tr = el('tr');
+        [1, 2, 3, 4, 5, 6, 0].forEach(function (i) { var th = el('th', '', { scope: 'col', abbr: DAYS[i] }); th.textContent = DAYS[i].slice(0, 2); tr.appendChild(th); });
+        thead.appendChild(tr); calDays.appendChild(thead); calBody = el('tbody'); calDays.appendChild(calBody);
+        calList = el('div', 'cx-calendar__list'); calList.hidden = true;
+        var foot = el('div', 'cx-calendar__foot');
+        var todayBtn = el('button', '', { type: 'button' }); todayBtn.textContent = 'Today';
+        var closeBtn = el('button', '', { type: 'button' }); closeBtn.textContent = 'Close';
+        foot.appendChild(todayBtn); foot.appendChild(closeBtn);
+        [head, calTitle, calDays, calList, foot].forEach(function (n) { cal.appendChild(n); });
+        document.body.appendChild(cal);
+        navs = [prev, next];
+        var labelId = 'cx-calendar-title'; calTitle.id = labelId; calDays.setAttribute('aria-labelledby', labelId);
+        monthBtn.setAttribute('aria-controls', 'cx-calendar-list'); yearBtn.setAttribute('aria-controls', 'cx-calendar-list'); calList.id = 'cx-calendar-list';
+
+        calBody.addEventListener('click', function (e) {
+          var b = e.target.closest('.cx-calendar__day'); if (!b) return;
+          var v = b.dataset.value.split('-'); choose(new Date(+v[0], +v[1], +v[2]));
+        });
+        calList.addEventListener('click', function (e) {
+          var b = e.target.closest('.cx-calendar__cell'); if (!b) return;
+          var v = +b.dataset.value;
+          if (view === 'years') { focusDay = clampDay(v, focusDay.getMonth(), focusDay.getDate()); setView('months'); }
+          else { focusDay = clampDay(focusDay.getFullYear(), v, focusDay.getDate()); setView('days'); }
+        });
+        monthBtn.addEventListener('click', function () { setView(view === 'months' ? 'days' : 'months'); });
+        yearBtn.addEventListener('click', function () { setView(view === 'years' ? 'days' : 'years'); });
+        navs.forEach(function (n) {
+          n.addEventListener('click', function () {
+            var st = +n.dataset.step, y = focusDay.getFullYear(), m = focusDay.getMonth(), d = focusDay.getDate();
+            focusDay = view === 'days' ? clampDay(y, m + st, d) : view === 'months' ? clampDay(y + st, m, d) : clampDay(y + st * PAGE, m, d);
+            render(false);
+          });
+        });
+        todayBtn.addEventListener('click', function () { view = 'days'; focusDay = today(); render(true); });
+        closeBtn.addEventListener('click', close);
+        cal.addEventListener('toggle', function (e) { if (e.newState !== 'open') view = 'days'; });
+        calBody.addEventListener('keydown', function (e) {
+          var d = new Date(focusDay), k = e.key;
+          if (k === 'ArrowLeft') d.setDate(d.getDate() - 1);
+          else if (k === 'ArrowRight') d.setDate(d.getDate() + 1);
+          else if (k === 'ArrowUp') d.setDate(d.getDate() - 7);
+          else if (k === 'ArrowDown') d.setDate(d.getDate() + 7);
+          else if (k === 'PageUp') d = clampDay(d.getFullYear(), d.getMonth() - 1, d.getDate());
+          else if (k === 'PageDown') d = clampDay(d.getFullYear(), d.getMonth() + 1, d.getDate());
+          else if (k === 'Home') d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+          else if (k === 'End') d.setDate(d.getDate() + (6 - (d.getDay() + 6) % 7));
+          else return;
+          e.preventDefault(); focusDay = d; render(true);
+        });
+        calList.addEventListener('keydown', function (e) {
+          var cols = view === 'years' ? 4 : 3, k = e.key, y = focusDay.getFullYear(), m = focusDay.getMonth(), dd = focusDay.getDate(), delta = 0;
+          if (k === 'ArrowLeft') delta = -1; else if (k === 'ArrowRight') delta = 1;
+          else if (k === 'ArrowUp') delta = -cols; else if (k === 'ArrowDown') delta = cols;
+          else if (k === 'PageUp') delta = view === 'years' ? -PAGE : -12; else if (k === 'PageDown') delta = view === 'years' ? PAGE : 12;
+          else return;
+          e.preventDefault();
+          if (view === 'months' && Math.abs(delta) < 12) { if (m + delta < 0 || m + delta > 11) return; focusDay = clampDay(y, m + delta, dd); }
+          else focusDay = view === 'years' ? clampDay(y + delta, m, dd) : clampDay(y + delta / 12, m, dd);
+          render(true);
+        });
+        window.addEventListener('resize', place);
+        document.addEventListener('scroll', place, true);
+      };
+      var cell = function (cls, text, label, o) {
+        var b = el('button', cls, { type: 'button', 'aria-label': label, 'aria-pressed': o.pressed ? 'true' : 'false' });
+        if (o.current) b.setAttribute('aria-current', 'date');
+        b.textContent = text; b.tabIndex = o.focus ? 0 : -1; b.dataset.value = o.value;
+        return b;
+      };
+      var render = function (moveFocus) {
+        var y = focusDay.getFullYear(), m = focusDay.getMonth(), now = today();
+        monthBtn.firstChild.textContent = MONTHS[m]; yearBtn.firstChild.textContent = y;
+        monthBtn.setAttribute('aria-expanded', String(view === 'months')); yearBtn.setAttribute('aria-expanded', String(view === 'years'));
+        monthBtn.setAttribute('aria-label', 'Choose the month, ' + MONTHS[m]); yearBtn.setAttribute('aria-label', 'Choose the year, ' + y);
+        calDays.hidden = view !== 'days'; calList.hidden = view === 'days';
+        var labels = { days: ['Previous month', 'Next month'], months: ['Previous year', 'Next year'], years: ['Previous ' + PAGE + ' years', 'Next ' + PAGE + ' years'] }[view];
+        navs[0].setAttribute('aria-label', labels[0]); navs[1].setAttribute('aria-label', labels[1]);
+        if (view === 'days') {
+          calTitle.textContent = MONTHS[m] + ' ' + y;
+          var first = new Date(y, m, 1), start = new Date(y, m, 1 - ((first.getDay() + 6) % 7));
+          calBody.textContent = '';
+          for (var w = 0; w < 6; w++) {
+            var row = el('tr');
+            for (var i = 0; i < 7; i++) {
+              var d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + w * 7 + i), td = el('td');
+              td.appendChild(cell('cx-calendar__day' + (d.getMonth() !== m ? ' is-other' : ''), d.getDate(),
+                DAYS[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear(),
+                { pressed: same(d, selected), current: same(d, now), focus: same(d, focusDay), value: d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate() }));
+              row.appendChild(td);
+            }
+            calBody.appendChild(row);
+          }
+        } else if (view === 'months') {
+          calTitle.textContent = 'Months of ' + y; calList.className = 'cx-calendar__list cx-calendar__list--months'; calList.textContent = '';
+          MONTHS.forEach(function (name, i) {
+            calList.appendChild(cell('cx-calendar__cell', name.slice(0, 3), name + ' ' + y,
+              { pressed: selected && selected.getFullYear() === y && selected.getMonth() === i, current: now.getFullYear() === y && now.getMonth() === i, focus: i === m, value: i }));
+          });
+        } else {
+          var from = Math.floor(y / PAGE) * PAGE;
+          calTitle.textContent = from + ' to ' + (from + PAGE - 1); calList.className = 'cx-calendar__list cx-calendar__list--years'; calList.textContent = '';
+          for (var k = from; k < from + PAGE; k++) {
+            calList.appendChild(cell('cx-calendar__cell', k, String(k), { pressed: selected && selected.getFullYear() === k, current: now.getFullYear() === k, focus: k === y, value: k }));
+          }
+        }
+        place();
+        if (moveFocus) { var f = (view === 'days' ? calBody : calList).querySelector('[tabindex="0"]'); if (f) f.focus(); }
+      };
+      var setView = function (v) { view = v; render(true); };
+      var place = function () {
+        if (!cal || !field || !cal.matches(':popover-open')) return;
+        var r = field.getBoundingClientRect(), vw = document.documentElement.clientWidth, h = cal.offsetHeight, w = cal.offsetWidth, gap = px('--cx-space-inline-xs'), edge = px('--cx-space-inline-sm');
+        var below = window.innerHeight - r.bottom - gap, above = r.top - gap;
+        var top = (below < h && above > below) ? r.top - h - gap : r.bottom + gap;
+        cal.style.top = (top + window.scrollY) + 'px';
+        cal.style.left = (Math.max(edge, Math.min(r.left, vw - w - edge)) + window.scrollX) + 'px';
+      };
+      var close = function () { cal.hidePopover(); if (opener) opener.focus(); };
+      var choose = function (d) {
+        selected = d;
+        var input = field.querySelector('.cx-field__control');
+        input.value = pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear();
+        input.dispatchEvent(new Event('input', { bubbles: true })); input.dispatchEvent(new Event('change', { bubbles: true }));
+        close();
+      };
+      pickers.forEach(function (box) {
+        var btn = box.querySelector('.cx-date__button');
+        if (!btn || !HTMLElement.prototype.hasOwnProperty('popover')) return;
+        btn.hidden = false;
+        btn.addEventListener('click', function () {
+          if (!cal) build();
+          if (cal.matches(':popover-open') && opener === btn) { cal.hidePopover(); return; }
+          if (cal.matches(':popover-open')) cal.hidePopover();
+          opener = btn; field = box;
+          selected = parse(box.querySelector('.cx-field__control').value);
+          focusDay = new Date(selected || today()); view = 'days';
+          cal.setAttribute('aria-label', btn.getAttribute('aria-label') || 'Choose a date');
+          cal.showPopover(); render(true);
+        });
+      });
+    }
 
     // Docs navigation: dock it (sticky, scrolling on its own) while it sits beside the main column, as the TOC does.
     document.querySelectorAll('.cx-docs').forEach(function (docs) {

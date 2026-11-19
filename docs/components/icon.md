@@ -8,13 +8,16 @@ tokens:
   - color.border.strong
   - color.surface.hover
   - color.text.muted
+  - color.text.secondary
   - motion.duration.base
+  - motion.duration.fast
   - motion.easing.standard
   - radius.pill
   - size.icon.lg
   - size.icon.md
   - size.icon.sm
   - space.inline.xs
+  - space.inset.sm
   - space.inset.xs
 ---
 

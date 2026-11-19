@@ -6,8 +6,8 @@ For tools and admin screens: an overview of systems, lists of things to act on, 
 
 In progress. The dashboard's own components arrive in later releases, so this file says what exists now and what doesn't.
 
-- **Available now:** every shared component, including buttons and compact buttons, callouts, data tables with state and action cells, status labels in five tones, disclosures, keyboard keys, code blocks, tags, tooltips, and icons for navigation and tools (`icon.md`).
-- **Not available yet:** the app shell, side navigation, panels, stat tiles, meters, sparklines and charts, resource cards, the facts list, the event feed, the segmented control, form controls and the dialog.
+- **Available now:** every shared component, including buttons (with compact and danger buttons), fields, choices and the date picker, the dialog, alerts and toasts, callouts, data tables with state and action cells, status labels in five tones, tabs, disclosures, keyboard keys, code blocks, tags, tooltips, and icons for navigation and tools (`icon.md`).
+- **Not available yet:** the app shell, side navigation, panels, stat tiles, meters, sparklines and charts, resource cards, the facts list, the event feed and the segmented control.
 
 Don't write classes for parts that aren't available. The checker fails on any `cx-` class MotifSpec doesn't define. Build what you can from the shared components, and say which parts MotifSpec doesn't have yet.
 
@@ -23,7 +23,7 @@ Planned: a side navigation column (wordmark, grouped links, the theme toggle and
 | **Overview** | Page head (title, when the readings were last updated, page-wide controls) → alerts (`alert.md`) → headline figures → the main column and a side column of sections | Alerts and headline figures | Detail sections |
 | **List** | Page head → filters → a data table with row actions → pagination | The table | Filters |
 | **Detail** | Page head with the item's status → its facts → its readings → related lists | Status and readings | Related lists |
-| **Form** | Page head → grouped fields → actions at the end of the form | The fields | Help text |
+| **Form** | Page head → fields grouped in fieldsets (`field.md`, `choice.md`) → actions at the end of the form; a destructive action asks in a dialog (`dialog.md`) | The fields | Help text |
 | **Empty and error** | Page head → what's missing or what failed, and what to do next | The message | Links back |
 
 ## Components
