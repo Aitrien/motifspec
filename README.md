@@ -79,7 +79,7 @@ Pin an exact version, as a Hugo site pins a tag: the version you install is the 
 |---|---|
 | `@aitrien/motifspec/codex.css` | Tokens, fonts and every component. Its font URLs are `../fonts/…`, so a bundler that copies assets (Vite, webpack, Parcel) resolves them from the package. Without a bundler, serve `dist/` and `fonts/` side by side. |
 | `@aitrien/motifspec/tokens.css`, `fonts.css`, `chroma.css` | The parts on their own: tokens only, `@font-face` only, syntax highlighting only. |
-| `@aitrien/motifspec/codex.js` | Behaviour: theme toggle, copy buttons, TOC, tooltips. Load with `defer`. |
+| `@aitrien/motifspec/codex.js` | Behaviour: theme toggle, copy buttons, TOC, tooltips, alerts, toasts, date pickers, dialogs. Load with `defer`. With Turbo (Rails), it sets each new page up after every visit, so it needs nothing more. |
 | `@aitrien/motifspec/theme-init.js` | Inline it in `<head>` before the stylesheet so a stored theme applies before first paint. |
 | `@aitrien/motifspec/plate.js`, `backdrop.html`, `backdrop-foot.html`, `backdrop-side.html` | The contour backdrop and its motion (`backdrop.md`). |
 | `@aitrien/motifspec/icons.svg` | The icon sprite. Inline it once in `<body>`. |
@@ -169,7 +169,7 @@ layouts/            Hugo partials (_partials/motifspec/) and Markdown render hoo
 docs/syntax-highlighting.md
 fonts/              Self-hosted WOFF2 (Latin subsets) and their OFL licences
 scripts/            validate, build, audit, check (the rule checker projects run), pack-check, release, and docs with docs-reference (motifspec.com and its generated pages)
-js/codex.js         Theme toggle, copy buttons, tooltip dismissal, TOC docking and active section, search, tabs and the component preview
+js/codex.js         Theme toggle, copy buttons, tooltip dismissal, TOC docking and active section, search, tabs, alerts, toasts, date pickers, dialogs and the component preview
 js/theme-init.js    One-line <head> snippet that applies a stored theme before first paint
 js/plate.js         Contour survey generator for the backdrop and the specimen plate: draws the static contours at build time and animates them in the browser
 site/               motifspec.com: a Hugo site whose pages are made from this README's sections, docs/, CONVENTIONS.md and CHANGELOG.md
