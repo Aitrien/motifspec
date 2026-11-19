@@ -14,10 +14,13 @@ tokens:
   - color.focus.ring
   - color.link.hover
   - color.link.rest
+  - color.status.danger.fill
+  - color.status.danger.fill-hover
   - color.surface.hover
   - color.surface.raised
   - color.text.muted
   - color.text.on-accent
+  - color.text.on-danger
   - color.text.primary
   - font.family.body
   - font.family.mono
@@ -48,6 +51,7 @@ Buttons start actions or journeys; standalone links and back links move between 
 
 - `cx-button--primary`: the one main action in a view ("View work").
 - `cx-button`: a secondary action beside it.
+- `cx-button--danger`: the action that deletes or stops something, in a dialog that asks the reader to confirm it ("Remove service"; `dialog.md`).
 - `cx-link`: a standalone forward link at the end of a section ("All projects" plus a forward arrow).
 - `cx-back`: the return link at the top of a post or case study (back arrow plus "All writing").
 
@@ -55,6 +59,7 @@ Buttons start actions or journeys; standalone links and back links move between 
 
 - For inline links in text; `prose` styles those.
 - Two primary buttons in one view. Make the second one secondary.
+- `cx-button--danger` on a page or in a table row. A destructive action there opens a dialog, and the danger button is in the dialog.
 - For navigation between sibling posts; use `pagination`.
 
 ## Markup
@@ -67,6 +72,15 @@ Buttons start actions or journeys; standalone links and back links move between 
 </div>
 <a class="cx-link" href="/work/">All projects <svg class="cx-icon cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg></a>
 <a class="cx-back" href="/writing/"><svg class="cx-icon cx-icon--sm cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-back"></use></svg>All writing</a>
+```
+
+In a dialog that confirms a destructive action, the danger button takes the primary's place, after Cancel:
+
+```html {preview=true}
+<div class="cx-actions">
+  <button class="cx-button" type="button">Cancel</button>
+  <button class="cx-button cx-button--danger" type="button">Remove service</button>
+</div>
 ```
 
 Add `cx-button--sm` for a compact button in a table row or a toolbar, where full-size buttons would make every row tall:
@@ -94,7 +108,7 @@ Add `cx-button--sm` for a compact button in a table row or a toolbar, where full
 
 - Buttons are 40px tall (`size.target.control`); links at least 24px.
 - Focus shows `color.focus.ring` 2px off the element, so it never sits on the green fill.
-- Pairs: `color.text.on-accent` on `color.accent.fill.rest` and `.hover` (4.5:1); `color.accent.fill.rest` against the page (3:1); secondary border `color.border.strong` (3:1); `color.link.rest` (7:1).
+- Pairs: `color.text.on-accent` on `color.accent.fill.rest` and `.hover` (4.5:1); `color.text.on-danger` on `color.status.danger.fill` and `.fill-hover` (4.5:1); `color.accent.fill.rest` against the page (3:1); secondary border `color.border.strong` (3:1); `color.link.rest` (7:1).
 
 ## Specimens
 
@@ -104,6 +118,10 @@ For the Components page: each variant at a glance. Ids start "sp-"; `wide=true` 
 <a class="cx-button cx-button--primary" href="/guide/getting-started/">Get started <svg class="cx-icon cx-button__arrow" aria-hidden="true" focusable="false"><use href="#cx-icon-arrow-forward"></use></svg></a>
 <a class="cx-button" href="/components/">Browse components</a>
 <button class="cx-button" type="button" disabled>Not yet published</button>
+```
+
+```html {specimen="Danger"}
+<button class="cx-button cx-button--danger" type="button">Remove service</button>
 ```
 
 ```html {specimen="Small"}

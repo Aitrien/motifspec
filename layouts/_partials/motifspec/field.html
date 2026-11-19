@@ -1,0 +1,53 @@
+{{- /* field.md (and date-picker.md). Context: dict "id" "…" "label" "…", plus any of:
+       "type" ("text" by default; "email", "number", "date"…; "select" with "options" (a slice); "textarea"; "date-picker"),
+       "name", "value", "placeholder" (an example, shown once the reader is in the field), "hint", "error",
+       "optional" true, "required" true, "disabled" true, "mono" true, "short" true, "inputmode", "autocomplete".
+       A date picker takes "choose" too, its button's name ("Choose a date of birth"). */ -}}
+{{- if not (and .id .label) }}{{ errorf "motifspec/field.html: a field needs \"id\" and \"label\"." }}{{ end }}
+{{- $type := .type | default "text" }}
+{{- $describe := slice }}
+{{- if .hint }}{{ $describe = $describe | append (printf "%s-hint" .id) }}{{ end }}
+{{- if .error }}{{ $describe = $describe | append (printf "%s-error" .id) }}{{ end }}
+{{- $class := "cx-field__control" }}
+{{- if or .mono (eq $type "date-picker") }}{{ $class = printf "%s cx-field__control--mono" $class }}{{ end }}
+{{- if .short }}{{ $class = printf "%s cx-field__control--short" $class }}{{ end }}
+{{- $attrs := printf "class=%q id=%q" $class .id }}
+{{- with .name }}{{ $attrs = printf "%s name=%q" $attrs . }}{{ end }}
+{{- if .required }}{{ $attrs = printf "%s required" $attrs }}{{ end }}
+{{- if .disabled }}{{ $attrs = printf "%s disabled" $attrs }}{{ end }}
+{{- if .error }}{{ $attrs = printf "%s aria-invalid=\"true\"" $attrs }}{{ end }}
+{{- with $describe }}{{ $attrs = printf "%s aria-describedby=%q" $attrs (delimit . " ") }}{{ end }}
+{{- $box := "cx-field__box" }}
+{{- if eq $type "textarea" }}{{ $box = printf "%s cx-field__box--area" $box }}{{ end }}
+{{- if eq $type "date-picker" }}{{ $box = printf "%s cx-field__box--date" $box }}{{ end }}
+<div class="cx-field">
+  <div class="{{ $box }}"{{ if eq $type "date-picker" }} data-date-picker{{ end }}>
+    {{- if eq $type "select" }}
+    <select {{ $attrs | safeHTMLAttr }}>
+      {{- range .options }}<option{{ if eq . $.value }} selected{{ end }}>{{ . }}</option>{{ end }}
+    </select>
+    {{- else }}
+    {{- $more := printf "placeholder=%q" (.placeholder | default (cond (eq $type "date-picker") "DD/MM/YYYY" " ")) }}
+    {{- with .inputmode }}{{ $more = printf "%s inputmode=%q" $more . }}{{ else }}{{ if eq $type "date-picker" }}{{ $more = printf "%s inputmode=\"numeric\"" $more }}{{ end }}{{ end }}
+    {{- with .autocomplete }}{{ $more = printf "%s autocomplete=%q" $more . }}{{ end }}
+    {{- if eq $type "textarea" }}
+    <textarea {{ $attrs | safeHTMLAttr }} {{ $more | safeHTMLAttr }}>{{ .value }}</textarea>
+    {{- else }}
+    <input {{ $attrs | safeHTMLAttr }} {{ $more | safeHTMLAttr }} type="{{ if eq $type "date-picker" }}text{{ else }}{{ $type }}{{ end }}"{{ with .value }} value="{{ . }}"{{ end }}>
+    {{- end }}
+    {{- end }}
+    <label class="cx-field__label" for="{{ .id }}">{{ .label }}{{ if .optional }} <span class="cx-field__optional">(optional)</span>{{ end }}</label>
+    {{- if eq $type "select" }}
+    <svg class="cx-icon" aria-hidden="true" focusable="false"><use href="#cx-icon-expand"></use></svg>
+    {{- end }}
+    {{- if eq $type "date-picker" }}
+    <button class="cx-date__button" type="button" aria-label="{{ .choose | default "Choose a date" }}" aria-haspopup="dialog" hidden><svg class="cx-icon" aria-hidden="true" focusable="false"><use href="#cx-icon-calendar"></use></svg></button>
+    {{- end }}
+  </div>
+  {{- with .hint }}
+  <p class="cx-field__hint" id="{{ $.id }}-hint">{{ . }}</p>
+  {{- end }}
+  {{- with .error }}
+  <p class="cx-field__error" id="{{ $.id }}-error"><svg class="cx-icon cx-icon--sm" aria-hidden="true" focusable="false"><use href="#cx-icon-danger"></use></svg>{{ . }}</p>
+  {{- end }}
+</div>

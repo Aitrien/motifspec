@@ -1,6 +1,6 @@
 # Contrast report (generated)
 
-99 declared pairs, each measured in both themes. Target is the pair's `min`.
+107 declared pairs, each measured in both themes. Target is the pair's `min`.
 
 | Foreground | Background | Min | Light | Dark | Result |
 |---|---|---|---|---|---|
@@ -9,6 +9,7 @@
 | `color.text.primary` | `color.surface.sunken` | 7 | 15.28 | 15.28 | pass |
 | `color.text.primary` | `color.surface.hover` | 7 | 15.28 | 10.21 | pass |
 | `color.text.primary` | `color.surface.highlight` | 7 | 15.47 | 9.91 | pass |
+| `color.text.primary` | `color.surface.selected` | 7 | 15.47 | 9.91 | pass |
 | `color.text.primary` | `color.status.success.surface` | 7 | 16.48 | 15.12 | pass |
 | `color.text.primary` | `color.status.warning.surface` | 7 | 16.29 | 15.28 | pass |
 | `color.text.primary` | `color.status.danger.surface` | 7 | 16.23 | 15.57 | pass |
@@ -26,6 +27,8 @@
 | `color.text.inverse` | `color.surface.inverse` | 7 | 13.61 | 12.71 | pass |
 | `color.text.on-accent` | `color.accent.fill.rest` | 4.5 | 6.77 | 12.02 | pass |
 | `color.text.on-accent` | `color.accent.fill.hover` | 4.5 | 11.20 | 15.03 | pass |
+| `color.text.on-danger` | `color.status.danger.fill` | 4.5 | 7.67 | 11.29 | pass |
+| `color.text.on-danger` | `color.status.danger.fill-hover` | 4.5 | 12.15 | 14.36 | pass |
 | `color.link.rest` | `color.surface.base` | 7 | 10.61 | 9.18 | pass |
 | `color.link.rest` | `color.surface.raised` | 7 | 11.20 | 8.12 | pass |
 | `color.link.rest` | `color.surface.sunken` | 7 | 9.91 | 11.03 | pass |
@@ -58,6 +61,11 @@
 | `color.status.danger.text` | `color.surface.raised` | 4.5 | 7.67 | 7.63 | pass |
 | `color.status.danger.text` | `color.surface.hover` | 4.5 | 6.79 | 6.92 | pass |
 | `color.status.danger.border` | `color.status.danger.surface` | 3 | 5.04 | 7.39 | pass |
+| `color.status.danger.fill` | `color.surface.base` | 3 | 7.27 | 8.62 | pass |
+| `color.status.danger.fill` | `color.surface.raised` | 3 | 7.67 | 7.63 | pass |
+| `color.status.danger.fill` | `color.surface.sunken` | 3 | 6.79 | 10.36 | pass |
+| `color.status.danger.fill-hover` | `color.surface.raised` | 3 | 12.15 | 9.70 | pass |
+| `color.status.danger.fill-hover` | `color.surface.sunken` | 3 | 10.75 | 13.18 | pass |
 | `color.status.info.text` | `color.status.info.surface` | 4.5 | 6.72 | 10.74 | pass |
 | `color.status.info.text` | `color.surface.base` | 4.5 | 6.76 | 8.95 | pass |
 | `color.status.info.text` | `color.surface.raised` | 4.5 | 7.13 | 7.92 | pass |

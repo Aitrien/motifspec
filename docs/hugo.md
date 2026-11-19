@@ -144,6 +144,7 @@ Every partial below is called as `partial "motifspec/<name>.html" <context>`.
 | `back-link.html` | `button-and-link.md` | `dict "href" "…" "label" "All work"`. |
 | `alert.html` | `alert.md` | `dict "kind" "warning" "title" "…" "text" "…"`: kind `info` (the default), `success`, `warning` or `danger`; text in Markdown; optional `"dismiss" true`, or a key to keep it dismissed on later pages. |
 | `breadcrumb.html` | `breadcrumb.md` | A page. The trail from the home page to its parent, in a documentation site's page head; nothing when its parent is the home page. |
+| `field.html` | `field.md`, `date-picker.md` | `dict "id" "…" "label" "…"`, plus `"type"` (`text` by default, `select` with `"options"`, `textarea`, `date-picker`, or any input type), `"value"`, `"placeholder"` (an example), `"hint"`, `"error"`, `"optional"`, `"required"`, `"disabled"`, `"mono"`, `"short"`, `"inputmode"`, `"autocomplete"`, and for a date picker `"choose"`, its button's name. |
 | `section-heading.html` | `heading-anchor.md` | `dict "id" "work" "title" "Selected work"`, inside a `<section id="work" aria-labelledby="work-title">`. |
 | `tokens.html` | | Call with `partialCached "motifspec/tokens.html" "tokens"`. A map from token name to its entry in `dist/tokens.json`, for templates that need a token's value at build time. |
 | `h2s.html` | | A page. Its h2 headings with their h3 children; used by the article and the TOC. |

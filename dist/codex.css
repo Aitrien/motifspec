@@ -2,7 +2,7 @@
 @font-face { font-family: "Geist Mono"; src: url("../fonts/geist-mono-latin-wght.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; }
 @font-face { font-family: "Yarndings 12"; src: url("../fonts/yarndings-12-latin.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
 
-/* MotifSpec 1.26.0 — generated from tokens/*.json. Do not edit.
+/* MotifSpec 1.27.0 — generated from tokens/*.json. Do not edit.
    Themes: semantic colours use light-dark(); color-scheme follows the system unless
    <html data-theme="light|dark"> pins it. --cx-primitive-* are for this file only. */
 :root {
@@ -104,6 +104,7 @@
   --cx-color-surface-hover: light-dark(var(--cx-primitive-color-ash-100), var(--cx-primitive-color-ash-800));
   --cx-color-surface-inverse: light-dark(var(--cx-primitive-color-ash-900), var(--cx-primitive-color-ash-100));
   --cx-color-surface-highlight: light-dark(var(--cx-primitive-color-sap-100), var(--cx-primitive-color-sap-800));
+  --cx-color-surface-selected: light-dark(var(--cx-primitive-color-sap-100), var(--cx-primitive-color-sap-800));
 
   /* color.text */
   --cx-color-text-primary: light-dark(var(--cx-primitive-color-ash-950), var(--cx-primitive-color-ash-100));
@@ -112,6 +113,7 @@
   --cx-color-text-accent: light-dark(var(--cx-primitive-color-sap-700), var(--cx-primitive-color-sap-300));
   --cx-color-text-inverse: light-dark(var(--cx-primitive-color-ash-50), var(--cx-primitive-color-ash-900));
   --cx-color-text-on-accent: light-dark(var(--cx-primitive-color-ash-0), var(--cx-primitive-color-ash-1000));
+  --cx-color-text-on-danger: light-dark(var(--cx-primitive-color-ash-0), var(--cx-primitive-color-ash-1000));
 
   /* color.link */
   --cx-color-link-rest: light-dark(var(--cx-primitive-color-sap-800), var(--cx-primitive-color-sap-300));
@@ -145,6 +147,8 @@
   --cx-color-status-danger-text: light-dark(var(--cx-primitive-color-madder-700), var(--cx-primitive-color-madder-300));
   --cx-color-status-danger-surface: light-dark(var(--cx-primitive-color-madder-50), var(--cx-primitive-color-madder-950));
   --cx-color-status-danger-border: light-dark(var(--cx-primitive-color-madder-600), var(--cx-primitive-color-madder-400));
+  --cx-color-status-danger-fill: light-dark(var(--cx-primitive-color-madder-700), var(--cx-primitive-color-madder-300));
+  --cx-color-status-danger-fill-hover: light-dark(var(--cx-primitive-color-madder-800), var(--cx-primitive-color-madder-200));
   --cx-color-status-info-text: light-dark(var(--cx-primitive-color-woad-700), var(--cx-primitive-color-woad-300));
   --cx-color-status-info-surface: light-dark(var(--cx-primitive-color-woad-50), var(--cx-primitive-color-woad-950));
   --cx-color-status-info-border: light-dark(var(--cx-primitive-color-woad-600), var(--cx-primitive-color-woad-400));
@@ -1007,6 +1011,8 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 .cx-button:hover { background: var(--cx-color-surface-hover); }
 .cx-button--primary { border-color: var(--cx-color-accent-fill-rest); background: var(--cx-color-accent-fill-rest); color: var(--cx-color-text-on-accent); }
 .cx-button--primary:hover { border-color: var(--cx-color-accent-fill-hover); background: var(--cx-color-accent-fill-hover); }
+.cx-button--danger { border-color: var(--cx-color-status-danger-fill); background: var(--cx-color-status-danger-fill); color: var(--cx-color-text-on-danger); }
+.cx-button--danger:hover { border-color: var(--cx-color-status-danger-fill-hover); background: var(--cx-color-status-danger-fill-hover); }
 .cx-button[disabled], .cx-button[aria-disabled="true"] { cursor: not-allowed; border-style: dashed; background: transparent; color: var(--cx-color-text-muted); }
 .cx-button--sm { min-height: var(--cx-size-target-min); padding-inline: var(--cx-space-inset-md); }
 .cx-button__arrow { display: inline-block; transition: transform var(--cx-motion-duration-fast) var(--cx-motion-easing-standard); }
@@ -1186,7 +1192,7 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
   display: flex; align-items: flex-start; gap: var(--cx-space-inline-md); padding: var(--cx-space-inset-md);
   border: var(--cx-border-width-hairline) solid var(--_border); border-block-start-width: var(--cx-border-width-emphasis);
   background: var(--_bg); color: var(--cx-color-text-primary); line-height: var(--cx-font-line-height-ui);
-  flex: 1 1 100%; /* a whole row, in a flex container too */
+  width: 100%; /* a whole row in a flex row too; flex-basis would take the full height in a flex column */
 }
 .cx-alert[hidden] { display: none; }
 :where(main) > .cx-alert { margin-block-end: var(--cx-space-stack-lg); }
@@ -1228,6 +1234,163 @@ a.cx-tag:hover { border-color: var(--cx-color-accent-border); color: var(--cx-co
 }
 .cx-toasts .cx-toast.is-shown { opacity: 1; transform: none; }
 .cx-toasts .cx-toast.is-leaving { transition-timing-function: var(--cx-motion-easing-exit); }
+
+/* ------------------------------------------------------------ field (field.md) */
+/* A text field, select or text area with its label on the top border. The label rests where the text goes and moves
+   up to the border when the field has focus or a value: the control's placeholder is " " (or an example), so
+   :placeholder-shown means empty. The label's lower half is the field's own surface, hiding the border behind it,
+   and its upper half is clear, so it sits on whatever the field is on. */
+.cx-field { display: flex; flex-direction: column; gap: var(--cx-space-stack-xs); width: 100%; min-width: 0; } /* fills its container, in a flex row too */
+.cx-field__box { position: relative; display: flex; margin-block-start: var(--cx-space-inset-xs); --_field: var(--cx-color-surface-raised); }
+.cx-field__control {
+  flex: 1; min-width: 0; width: 100%; margin: 0; min-height: calc(var(--cx-size-target-control) + var(--cx-space-inset-xs) * 2);
+  padding: var(--cx-space-inset-xs) var(--cx-space-inset-sm); border: var(--cx-border-width-hairline) solid var(--cx-color-border-strong); border-radius: var(--cx-radius-control);
+  background: var(--_field); color: var(--cx-color-text-primary); font: inherit; font-size: var(--cx-font-size-body); line-height: var(--cx-font-line-height-ui);
+}
+.cx-field__control--mono { font-family: var(--cx-font-family-mono); font-size: var(--cx-font-size-small); }
+.cx-field__control--short { flex: none; max-width: var(--cx-size-column-sidebar); }
+textarea.cx-field__control { min-height: calc(var(--cx-size-target-control) * 2.5); resize: vertical; }
+select.cx-field__control { appearance: none; padding-inline-end: calc(var(--cx-space-inset-sm) * 2 + var(--cx-size-icon-md)); cursor: pointer; }
+.cx-field__box > .cx-icon { position: absolute; inset-inline-end: var(--cx-space-inset-sm); top: 50%; translate: 0 -50%; color: var(--cx-color-text-secondary); pointer-events: none; }
+.cx-field__control::placeholder { color: transparent; }
+.cx-field__control:focus::placeholder { color: var(--cx-color-text-muted); }
+.cx-field__control:hover:not(:disabled, :focus-visible) { border-color: var(--cx-color-text-secondary); }
+/* focus: the field's own border turns accent and doubles, with no ring outside it; the inner line changes from the
+   field's surface to accent, so the change shows without colour vision too */
+.cx-field__control:focus-visible { outline: none; border-color: var(--cx-color-accent-border); box-shadow: inset 0 0 0 var(--cx-border-width-hairline) var(--cx-color-accent-border); }
+.cx-field__control[aria-invalid="true"]:not(:focus-visible) { border-color: var(--cx-color-status-danger-border); box-shadow: inset 0 0 0 var(--cx-border-width-hairline) var(--cx-color-status-danger-border); }
+.cx-field__control:disabled { --_field: var(--cx-color-surface-sunken); color: var(--cx-color-text-muted); border-style: dashed; cursor: not-allowed; }
+.cx-field__box:has(.cx-field__control:disabled) { --_field: var(--cx-color-surface-sunken); }
+.cx-field__label {
+  position: absolute; inset-inline-start: calc(var(--cx-space-inset-sm) + var(--cx-border-width-hairline)); top: 50%; translate: 0 -50%;
+  max-width: calc(100% - var(--cx-space-inset-sm) * 2); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; pointer-events: none;
+  color: var(--cx-color-text-secondary); font-size: var(--cx-font-size-body); line-height: var(--cx-font-line-height-ui);
+  transition-property: top, translate, font-size, color, padding, margin; transition-duration: var(--cx-motion-duration-base); transition-timing-function: var(--cx-motion-easing-standard);
+}
+.cx-field__box--area > .cx-field__label { top: var(--cx-space-inset-sm); translate: 0 0; }
+.cx-field__control:is(:focus, :not(:placeholder-shown), :autofill, :disabled) + .cx-field__label, select.cx-field__control + .cx-field__label {
+  top: 0; translate: 0 -50%; font-size: var(--cx-font-size-label); padding-inline: var(--cx-space-inset-xs); margin-inline-start: calc(var(--cx-space-inset-xs) * -1);
+  background: linear-gradient(to bottom, transparent 50%, var(--_field) 50%);
+}
+.cx-field__control:focus + .cx-field__label { color: var(--cx-color-text-accent); font-weight: var(--cx-font-weight-strong); }
+.cx-field__control[aria-invalid="true"] + .cx-field__label { color: var(--cx-color-status-danger-text); }
+.cx-field__optional { color: var(--cx-color-text-muted); }
+.cx-field__hint { margin: 0; font-size: var(--cx-font-size-small); color: var(--cx-color-text-secondary); line-height: var(--cx-font-line-height-ui); }
+.cx-field__error { margin: 0; display: flex; align-items: center; gap: var(--cx-space-inline-xs); font-size: var(--cx-font-size-small); font-weight: var(--cx-font-weight-strong); color: var(--cx-color-status-danger-text); line-height: var(--cx-font-line-height-ui); }
+.cx-field__error[hidden] { display: none; }
+.cx-fieldset { margin: 0; padding: 0; border: 0; min-width: 0; display: flex; flex-direction: column; gap: var(--cx-space-stack-md); }
+.cx-fieldset > legend { padding: 0; margin-block-end: var(--cx-space-stack-sm); font-size: var(--cx-font-size-body); font-weight: var(--cx-font-weight-strong); line-height: var(--cx-font-line-height-ui); }
+@media (prefers-reduced-motion: reduce) { .cx-field__label { transition: none; } }
+
+/* ------------------------------------------------------------ choice (choice.md) */
+/* A checkbox, radio button or switch with its label beside it: native inputs, in the accent colour */
+.cx-choices { display: flex; flex-direction: column; gap: var(--cx-space-stack-sm); }
+.cx-choice { display: flex; align-items: flex-start; gap: var(--cx-space-inline-sm); min-height: var(--cx-size-target-min); font-size: var(--cx-font-size-small); line-height: var(--cx-font-line-height-ui); cursor: pointer; }
+.cx-choice:has(input:disabled) { color: var(--cx-color-text-muted); cursor: not-allowed; }
+.cx-choice__text { display: flex; flex-direction: column; gap: var(--cx-space-stack-xs); padding-block-start: var(--cx-border-width-emphasis); }
+.cx-choice input { flex: none; margin: 0; cursor: inherit; }
+.cx-choice input:is([type="checkbox"]:not([role="switch"]), [type="radio"]) { width: var(--cx-size-icon-md); height: var(--cx-size-icon-md); accent-color: var(--cx-color-accent-fill-rest); }
+.cx-choice input[role="switch"] {
+  appearance: none; width: var(--cx-size-target-touch); height: var(--cx-size-target-min); border-radius: var(--cx-radius-pill);
+  border: var(--cx-border-width-hairline) solid var(--cx-color-border-strong); background-color: var(--cx-color-surface-sunken);
+  background-image: radial-gradient(circle closest-side, var(--cx-color-text-secondary) 70%, transparent 74%);
+  background-size: var(--cx-size-target-min) 100%; background-repeat: no-repeat; background-position: left center;
+  transition: background-position var(--cx-motion-duration-fast) var(--cx-motion-easing-standard);
+}
+.cx-choice input[role="switch"]:checked { border-color: var(--cx-color-accent-fill-rest); background-color: var(--cx-color-accent-fill-rest); background-image: radial-gradient(circle closest-side, var(--cx-color-text-on-accent) 70%, transparent 74%); background-position: right center; }
+.cx-choice input[role="switch"]:disabled { border-style: dashed; }
+.cx-choice input:focus-visible { outline: var(--cx-border-focus-width) solid var(--cx-color-focus-ring); outline-offset: var(--cx-border-focus-offset); }
+
+/* ------------------------------------------------------------ date picker (date-picker.md) */
+/* A date field with a button that opens a calendar: codex.js shows the button and builds one calendar for the page.
+   The calendar is a fixed size (seven touch-size days), so neither arrow nor either button moves as months change. */
+.cx-field__box--date > .cx-field__control { border-inline-end: 0; }
+.cx-date__button {
+  flex: none; display: grid; place-items: center; width: calc(var(--cx-size-target-control) + var(--cx-space-inset-xs) * 2); padding: 0;
+  border: var(--cx-border-width-hairline) solid var(--cx-color-border-strong); background: var(--_field); color: var(--cx-color-text-secondary); cursor: pointer;
+}
+.cx-date__button[hidden] { display: none; }
+.cx-field__box--date:has(.cx-date__button[hidden]) > .cx-field__control { border-inline-end: var(--cx-border-width-hairline) solid var(--cx-color-border-strong); }
+.cx-date__button:hover { background: var(--cx-color-surface-hover); color: var(--cx-color-text-primary); }
+.cx-date__button:focus-visible { outline: none; border-color: var(--cx-color-accent-border); box-shadow: inset 0 0 0 var(--cx-border-width-hairline) var(--cx-color-accent-border); color: var(--cx-color-text-primary); }
+.cx-calendar {
+  position: absolute; inset: auto; box-sizing: content-box; width: calc(var(--cx-size-target-touch) * 7); margin: 0; padding: var(--cx-space-inset-sm);
+  border: var(--cx-border-width-hairline) solid var(--cx-color-border-strong); background: var(--cx-color-surface-raised); color: var(--cx-color-text-primary);
+}
+.cx-calendar__head { display: grid; grid-template-columns: var(--cx-size-target-control) minmax(0, 1fr) var(--cx-size-target-control); align-items: center; padding-block-end: var(--cx-space-inset-xs); }
+.cx-calendar__pickers { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--cx-space-inline-xs); }
+.cx-calendar__nav, .cx-calendar__pick, .cx-calendar__day, .cx-calendar__cell, .cx-calendar__foot button {
+  margin: 0; padding: 0; border: 0; border-radius: var(--cx-radius-pill); background: transparent; color: var(--cx-color-text-primary); font: inherit; cursor: pointer;
+}
+.cx-calendar__nav { display: grid; place-items: center; width: var(--cx-size-target-control); height: var(--cx-size-target-control); color: var(--cx-color-text-secondary); }
+.cx-calendar__pick { display: inline-flex; align-items: center; justify-content: center; gap: var(--cx-space-inline-xs); width: 100%; min-height: var(--cx-size-target-control); white-space: nowrap; font-weight: var(--cx-font-weight-strong); font-variant-numeric: tabular-nums; }
+.cx-calendar__pick .cx-icon { color: var(--cx-color-text-secondary); transition: transform var(--cx-motion-duration-fast) var(--cx-motion-easing-standard); }
+.cx-calendar__pick[aria-expanded="true"] { background: var(--cx-color-surface-selected); }
+.cx-calendar__pick[aria-expanded="true"] .cx-icon { transform: rotate(180deg); }
+.cx-calendar__grid { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.cx-calendar__grid th { padding-block: var(--cx-space-inset-xs); font-family: var(--cx-font-family-mono); font-size: var(--cx-font-size-label); font-weight: var(--cx-font-weight-ui); letter-spacing: var(--cx-font-tracking-label); text-transform: uppercase; color: var(--cx-color-text-muted); }
+.cx-calendar__grid td { padding: 0; }
+.cx-calendar__day { display: grid; place-items: center; width: var(--cx-size-target-touch); height: var(--cx-size-target-touch); font-size: var(--cx-font-size-small); font-variant-numeric: tabular-nums; }
+.cx-calendar__day.is-other { color: var(--cx-color-text-muted); }
+.cx-calendar__list { display: grid; gap: var(--cx-space-inset-xs); align-content: center; min-height: calc(var(--cx-size-target-touch) * 6 + var(--cx-font-size-label) * 1.6 + var(--cx-space-inset-xs) * 2); }
+.cx-calendar__list[hidden], .cx-calendar__grid[hidden] { display: none; }
+.cx-calendar__list--months { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.cx-calendar__list--years { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.cx-calendar__cell { min-height: var(--cx-size-target-control); font-size: var(--cx-font-size-small); font-variant-numeric: tabular-nums; }
+.cx-calendar__nav:hover, .cx-calendar__pick:hover, .cx-calendar__day:hover, .cx-calendar__cell:hover { background: var(--cx-color-surface-hover); color: var(--cx-color-text-primary); }
+.cx-calendar :is(.cx-calendar__day, .cx-calendar__cell)[aria-current="date"] { box-shadow: inset 0 0 0 var(--cx-border-width-hairline) var(--cx-color-border-strong); font-weight: var(--cx-font-weight-strong); }
+.cx-calendar :is(.cx-calendar__day, .cx-calendar__cell)[aria-pressed="true"] { background: var(--cx-color-surface-selected); font-weight: var(--cx-font-weight-strong); }
+.cx-calendar__foot { display: flex; justify-content: space-between; gap: var(--cx-space-inline-sm); margin-block-start: var(--cx-space-inset-xs); padding-block-start: var(--cx-space-inset-xs); border-block-start: var(--cx-border-width-hairline) solid var(--cx-color-border-subtle); }
+.cx-calendar__foot button { min-height: var(--cx-size-target-control); padding-inline: var(--cx-space-inset-sm); border-radius: 0; color: var(--cx-color-text-accent); font-size: var(--cx-font-size-small); font-weight: var(--cx-font-weight-strong); }
+.cx-calendar__foot button:hover { text-decoration: underline; }
+.cx-calendar button:focus-visible { outline: var(--cx-border-focus-width) solid var(--cx-color-focus-ring); outline-offset: calc(var(--cx-border-focus-width) * -1); }
+@media (prefers-reduced-motion: reduce) { .cx-calendar__pick .cx-icon { transition: none; } }
+
+/* ------------------------------------------------------------ dialog (dialog.md) */
+/* A native <dialog> opened with showModal(): a head with the title and a close button, the body, and the actions in a
+   recessed band. It fades and rises in; on a phone it docks to the bottom, and a wide one (a form) fills the screen. */
+.cx-dialog {
+  width: min(100% - 2 * var(--cx-space-gutter-page), var(--cx-size-measure-caption));
+  padding: 0; border: var(--cx-border-width-hairline) solid var(--cx-color-border-strong); background: var(--cx-color-surface-raised); color: var(--cx-color-text-primary);
+  flex-direction: column;
+}
+.cx-dialog:modal { max-height: calc(100% - 2 * var(--cx-space-gutter-page)); overflow: hidden; } /* the window's height, only when open */
+.cx-dialog--wide { width: min(100% - 2 * var(--cx-space-gutter-page), 1.6 * var(--cx-size-column-card)); }
+.cx-dialog[open] { display: flex; }
+.cx-dialog > form { display: contents; }
+.cx-dialog::backdrop { background: color-mix(in srgb, var(--cx-color-scrim) var(--cx-color-wash-scrim), transparent); }
+.cx-dialog__head { flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--cx-space-inline-sm); padding: var(--cx-space-inset-md) var(--cx-space-inset-lg); border-block-end: var(--cx-border-width-hairline) solid var(--cx-color-border-subtle); }
+/* two classes, so an article's heading styles (.cx-prose h2) don't reach into a dialog placed in one */
+.cx-dialog .cx-dialog__title { margin: 0; padding: 0; border: 0; font-size: var(--cx-font-size-heading-4); font-weight: var(--cx-font-weight-heading); line-height: var(--cx-font-line-height-heading); letter-spacing: normal; text-wrap: balance; }
+.cx-dialog .cx-dialog__head > * { margin-block: 0; }
+.cx-dialog__close {
+  flex: none; display: grid; place-items: center; width: var(--cx-size-target-control); height: var(--cx-size-target-control); margin-inline-end: calc(var(--cx-space-inset-sm) * -1);
+  padding: 0; border: 0; border-radius: var(--cx-radius-pill); background: transparent; color: var(--cx-color-text-secondary); cursor: pointer;
+}
+.cx-dialog__close:hover { background: var(--cx-color-surface-hover); color: var(--cx-color-text-primary); }
+.cx-dialog__close:focus-visible { outline: var(--cx-border-focus-width) solid var(--cx-color-focus-ring); outline-offset: calc(var(--cx-border-focus-width) * -1); }
+.cx-dialog__body { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--cx-space-stack-md); padding: var(--cx-space-inset-lg); }
+.cx-dialog .cx-dialog__body > p { margin: 0; color: var(--cx-color-text-secondary); max-width: var(--cx-size-measure-prose); }
+.cx-dialog__actions { flex: none; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--cx-space-inline-sm); padding: var(--cx-space-inset-md) var(--cx-space-inset-lg); border-block-start: var(--cx-border-width-hairline) solid var(--cx-color-border-subtle); background: var(--cx-color-surface-sunken); }
+.cx-dialog, .cx-dialog::backdrop {
+  transition: opacity var(--cx-motion-duration-base) var(--cx-motion-easing-enter), translate var(--cx-motion-duration-base) var(--cx-motion-easing-enter),
+    overlay var(--cx-motion-duration-base) allow-discrete, display var(--cx-motion-duration-base) allow-discrete;
+}
+dialog.cx-dialog:not([open]), dialog.cx-dialog:not([open])::backdrop { opacity: 0; transition-timing-function: var(--cx-motion-easing-exit); }
+dialog.cx-dialog:not([open]) { translate: 0 calc(6 * var(--cx-motion-distance-nudge)); }
+@starting-style {
+  .cx-dialog[open], .cx-dialog[open]::backdrop { opacity: 0; }
+  .cx-dialog[open] { translate: 0 calc(6 * var(--cx-motion-distance-nudge)); }
+}
+@media (prefers-reduced-motion: reduce) { .cx-dialog, .cx-dialog::backdrop { transition: none; } }
+html:has(.cx-dialog[open]) { overflow: hidden; }
+@media (width < 48rem) {
+  .cx-dialog:not(.cx-dialog--wide) { width: 100%; max-width: none; margin: auto 0 0; border-width: var(--cx-border-width-hairline) 0 0; }
+  .cx-dialog:not(.cx-dialog--wide) .cx-dialog__actions { flex-direction: column-reverse; }
+  .cx-dialog:not(.cx-dialog--wide) .cx-dialog__actions .cx-button { width: 100%; justify-content: center; }
+  .cx-dialog--wide { width: 100%; max-width: none; margin: 0; border-width: 0; }
+  .cx-dialog--wide:modal { height: 100%; max-height: none; }
+}
 
 /* ------------------------------------------------------------ data table */
 .cx-table { position: relative; min-width: 0; overflow-x: auto; border: var(--cx-border-width-hairline) solid var(--cx-color-border-default); background: var(--cx-color-surface-raised); }

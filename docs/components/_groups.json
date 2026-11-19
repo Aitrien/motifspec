@@ -1,5 +1,6 @@
 [
   {"key": "actions", "title": "Actions"},
+  {"key": "forms", "title": "Forms"},
   {"key": "navigation", "title": "Navigation"},
   {"key": "content", "title": "Content"},
   {"key": "messages", "title": "Messages"},

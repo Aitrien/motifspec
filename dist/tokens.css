@@ -1,4 +1,4 @@
-/* MotifSpec 1.26.0 — generated from tokens/*.json. Do not edit.
+/* MotifSpec 1.27.0 — generated from tokens/*.json. Do not edit.
    Themes: semantic colours use light-dark(); color-scheme follows the system unless
    <html data-theme="light|dark"> pins it. --cx-primitive-* are for this file only. */
 :root {
@@ -100,6 +100,7 @@
   --cx-color-surface-hover: light-dark(var(--cx-primitive-color-ash-100), var(--cx-primitive-color-ash-800));
   --cx-color-surface-inverse: light-dark(var(--cx-primitive-color-ash-900), var(--cx-primitive-color-ash-100));
   --cx-color-surface-highlight: light-dark(var(--cx-primitive-color-sap-100), var(--cx-primitive-color-sap-800));
+  --cx-color-surface-selected: light-dark(var(--cx-primitive-color-sap-100), var(--cx-primitive-color-sap-800));
 
   /* color.text */
   --cx-color-text-primary: light-dark(var(--cx-primitive-color-ash-950), var(--cx-primitive-color-ash-100));
@@ -108,6 +109,7 @@
   --cx-color-text-accent: light-dark(var(--cx-primitive-color-sap-700), var(--cx-primitive-color-sap-300));
   --cx-color-text-inverse: light-dark(var(--cx-primitive-color-ash-50), var(--cx-primitive-color-ash-900));
   --cx-color-text-on-accent: light-dark(var(--cx-primitive-color-ash-0), var(--cx-primitive-color-ash-1000));
+  --cx-color-text-on-danger: light-dark(var(--cx-primitive-color-ash-0), var(--cx-primitive-color-ash-1000));
 
   /* color.link */
   --cx-color-link-rest: light-dark(var(--cx-primitive-color-sap-800), var(--cx-primitive-color-sap-300));
@@ -141,6 +143,8 @@
   --cx-color-status-danger-text: light-dark(var(--cx-primitive-color-madder-700), var(--cx-primitive-color-madder-300));
   --cx-color-status-danger-surface: light-dark(var(--cx-primitive-color-madder-50), var(--cx-primitive-color-madder-950));
   --cx-color-status-danger-border: light-dark(var(--cx-primitive-color-madder-600), var(--cx-primitive-color-madder-400));
+  --cx-color-status-danger-fill: light-dark(var(--cx-primitive-color-madder-700), var(--cx-primitive-color-madder-300));
+  --cx-color-status-danger-fill-hover: light-dark(var(--cx-primitive-color-madder-800), var(--cx-primitive-color-madder-200));
   --cx-color-status-info-text: light-dark(var(--cx-primitive-color-woad-700), var(--cx-primitive-color-woad-300));
   --cx-color-status-info-surface: light-dark(var(--cx-primitive-color-woad-50), var(--cx-primitive-color-woad-950));
   --cx-color-status-info-border: light-dark(var(--cx-primitive-color-woad-600), var(--cx-primitive-color-woad-400));

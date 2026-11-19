@@ -9,11 +9,11 @@
   "icons": {
     "arrow-forward": {
       "symbol": "arrow_forward",
-      "use": "Forward journeys: primary and secondary buttons, standalone links, Next in pagination."
+      "use": "Forward journeys: primary and secondary buttons, standalone links, Next in pagination and in a calendar."
     },
     "arrow-back": {
       "symbol": "arrow_back",
-      "use": "Back links at the top of posts and case studies; Previous in pagination."
+      "use": "Back links at the top of posts and case studies; Previous in pagination and in a calendar."
     },
     "arrow-upward": {
       "symbol": "arrow_upward",
@@ -53,7 +53,7 @@
     },
     "danger": {
       "symbol": "report",
-      "use": "Title of a danger callout."
+      "use": "Title of a danger callout or alert, and a field’s error message."
     },
     "rss": {
       "symbol": "rss_feed",
@@ -61,7 +61,7 @@
     },
     "expand": {
       "symbol": "keyboard_arrow_down",
-      "use": "Disclosure indicator on <summary>; rotates when open."
+      "use": "Disclosure indicator on <summary>, rotating when open; the arrow of a select, and of a calendar’s month and year buttons."
     },
     "pause": {
       "symbol": "pause",
@@ -122,6 +122,10 @@
     "logs": {
       "symbol": "terminal",
       "use": "Logs and consoles: a link or action that opens them."
+    },
+    "calendar": {
+      "symbol": "calendar_today",
+      "use": "The button that opens a date field’s calendar, and the native date field’s picker."
     }
   }
 }

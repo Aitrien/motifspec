@@ -2,6 +2,24 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.27.0] - 2026-11-19
+
+### Added
+- Field (`field.md`, shared): a text field, select or text area with its label on the top border. The label rests where the text goes and moves to the border when the field has focus or a value, with no script. Focus doubles the field's border in `color.accent.border`, with no ring outside it. Hints, errors, "(optional)", disabled fields, `--mono` and `--short` controls, and fieldsets. In Hugo, `motifspec/field.html` writes one.
+- Choice (`choice.md`, shared): checkboxes, radio buttons and switches (a checkbox with `role="switch"`), as native inputs in the accent colour.
+- Date picker (`date-picker.md`, shared): a date field with a calendar, opened from a button `codex.js` shows. The month and the year open grids of their own (twenty years at a time), the keyboard moves through each, and the calendar is a fixed size, opening above the field when there's more room there and scrolling with it.
+- Dialog (`dialog.md`, shared): a native `<dialog>` with a head, a close button and the actions in a recessed band; `--wide` for a form. `[data-dialog-open]` and `[data-dialog-close]` open and close it, and a click outside closes it unless it has `data-dialog-keep`. On a phone it docks to the bottom, and a form fills the screen.
+- A danger button (`cx-button--danger`) for confirming a destructive action in a dialog, on the new `color.status.danger.fill`, `color.status.danger.fill-hover` and `color.text.on-danger`.
+- `color.surface.selected` for the chosen item among options, such as a calendar's date, and the `calendar` icon.
+- A Forms group on the Components page, and the dialog in Messages.
+
+### Changed
+- The dashboard layout's form controls and dialog are available.
+- A component preview grows while a dialog or calendar is open in it.
+
+### Fixed
+- An alert no longer takes the full height of a flex column, such as a dashboard's main region.
+
 ## [1.26.0] - 2026-11-18
 
 ### Added
