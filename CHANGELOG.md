@@ -2,6 +2,11 @@
 
 Every release of MotifSpec (named brand-codex until 1.10.0), newest first. Entries before 1.10.0 keep the names they were released under. Versions follow the rules in `CONVENTIONS.md`: renaming or removing a semantic token is major, adding tokens, components or icons is minor, and changing a value or fixing a description is a patch. `npm run build` fails if the version in `package.json` has no entry here.
 
+## [1.27.1] - 2026-11-19
+
+### Fixed
+- `codex.js` works with Turbo (Rails), or anything that changes the page without a reload. It sets each page's elements up again after every `turbo:load`, `turbo:frame-load` and `turbo:morph`, so the theme toggle, alert dismiss buttons, copy buttons, tabs, search, date pickers and the rest work after a visit or a redirect, not only on the first full load. Listeners on the document are set once, no element is set up twice, and a calendar, dialog or menu left open is closed before Turbo caches the page.
+
 ## [1.27.0] - 2026-11-19
 
 ### Added
